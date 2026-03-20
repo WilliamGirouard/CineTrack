@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../CineTrack.Data/CineTrack.Data.csproj" />
+  <Project Path="CineTrack.csproj" />
+</Solution>
