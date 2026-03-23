@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace CineTrack.Converters
 {
-    /// <summary>True → Visible, False → Collapsed</summary>
+    ///True → Visible, False → Collapsed
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -14,7 +14,7 @@ namespace CineTrack.Converters
             => value is Visibility.Visible;
     }
 
-    /// <summary>True → Collapsed, False → Visible  (inverse)</summary>
+    ///True → Collapsed, False → Visible  (inverse)
     public class BoolToVisibilityInverseConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

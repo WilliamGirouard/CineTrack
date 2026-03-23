@@ -1,7 +1,10 @@
+using CineTrack.Data.Models;
 using CineTrack.Data.Services.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.ComponentModel.DataAnnotations;    
 using System.Text.RegularExpressions;
+
 
 namespace CineTrack.ViewModels.Auth
 {
@@ -39,6 +42,7 @@ namespace CineTrack.ViewModels.Auth
         private bool _isPasswordVisible = false;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
         private bool _isLoading = false;
 
 
@@ -58,34 +62,30 @@ namespace CineTrack.ViewModels.Auth
 
         private bool ValiderChamps(out string erreur)
         {
-            if (Username.Length < 3)
+            var utilisateur = new Utilisateur
             {
-                erreur = "Le nom d'utilisateur doit contenir au moins 3 caractères.";
-                return false;
-            }
-            if (FullName.Trim().Length < 2)
-            {
-                erreur = "Le nom complet est requis.";
-                return false;
-            }
-            if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            {
-                erreur = "L'adresse courriel n'est pas valide.";
-                return false;
-            }
-            if (Password.Length < 8)
-            {
-                erreur = "Le mot de passe doit contenir au moins 8 caractères.";
-                return false;
-            }
-            if (!Regex.IsMatch(Password, @"\d"))
-            {
-                erreur = "Le mot de passe doit contenir au moins un chiffre.";
-                return false;
-            }
-            if (!Regex.IsMatch(Password, @"[!@#$%^&*(),.?""{|}|<>]"))
-            {
-                erreur = "Le mot de passe doit contenir au moins un caractère spécial.";
+                Username = Username.Trim(),
+                FullName = FullName.Trim(),
+                Email = Email.Trim(),
+                Password = Password
+
+            };
+
+            var context = new ValidationContext(utilisateur);
+            var results = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(utilisateur, context, results, validateAllProperties: true);
+
+            if (isValid) {
+                var proprietes = results[0].MemberNames.FirstOrDefault();
+                erreur = proprietes switch
+                {
+                    nameof(Utilisateur.Username) => "Le nom d'utilisateur est invalide.",
+                    nameof(Utilisateur.FullName) => "Le nom complet est requis.",
+                    nameof(Utilisateur.Email) => "L'adresse courriel n'est pas valide.",
+                    nameof(Utilisateur.Password) => "Le mot de passe doit contenir au moins 10 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.",
+                    _ => results[0].ErrorMessage ?? "Champ invalide."
+                };
                 return false;
             }
             if (Password != ConfirmPassword)
@@ -93,7 +93,6 @@ namespace CineTrack.ViewModels.Auth
                 erreur = "Les mots de passe ne correspondent pas.";
                 return false;
             }
-
             erreur = string.Empty;
             return true;
         }
@@ -115,9 +114,8 @@ namespace CineTrack.ViewModels.Auth
 
             try
             {
-                await Task.Run(() =>
-                    _utilisateurService.SignUp(Username.Trim(), FullName.Trim(), Email.Trim(), Password)
-                );
+                _utilisateurService.SignUp(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
+
                 // TODO : naviguer vers SignIn après inscription réussie
                 // _navigationService.NavigateTo<SignInViewModel>();
             }

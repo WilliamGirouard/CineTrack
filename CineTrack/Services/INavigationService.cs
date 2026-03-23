@@ -2,15 +2,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CineTrack.Services
 {
-    /// <summary>
+
     /// Contrat du service de navigation entre ViewModels.
-    /// </summary>
+
     public interface INavigationService
     {
-        /// <summary>ViewModel actuellement affiché dans le ContentControl.</summary>
+        ///ViewModel actuellement affiché dans le ContentControl.
         ObservableObject CurrentView { get; }
 
-        /// <summary>Navigue vers le ViewModel de type T.</summary>
+        ///Navigue vers le ViewModel de type T.
         void NavigateTo<T>() where T : ObservableObject;
     }
 }

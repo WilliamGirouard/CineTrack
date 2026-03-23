@@ -3,11 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CineTrack.Services
 {
-    /// <summary>
-    /// Service de navigation MVVM-pur.
     /// La MainWindow contient un ContentControl bindé sur CurrentView.
     /// Un DataTemplate dans App.xaml mappe chaque ViewModel vers sa View.
-    /// </summary>
+
     public class NavigationService : ObservableObject, INavigationService
     {
         private readonly IServiceProvider _serviceProvider;
@@ -24,7 +22,7 @@ namespace CineTrack.Services
             _serviceProvider = serviceProvider;
         }
 
-        /// <summary>Résout le ViewModel T via DI et l'affiche dans le ContentControl.</summary>
+        ///Résout le ViewModel T via DI et l'affiche dans le ContentControl.
         public void NavigateTo<T>() where T : ObservableObject
         {
             CurrentView = _serviceProvider.GetRequiredService<T>();
