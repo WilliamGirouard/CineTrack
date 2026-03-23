@@ -1,28 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using CineTrack.ViewModels.Auth;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CineTrack.Views.Auth
 {
-    /// <summary>
-    /// Interaction logic for SignUpView.xaml
-    /// </summary>
     public partial class SignUpView : Page
     {
         public SignUpView()
         {
             InitializeComponent();
+            // Assigner le ViewModel depuis le conteneur DI
+            DataContext = App.ServiceProvider.GetRequiredService<SignUpViewModel>();
+        }
+
+        // WPF ne permet pas de binder PasswordBox.Password directement (sécurité).
+        // On synchronise manuellement vers le ViewModel via PasswordChanged.
+        private void PasswordBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is SignUpViewModel vm)
+                vm.Password = PasswordBox.Password;
+        }
+
+        private void ConfirmPasswordBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is SignUpViewModel vm)
+                vm.ConfirmPassword = ConfirmPasswordBox.Password;
         }
     }
 }

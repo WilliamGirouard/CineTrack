@@ -1,4 +1,4 @@
-﻿using CineTrack.Data.Context;
+using CineTrack.Data.Context;
 using CineTrack.Data.Repositories;
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services;
@@ -10,17 +10,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
+
 namespace CineTrack
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        public static IServiceProvider ServiceProvider { get; private set; }
+        public static IServiceProvider ServiceProvider { get; private set; } = null!;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -28,67 +28,47 @@ namespace CineTrack
 
             var services = new ServiceCollection();
 
+            // ── Base de données ────────────────────────────────────────────────
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var provider = configuration["DatabaseProvider"];
-            // Configuration selon le provider (https://cegepmv.github.io/420-413/efcore/index.html)
-            // ═══════════════════════════════════════════
-            // 2. BASE DE DONNÉES (Scoped)
-            // ═══════════════════════════════════════════
+
             if (provider == "SQLite")
-            {
-                services.AddDbContext<CineTrackDbContext>(options =>
-                    options.UseSqlite(connectionString));
-            }
+                services.AddDbContext<CineTrackDbContext>(o => o.UseSqlite(connectionString));
             else if (provider == "SqlServer")
-            {
-                services.AddDbContext<CineTrackDbContext>(options =>
-                    options.UseSqlServer(connectionString));
-            }
+                services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
 
-            //Conteneur Inversion of Control https://cegepmv.github.io/420-413/injection_dependance/index.html
-
-            // ═══════════════════════════════════════════
-            // 3. REPOSITORIES (Scoped)
-            // ═══════════════════════════════════════════
+            // ── Repositories (Scoped) ──────────────────────────────────────────
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 
-            // ═══════════════════════════════════════════
-            // 4. SERVICES MÉTIER (Scoped)
-            // ═══════════════════════════════════════════
+            // ── Services métier (Scoped) ───────────────────────────────────────
             services.AddScoped<IUtilisateurService, UtilisateurService>();
 
-            // ═══════════════════════════════════════════
-            // 5. VIEWMODELS (Transient)
-            // ═══════════════════════════════════════════
+            // ── ViewModels (Transient) ─────────────────────────────────────────
             services.AddTransient<SignInViewModel>();
-            services.AddTransient<SignUpViewModel>();
+            services.AddTransient<SignUpViewModel>();   // injecte IUtilisateurService
 
-            // ═══════════════════════════════════════════
-            // 6. VIEWS (Transient)
-            // ═══════════════════════════════════════════
+            // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();
             services.AddTransient<SignUpView>();
             services.AddTransient<SignInView>();
 
-            // ═══════════════════════════════════════════
-            // 7. SINGLETONS (ex. : Logger)
-            // ═══════════════════════════════════════════
-            // services.AddSingleton<ILogger, FileLogger>();
-
-            // 8. Construire le provider et l'exposer
-            // On construit le "conteneur" (celui qui fabrique les objets)
             ServiceProvider = services.BuildServiceProvider();
 
-            // 9. Résoudre et afficher MainWindow
+            // Appliquer les migrations au démarrage
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<CineTrackDbContext>();
+                db.Database.Migrate();
+            }
+
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
+
         protected override void OnExit(ExitEventArgs e)
         {
-            // Libérer les ressources si nécessaire
             if (ServiceProvider is IDisposable disposable)
                 disposable.Dispose();
-
             base.OnExit(e);
         }
     }
