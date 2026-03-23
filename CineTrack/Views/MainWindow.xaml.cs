@@ -1,24 +1,27 @@
-﻿using System.Text;
+using CineTrack.Views.Auth;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CineTrack
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            // Afficher SignUpView au démarrage
+            // (plus tard ce sera SignInView, ou une logique qui vérifie la session)
+            var signUpView = App.ServiceProvider.GetRequiredService<SignUpView>();
+            MainFrame.Navigate(signUpView);
+        }
+
+        /// <summary>
+        /// Permet aux ViewModels de naviguer entre les pages.
+        /// Appelé depuis le code-behind ou via un service de navigation.
+        /// </summary>
+        public void NavigateTo(System.Windows.Controls.Page page)
+        {
+            MainFrame.Navigate(page);
         }
     }
 }
