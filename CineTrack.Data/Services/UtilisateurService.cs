@@ -24,7 +24,7 @@ namespace CineTrack.Data.Services
             return _utilisateurRepository.GetByUsername(username) != null;
         }
 
-        public void SignIn(string username, string password)
+        public Utilisateur SignIn(string username, string password)
         {
             Utilisateur userVerif = _utilisateurRepository.GetByUsername(username);
             if (userVerif == null)
@@ -36,7 +36,7 @@ namespace CineTrack.Data.Services
             {
                 throw new Exception("Invalid credentials");
             }
-            //Faire systeme de token
+            return userVerif;
         }
 
         public void SignUp(string username, string fullName, string email, string password)

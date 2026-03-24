@@ -1,4 +1,6 @@
+using CineTrack.Services;
 using CineTrack.ViewModels.Auth;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
@@ -11,6 +13,8 @@ namespace CineTrack.Views.Auth
             InitializeComponent();
             // Assigner le ViewModel depuis le conteneur DI
             DataContext = App.ServiceProvider.GetRequiredService<SignUpViewModel>();
+            DataContext = App.ServiceProvider.GetRequiredService<INavigationService>();
+
         }
 
         // WPF ne permet pas de binder PasswordBox.Password directement (sécurité).

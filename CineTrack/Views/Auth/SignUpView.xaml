@@ -189,7 +189,7 @@
                                 Command="{Binding TogglePasswordVisibilityCommand}"
                                 FontSize="15"/>
                     </Grid>
-                    <TextBlock Text="Min. 8 caractères, 1 chiffre, 1 caractère spécial"
+                    <TextBlock Text="Min. 10 caractères, 1 chiffre, 1 caractère spécial"
                                FontSize="11" Foreground="#555"
                                Margin="2,0,0,16"/>
 

@@ -15,6 +15,7 @@ namespace CineTrack
 {
     public partial class App : Application
     {
+        //faut add un petit truc pour la navigation entre les pages
         public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -28,7 +29,6 @@ namespace CineTrack
 
             var services = new ServiceCollection();
 
-            // ── Base de données ────────────────────────────────────────────────
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var provider = configuration["DatabaseProvider"];
 
@@ -37,24 +37,21 @@ namespace CineTrack
             else if (provider == "SqlServer")
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
 
-            // ── Repositories (Scoped) ──────────────────────────────────────────
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 
-            // ── Services métier (Scoped) ───────────────────────────────────────
+      
             services.AddScoped<IUtilisateurService, UtilisateurService>();
 
-            // ── ViewModels (Transient) ─────────────────────────────────────────
+      
             services.AddTransient<SignInViewModel>();
-            services.AddTransient<SignUpViewModel>();   // injecte IUtilisateurService
+            services.AddTransient<SignUpViewModel>();   
 
-            // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();
             services.AddTransient<SignUpView>();
             services.AddTransient<SignInView>();
 
             ServiceProvider = services.BuildServiceProvider();
 
-            // Appliquer les migrations au démarrage
             using (var scope = ServiceProvider.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<CineTrackDbContext>();
