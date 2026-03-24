@@ -150,7 +150,7 @@
                                Margin="0,0,0,28"/>
 
 
-                    
+
 
                     <TextBlock Text="Nom d'utilisateur" Style="{StaticResource FieldLabel}"/>
                     <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
@@ -185,7 +185,7 @@
                             CornerRadius="6"
                             Padding="12,8"
                             Margin="0,0,0,16"
-                            Visibility="{Binding ErrorMessage,
+                            Visibility="{Binding ErrorMsg,
                                 Converter={StaticResource StringToVisConverter}}">
                         <TextBlock Text="{Binding ErrorMessage}"
                                    Foreground="#e94560"
@@ -203,7 +203,7 @@
                                     <MultiBinding StringFormat="{}{0}">
                                         <Binding Path="IsLoading"
                                                  Converter="{StaticResource LoadingTextConverter}"
-                                                 ConverterParameter="S'inscrire"/>
+                                                 ConverterParameter="Se connecter"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -220,7 +220,7 @@
                                    TextDecorations="Underline">
                             <TextBlock.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
-                                              Command="{Binding NavigateToSignInCommand}"/>
+                                              Command="{Binding NavigateToSignUpCommand}"/>
                             </TextBlock.InputBindings>
                         </TextBlock>
                     </StackPanel>

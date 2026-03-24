@@ -12,13 +12,11 @@ namespace CineTrack
             // Afficher SignUpView au démarrage
             // (plus tard ce sera SignInView, ou une logique qui vérifie la session)
             var signUpView = App.ServiceProvider.GetRequiredService<SignUpView>();
+            var signInView = App.ServiceProvider.GetService<SignInView>();
             MainFrame.Navigate(signUpView);
         }
-
-        /// <summary>
         /// Permet aux ViewModels de naviguer entre les pages.
         /// Appelé depuis le code-behind ou via un service de navigation.
-        /// </summary>
         public void NavigateTo(System.Windows.Controls.Page page)
         {
             MainFrame.Navigate(page);
