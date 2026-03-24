@@ -9,7 +9,7 @@ namespace CineTrack.ViewModels.Auth
     {
         private readonly IUtilisateurService _utilisateurService;
 
- 
+
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
@@ -125,9 +125,9 @@ namespace CineTrack.ViewModels.Auth
             {
                 ErrorMessage = ex.Message switch
                 {
-                    "Email already used"    => "Cette adresse courriel est déjà utilisée.",
+                    "Email already used" => "Cette adresse courriel est déjà utilisée.",
                     "Username already used" => "Ce nom d'utilisateur est déjà pris.",
-                    _                       => "Une erreur est survenue. Veuillez réessayer."
+                    _ => "Une erreur est survenue. Veuillez réessayer."
                 };
             }
             finally
