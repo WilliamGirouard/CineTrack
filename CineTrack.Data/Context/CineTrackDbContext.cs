@@ -14,6 +14,7 @@ namespace CineTrack.Data.Context
         {}
 
         public DbSet<Utilisateur> Utilisateurs { get; set; }
+        public DbSet<Favoris> Favoris { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
