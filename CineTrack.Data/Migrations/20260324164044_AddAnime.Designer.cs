@@ -3,6 +3,7 @@ using System;
 using CineTrack.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineTrack.Data.Migrations
 {
     [DbContext(typeof(CineTrackDbContext))]
-    partial class CineTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260324164044_AddAnime")]
+    partial class AddAnime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
@@ -94,49 +97,6 @@ namespace CineTrack.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Utilisateurs");
-                });
-
-            modelBuilder.Entity("CineTrack.Data.Models.UtilisateurAnime", b =>
-                {
-                    b.Property<int>("UtilisateurId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AnimeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Commentaire")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateAjout")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("Note")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("UtilisateurId", "AnimeId");
-
-                    b.HasIndex("AnimeId");
-
-                    b.ToTable("UtilisateurAnimes");
-                });
-
-            modelBuilder.Entity("CineTrack.Data.Models.UtilisateurAnime", b =>
-                {
-                    b.HasOne("CineTrack.Data.Models.Anime", "Anime")
-                        .WithMany()
-                        .HasForeignKey("AnimeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CineTrack.Data.Models.Utilisateur", "Utilisateur")
-                        .WithMany()
-                        .HasForeignKey("UtilisateurId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Anime");
-
-                    b.Navigation("Utilisateur");
                 });
 #pragma warning restore 612, 618
         }
