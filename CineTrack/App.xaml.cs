@@ -3,8 +3,11 @@ using CineTrack.Data.Repositories;
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services;
 using CineTrack.Data.Services.Interfaces;
+using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.ViewModels.Auth;
 using CineTrack.Views.Auth;
+using JikanDotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,11 +41,17 @@ namespace CineTrack
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
 
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
-
-      
             services.AddScoped<IUtilisateurService, UtilisateurService>();
 
-      
+            services.AddScoped<IUtilisateurAnimeRepository, UtilisateurAnimeRepository>();
+            services.AddScoped<IUtilisateurAnimeService, UtilisateurAnimeService>();
+
+            services.AddScoped<IAnimeRepository, AnimeRepository>();
+            services.AddScoped<IAnimeService, AnimeService>();
+            services.AddScoped<IAnimeApiService, AnimeApiService>();
+
+            services.AddSingleton<INavigationService, NavigationService>();
+
             services.AddTransient<SignInViewModel>();
             services.AddTransient<SignUpViewModel>();   
 
