@@ -7,7 +7,6 @@ using CineTrack.Services;
 using CineTrack.Services.Interfaces;
 using CineTrack.ViewModels.Auth;
 using CineTrack.Views.Auth;
-using CineTrack.Services;
 using JikanDotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
