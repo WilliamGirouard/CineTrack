@@ -18,7 +18,7 @@ namespace CineTrack.Views.Favoris
     /// <summary>
     /// Interaction logic for FavorisView.xaml
     /// </summary>
-    public partial class FavorisView : Page
+    public partial class FavorisView : UserControl
     {
         public FavorisView()
         {

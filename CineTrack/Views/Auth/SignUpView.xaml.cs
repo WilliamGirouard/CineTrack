@@ -6,7 +6,7 @@ using System.Windows.Controls;
 
 namespace CineTrack.Views.Auth
 {
-    public partial class SignUpView : Page
+    public partial class SignUpView : UserControl
     {
         public SignUpView()
         {

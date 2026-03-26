@@ -5,13 +5,10 @@ using CineTrack.Data.Services;
 using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services;
 using CineTrack.Services.Interfaces;
+using CineTrack.ViewModels;
 using CineTrack.ViewModels.Auth;
 using CineTrack.Views.Auth;
-<<<<<<< HEAD
-using CineTrack.Services;
-=======
 using JikanDotNet;
->>>>>>> 703482772dbb4fce2ccf0f62bba2ef19b82c61e4
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,14 +19,11 @@ namespace CineTrack
 {
     public partial class App : Application
     {
-        //faut add un petit truc pour la navigation entre les pages
-        
         public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -37,47 +31,56 @@ namespace CineTrack
 
             var services = new ServiceCollection();
 
+            // ── Base de données ────────────────────────────────────────────────
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var provider = configuration["DatabaseProvider"];
-
             if (provider == "SQLite")
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlite(connectionString));
             else if (provider == "SqlServer")
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
 
+
+            // ── Repositories (Scoped) ──────────────────────────────────────────
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
             services.AddScoped<IUtilisateurService, UtilisateurService>();
-            services.AddSingleton<INavigationService, NavigationService>();
 
-<<<<<<< HEAD
-=======
             services.AddScoped<IUtilisateurAnimeRepository, UtilisateurAnimeRepository>();
             services.AddScoped<IUtilisateurAnimeService, UtilisateurAnimeService>();
 
-            services.AddScoped<IAnimeRepository, AnimeRepository>();
             services.AddScoped<IAnimeService, AnimeService>();
             services.AddScoped<IAnimeApiService, AnimeApiService>();
+            services.AddScoped<IAnimeRepository, AnimeRepository>();
 
+            services.AddScoped<IFavorisRepository, FavorisRepository>();
+
+            // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();
 
->>>>>>> 703482772dbb4fce2ccf0f62bba2ef19b82c61e4
+            // ── ViewModels (Transient) ─────────────────────────────────────────
             services.AddTransient<SignInViewModel>();
-            services.AddTransient<SignUpViewModel>();   
+            services.AddTransient<SignUpViewModel>();
+            services.AddTransient<MainViewModel>();
 
+            // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();
             services.AddTransient<SignUpView>();
             services.AddTransient<SignInView>();
 
             ServiceProvider = services.BuildServiceProvider();
 
+            // Appliquer les migrations au démarrage
             using (var scope = ServiceProvider.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<CineTrackDbContext>();
                 db.Database.Migrate();
             }
 
+            var navigationService = ServiceProvider.GetRequiredService<INavigationService>();
+            navigationService.NavigateTo<SignInViewModel>();
+
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
+            
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -1,17 +1,9 @@
-﻿using CineTrack.Data.Models;
-using CineTrack.Data.Repositories.Interfaces;
-using CineTrack.Data.Services.Interfaces;
+﻿using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services;
 using CineTrack.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
+
 namespace CineTrack.ViewModels.Auth
 {
     public partial class SignInViewModel : ObservableObject
@@ -59,13 +51,14 @@ namespace CineTrack.ViewModels.Auth
                     _utilisateurService.SignIn(Username.Trim(), Password)
                 );
                 SessionManager.Instance.OpenSession(user);
+                _navigationService.NavigateTo<MainViewModel>();
 
             }
             catch (Exception e)
             {
                 ErrorMsg = e.Message switch
                 {
-                    "Invalid " => "Nom d'utilisateur ou mot de passe incorrect.",
+                    "Invalid credentials" => "Nom d'utilisateur ou mot de passe incorrect.",
                     _ => "Une erreur est survenue lors de la connexion."
                 };
             }
@@ -86,9 +79,5 @@ namespace CineTrack.ViewModels.Auth
              _navigationService.NavigateTo<SignUpViewModel>(); // corriger was singIn instead of singUp
         }
     }
-
-
-
-
 }
 
