@@ -21,25 +21,34 @@ namespace CineTrack
             _animeService = animeService;
             _utilisateurAnimeService = utilisateurAnimeService;
 
-            // Show SignUpView for navigation test
+            // Préparer les vues
             var signUpView = App.ServiceProvider.GetRequiredService<SignUpView>();
-            var signInView = App.ServiceProvider.GetService<SignInView>();
-            MainFrame.Navigate(signUpView);
+            var signInView = App.ServiceProvider.GetRequiredService<SignInView>();
 
             // Navigation entre SignIn et SignUp
             var nav = (NavigationService)App.ServiceProvider.GetRequiredService<INavigationService>();
             nav.PropertyChanged += (s, e) =>
             {
-                if (nav.CurrentView is SignInViewModel) //logique if pour inverser les pages SignIn et SignUp
-                    MainFrame.Navigate(signInView);
-                else if (nav.CurrentView is SignUpViewModel)
+                if (nav.CurrentView is SignUpViewModel) //logique if pour inverser les pages SignIn et SignUp
                     MainFrame.Navigate(signUpView);
+                else if (nav.CurrentView is SignInViewModel)
+                    MainFrame.Navigate(signInView);
             };
         }
 
         public void NavigateTo(System.Windows.Controls.Page page)
         {
             MainFrame.Navigate(page);
+        }
+
+        //ajout du boutton login
+        private void BtnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            // Cacher la landing page et montrer le frame
+            LandingPage.Visibility = Visibility.Collapsed;
+            MainFrame.Visibility = Visibility.Visible;
+            var signInView = App.ServiceProvider.GetRequiredService<SignInView>();
+            MainFrame.Navigate(signInView);
         }
     }
 }
