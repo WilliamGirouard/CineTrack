@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace CineTrack.Converters
 {
-    /// <summary>String non-vide → Visible, vide/null → Collapsed</summary>
+    ///String non-vide → Visible, vide/null → Collapsed
     public class StringToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,13 +1,21 @@
+using CineTrack.Data.Models;
 using CineTrack.Data.Services.Interfaces;
+using CineTrack.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+
 
 namespace CineTrack.ViewModels.Auth
 {
     public partial class SignUpViewModel : ObservableObject
     {
         private readonly IUtilisateurService _utilisateurService;
+        
+        private readonly INavigationService _navigationService;
 
 
 
@@ -39,12 +47,14 @@ namespace CineTrack.ViewModels.Auth
         private bool _isPasswordVisible = false;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
         private bool _isLoading = false;
 
 
-        public SignUpViewModel(IUtilisateurService utilisateurService)
+        public SignUpViewModel(IUtilisateurService utilisateurService, INavigationService navigationService)
         {
             _utilisateurService = utilisateurService;
+            _navigationService = navigationService;
         }
 
 
@@ -58,39 +68,42 @@ namespace CineTrack.ViewModels.Auth
 
         private bool ValiderChamps(out string erreur)
         {
-            if (Username.Length < 3)
-            {
-                erreur = "Le nom d'utilisateur doit contenir au moins 3 caractères.";
-                return false;
-            }
-            if (FullName.Trim().Length < 2)
-            {
-                erreur = "Le nom complet est requis.";
-                return false;
-            }
-            if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            {
-                erreur = "L'adresse courriel n'est pas valide.";
-                return false;
-            }
-            if (Password.Length < 8)
-            {
-                erreur = "Le mot de passe doit contenir au moins 8 caractères.";
-                return false;
-            }
-            if (!Regex.IsMatch(Password, @"\d"))
-            {
-                erreur = "Le mot de passe doit contenir au moins un chiffre.";
-                return false;
-            }
-            if (!Regex.IsMatch(Password, @"[!@#$%^&*(),.?""{|}|<>]"))
-            {
-                erreur = "Le mot de passe doit contenir au moins un caractère spécial.";
-                return false;
-            }
+            var erreurs = new List<string>();
+
             if (Password != ConfirmPassword)
             {
-                erreur = "Les mots de passe ne correspondent pas.";
+                erreurs.Add("Les mots de passe ne correspondent pas.");
+            }
+
+            var utilisateur = new Utilisateur
+            {
+                Username = Username.Trim(),
+                FullName = FullName.Trim(),
+                Email = Email.Trim(),
+                Password = Password
+
+            };
+
+            var context = new ValidationContext(utilisateur);
+            var results = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(utilisateur, context, results, validateAllProperties: true);
+
+            foreach (var result in results)
+            {
+                var propriete = result.MemberNames.FirstOrDefault();
+                erreurs.Add(propriete switch
+                {
+                    nameof(Utilisateur.Username) => "Le nom d'utilisateur est invalide.",
+                    nameof(Utilisateur.FullName) => "Le nom complet est requis.",
+                    nameof(Utilisateur.Email) => "L'adresse courriel n'est pas valide.",
+                    nameof(Utilisateur.Password) => "Le mot de passe doit contenir au moins 10 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.",
+                    _ => result.ErrorMessage ?? "Champ invalide."
+                });
+            }
+            if (erreurs.Any())
+            {
+                erreur = string.Join(Environment.NewLine, erreurs);
                 return false;
             }
 
@@ -115,11 +128,10 @@ namespace CineTrack.ViewModels.Auth
 
             try
             {
-                await Task.Run(() =>
-                    _utilisateurService.SignUp(Username.Trim(), FullName.Trim(), Email.Trim(), Password)
-                );
+                _utilisateurService.SignUp(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
+
                 // TODO : naviguer vers SignIn après inscription réussie
-                // _navigationService.NavigateTo<SignInViewModel>();
+                _navigationService.NavigateTo<SignInViewModel>();
             }
             catch (Exception ex)
             {
@@ -146,7 +158,7 @@ namespace CineTrack.ViewModels.Auth
         [RelayCommand]
         private void NavigateToSignIn()
         {
-            // TODO : _navigationService.NavigateTo<SignInViewModel>();
+            _navigationService.NavigateTo<SignInViewModel>();
         }
     }
 }
