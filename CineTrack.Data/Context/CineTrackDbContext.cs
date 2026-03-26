@@ -14,6 +14,10 @@ namespace CineTrack.Data.Context
         {}
 
         public DbSet<Utilisateur> Utilisateurs { get; set; }
+        public DbSet<Anime> Animes { get; set; }
+
+        public DbSet<UtilisateurAnime> UtilisateurAnimes { get; set; }
+        public DbSet<Favoris> Favoris { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +30,18 @@ namespace CineTrack.Data.Context
                 .IsUnique();
                 entity.HasIndex(u => u.Username).IsUnique();
             });
+
+            modelBuilder.Entity<Anime>(entity =>
+            {
+                entity.HasIndex(a => a.MalId)
+                .IsUnique();
+            });
+
+            modelBuilder.Entity<UtilisateurAnime>(entity =>
+            {
+                entity.HasKey(ua => new { ua.UtilisateurId, ua.AnimeId });
+            });
+
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
