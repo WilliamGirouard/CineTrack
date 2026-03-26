@@ -4,10 +4,6 @@ using CineTrack.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-
 
 namespace CineTrack.ViewModels.Auth
 {

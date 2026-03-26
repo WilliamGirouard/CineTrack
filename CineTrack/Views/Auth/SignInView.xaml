@@ -1,4 +1,4 @@
-﻿<Page x:Class="CineTrack.Views.Auth.SignInView"
+﻿<UserControl x:Class="CineTrack.Views.Auth.SignInView"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,10 +8,9 @@
          mc:Ignorable="d"
          d:DesignHeight="700" d:DesignWidth="500"
          d:DataContext="{d:DesignInstance Type=vm:SignInViewModel}"
-         Title="SignInView"
          Background="#1a1a2e">
 
-    <Page.Resources>
+    <UserControl.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
         <conv:BoolToVisibilityInverseConverter x:Key="BoolToVisInverseConverter"/>
         <conv:StringToVisibilityConverter x:Key="StringToVisConverter"/>
@@ -116,7 +115,7 @@
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="2,0,0,5"/>
         </Style>
-    </Page.Resources>
+    </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
@@ -187,7 +186,7 @@
                             Margin="0,0,0,16"
                             Visibility="{Binding ErrorMsg,
                                 Converter={StaticResource StringToVisConverter}}">
-                        <TextBlock Text="{Binding ErrorMessage}"
+                        <TextBlock Text="{Binding ErrorMsg}"
                                    Foreground="#e94560"
                                    FontSize="13"
                                    TextWrapping="Wrap"/>
@@ -229,4 +228,4 @@
             </Border>
         </Grid>
     </ScrollViewer>
-</Page>
+</UserControl>

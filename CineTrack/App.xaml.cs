@@ -5,6 +5,7 @@ using CineTrack.Data.Services;
 using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services;
 using CineTrack.Services.Interfaces;
+using CineTrack.ViewModels;
 using CineTrack.ViewModels.Auth;
 using CineTrack.Views.Auth;
 using JikanDotNet;
@@ -42,16 +43,23 @@ namespace CineTrack
             // ── Repositories (Scoped) ──────────────────────────────────────────
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
             services.AddScoped<IUtilisateurService, UtilisateurService>();
+
+            services.AddScoped<IUtilisateurAnimeRepository, UtilisateurAnimeRepository>();
             services.AddScoped<IUtilisateurAnimeService, UtilisateurAnimeService>();
+
             services.AddScoped<IAnimeService, AnimeService>();
             services.AddScoped<IAnimeApiService, AnimeApiService>();
+            services.AddScoped<IAnimeRepository, AnimeRepository>();
+
+            services.AddScoped<IFavorisRepository, FavorisRepository>();
 
             // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();
 
             // ── ViewModels (Transient) ─────────────────────────────────────────
             services.AddTransient<SignInViewModel>();
-            services.AddTransient<SignUpViewModel>();   // injecte IUtilisateurService
+            services.AddTransient<SignUpViewModel>();
+            services.AddTransient<MainViewModel>();
 
             // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();
@@ -67,8 +75,12 @@ namespace CineTrack
                 db.Database.Migrate();
             }
 
+            var navigationService = ServiceProvider.GetRequiredService<INavigationService>();
+            navigationService.NavigateTo<SignInViewModel>();
+
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
+            
         }
 
         protected override void OnExit(ExitEventArgs e)

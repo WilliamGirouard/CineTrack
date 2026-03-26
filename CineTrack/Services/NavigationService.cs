@@ -1,3 +1,4 @@
+using CineTrack.ViewModels.Auth;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 
