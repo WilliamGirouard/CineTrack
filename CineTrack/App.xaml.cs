@@ -3,8 +3,11 @@ using CineTrack.Data.Repositories;
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services;
 using CineTrack.Data.Services.Interfaces;
+using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.ViewModels.Auth;
 using CineTrack.Views.Auth;
+using JikanDotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +23,6 @@ namespace CineTrack
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -31,17 +33,25 @@ namespace CineTrack
             // ── Base de données ────────────────────────────────────────────────
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var provider = configuration["DatabaseProvider"];
-
             if (provider == "SQLite")
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlite(connectionString));
             else if (provider == "SqlServer")
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
 
+
             // ── Repositories (Scoped) ──────────────────────────────────────────
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
+            services.AddScoped<IUtilisateurAnimeRepository, UtilisateurAnimeRepository>();
+            services.AddScoped<IAnimeRepository, AnimeRepository>();
 
             // ── Services métier (Scoped) ───────────────────────────────────────
             services.AddScoped<IUtilisateurService, UtilisateurService>();
+            services.AddScoped<IUtilisateurAnimeService, UtilisateurAnimeService>();
+            services.AddScoped<IAnimeService, AnimeService>();
+            services.AddScoped<IAnimeApiService, AnimeApiService>();
+
+            // ── Navigation (Singleton) ─────────────────────────────────────────
+            services.AddSingleton<INavigationService, NavigationService>();
 
             // ── ViewModels (Transient) ─────────────────────────────────────────
             services.AddTransient<SignInViewModel>();
