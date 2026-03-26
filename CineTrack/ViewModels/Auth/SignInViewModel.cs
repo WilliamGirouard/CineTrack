@@ -1,19 +1,23 @@
 ﻿using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services.Interfaces;
+using CineTrack.Services;
 using CineTrack.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Navigation;
 namespace CineTrack.ViewModels.Auth
 {
     public partial class SignInViewModel : ObservableObject
     {
         private readonly IUtilisateurService _utilisateurService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SignInCommand))]
@@ -33,8 +37,9 @@ namespace CineTrack.ViewModels.Auth
         [NotifyCanExecuteChangedFor(nameof(SignInCommand))]
         private bool _isLoading = false;
 
-        public SignInViewModel(IUtilisateurService utilisateurService) {
+        public SignInViewModel(IUtilisateurService utilisateurService, INavigationService navigationService) {
             _utilisateurService = utilisateurService;
+            _navigationService = navigationService;
         }
 
         private bool CanSignIn() =>
@@ -78,7 +83,7 @@ namespace CineTrack.ViewModels.Auth
         [RelayCommand]
         private void NavigateToSignUp()
         {
-            // TODO : _navigationService.NavigateTo<SignInViewModel>();
+             _navigationService.NavigateTo<SignUpViewModel>(); // corriger was singIn instead of singUp
         }
     }
 
