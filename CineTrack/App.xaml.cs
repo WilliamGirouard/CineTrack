@@ -5,6 +5,7 @@ using CineTrack.Data.Services;
 using CineTrack.Data.Services.Interfaces;
 using CineTrack.ViewModels.Auth;
 using CineTrack.Views.Auth;
+using CineTrack.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,7 @@ namespace CineTrack
     public partial class App : Application
     {
         //faut add un petit truc pour la navigation entre les pages
+        
         public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -41,8 +43,8 @@ namespace CineTrack
 
       
             services.AddScoped<IUtilisateurService, UtilisateurService>();
+            services.AddSingleton<INavigationService, NavigationService>();
 
-      
             services.AddTransient<SignInViewModel>();
             services.AddTransient<SignUpViewModel>();   
 
