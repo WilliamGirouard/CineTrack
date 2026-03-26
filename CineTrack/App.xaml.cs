@@ -88,6 +88,6 @@ namespace CineTrack
             if (ServiceProvider is IDisposable disposable)
                 disposable.Dispose();
             base.OnExit(e);
-        }
+        }/
     }
 }
