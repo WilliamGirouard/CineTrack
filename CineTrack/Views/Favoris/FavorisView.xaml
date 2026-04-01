@@ -15,7 +15,19 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Mes Favoris"
                    FontSize="22" FontWeight="Bold"
-                   Foreground="White" Margin="0,0,0,20"/>
+                   Foreground="White" Margin="0,0,0,0"/>
+        <!-- Bouton favoris -->
+        <Button Content="Page d'accueil"
+                        Width="110"
+                        Height="34"
+                        HorizontalAlignment="Right"
+                        Grid.ColumnSpan="2"
+                        Background="#e94560"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Command="{Binding RetourCommand}"/>
+        
         <TextBlock Grid.Row="1"
                    Text="Aucun favori pour l'instant."
                    Foreground="White" FontSize="14"

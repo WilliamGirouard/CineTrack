@@ -1,6 +1,7 @@
 ﻿using CineTrack.Services;
 using CineTrack.Session;
 using CineTrack.ViewModels.Auth;
+using CineTrack.ViewModels.Favoris;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -25,6 +26,11 @@ namespace CineTrack.ViewModels
         {
             SessionManager.Instance.CloseSession();
             _navigationService.NavigateTo<SignInViewModel>();
+        }
+        [RelayCommand]
+        private void Favoris()
+        {
+            _navigationService.NavigateTo<FavorisViewModel>(); 
         }
     }
 }
