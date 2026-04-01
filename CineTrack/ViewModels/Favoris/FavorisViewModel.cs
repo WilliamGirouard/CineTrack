@@ -1,4 +1,5 @@
 ﻿using CineTrack.Data.Repositories.Interfaces;
+using CineTrack.Services;
 using CineTrack.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,6 +11,7 @@ namespace CineTrack.ViewModels.Favoris
     public partial class FavorisViewModel : ObservableObject
     {
         private readonly IFavorisRepository _favorisRepository;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private ObservableCollection<ModelFavoris> _favorisList = new();
@@ -17,8 +19,9 @@ namespace CineTrack.ViewModels.Favoris
         [ObservableProperty]
         private bool _isLoading = false;
 
-        public FavorisViewModel(IFavorisRepository favorisRepository)
+        public FavorisViewModel(IFavorisRepository favorisRepository, INavigationService navigationService)
         {
+            _navigationService = navigationService;
             _favorisRepository = favorisRepository;
             LoadFavoris();
         }
@@ -38,6 +41,11 @@ namespace CineTrack.ViewModels.Favoris
                 var favoris = _favorisRepository.GetFavorisByUserId(userId);
                 FavorisList = new ObservableCollection<ModelFavoris>(favoris);
             }
+            //Bro avait pas mis le catch sa faisait crash
+            catch (Exception e)
+            {
+                Console.WriteLine($"Erreur : {e.Message}");
+            }
             finally
             {
                 IsLoading = false;
@@ -55,6 +63,12 @@ namespace CineTrack.ViewModels.Favoris
         private void Refresh()
         {
             LoadFavoris();
+        }
+
+        [RelayCommand]
+        private void Retour()
+        {
+            _navigationService.NavigateTo<MainViewModel>();
         }
     }
 }

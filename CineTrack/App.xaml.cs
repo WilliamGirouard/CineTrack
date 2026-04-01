@@ -7,7 +7,9 @@ using CineTrack.Services;
 using CineTrack.Services.Interfaces;
 using CineTrack.ViewModels;
 using CineTrack.ViewModels.Auth;
+using CineTrack.ViewModels.Favoris;
 using CineTrack.Views.Auth;
+using CineTrack.Views.Favoris;
 using JikanDotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -60,11 +62,13 @@ namespace CineTrack
             services.AddTransient<SignInViewModel>();
             services.AddTransient<SignUpViewModel>();
             services.AddTransient<MainViewModel>();
+            services.AddTransient<FavorisViewModel>();
 
             // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();
             services.AddTransient<SignUpView>();
             services.AddTransient<SignInView>();
+            services.AddTransient<FavorisView>();
 
             ServiceProvider = services.BuildServiceProvider();
 

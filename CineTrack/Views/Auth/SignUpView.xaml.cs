@@ -13,7 +13,6 @@ namespace CineTrack.Views.Auth
             InitializeComponent();
             // Assigner le ViewModel depuis le conteneur DI
             DataContext = App.ServiceProvider.GetRequiredService<SignUpViewModel>();
-          //  DataContext = App.ServiceProvider.GetRequiredService<INavigationService>();// navigation service should not here ?
 
         }
 
