@@ -8,34 +8,20 @@
       d:DesignHeight="700" d:DesignWidth="500"
       d:DataContext="{d:DesignInstance Type=vm:FavorisViewModel}"
       Background="#1a1a2e">
-
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
         <TextBlock Grid.Row="0" Text="Mes Favoris"
                    FontSize="22" FontWeight="Bold"
                    Foreground="White" Margin="0,0,0,20"/>
-
         <TextBlock Grid.Row="1"
                    Text="Aucun favori pour l'instant."
-                   Foreground="#888" FontSize="14"
+                   Foreground="White" FontSize="14"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding FavorisList.Count}" Value="0">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
-
+                   VerticalAlignment="Center"
+                   Visibility="Visible"/>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding FavorisList}">
                 <ItemsControl.ItemsPanel>
@@ -45,7 +31,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="#16213e" CornerRadius="8"
+                        <Border Background="DarkBlue"
                                 Padding="10" Margin="8" Width="150">
                             <StackPanel>
                                 <Image Source="{Binding ImageUrl}"
