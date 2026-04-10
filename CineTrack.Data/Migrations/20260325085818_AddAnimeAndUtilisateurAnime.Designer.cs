@@ -3,6 +3,7 @@ using System;
 using CineTrack.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineTrack.Data.Migrations
 {
     [DbContext(typeof(CineTrackDbContext))]
-    partial class CineTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260325085818_AddAnimeAndUtilisateurAnime")]
+    partial class AddAnimeAndUtilisateurAnime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
@@ -26,7 +29,7 @@ namespace CineTrack.Data.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("MalId")
+                    b.Property<int>("MalId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Season")
@@ -37,6 +40,7 @@ namespace CineTrack.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
@@ -53,31 +57,6 @@ namespace CineTrack.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Animes");
-                });
-
-            modelBuilder.Entity("CineTrack.Data.Models.Favoris", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AnimeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TitreAnime")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UtilisateurId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Favoris");
                 });
 
             modelBuilder.Entity("CineTrack.Data.Models.Utilisateur", b =>
