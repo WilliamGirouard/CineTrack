@@ -15,8 +15,7 @@ namespace CineTrack.ViewModels.Auth
     {
         private readonly IUtilisateurService _utilisateurService;
         
-        private readonly INavigationService _navigationService;
-
+  
 
 
         [ObservableProperty]
@@ -51,10 +50,9 @@ namespace CineTrack.ViewModels.Auth
         private bool _isLoading = false;
 
 
-        public SignUpViewModel(IUtilisateurService utilisateurService, INavigationService navigationService)
+        public SignUpViewModel(IUtilisateurService utilisateurService)
         {
             _utilisateurService = utilisateurService;
-            _navigationService = navigationService;
         }
 
 
@@ -131,7 +129,8 @@ namespace CineTrack.ViewModels.Auth
                 _utilisateurService.SignUp(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
 
                 // TODO : naviguer vers SignIn après inscription réussie
-                _navigationService.NavigateTo<SignInViewModel>();
+               
+                
             }
             catch (Exception ex)
             {
@@ -158,7 +157,7 @@ namespace CineTrack.ViewModels.Auth
         [RelayCommand]
         private void NavigateToSignIn()
         {
-            _navigationService.NavigateTo<SignInViewModel>();
+            // TODO 
         }
     }
 }
