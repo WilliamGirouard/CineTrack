@@ -1,7 +1,7 @@
 {
-  "profiles": {
-    "CineTrack": {
-      "commandName": "Project"
+    "profiles": {
+        "CineTrack": {
+            "commandName": "Project"
+        }
     }
-  }
 }

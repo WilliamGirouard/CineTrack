@@ -29,10 +29,22 @@ namespace CineTrack.ViewModels.Auth
         [NotifyCanExecuteChangedFor(nameof(SignInCommand))]
         private bool _isLoading = false;
 
+        [ObservableProperty]
+        private bool _rememberMe = false;
+
         public SignInViewModel(IUtilisateurService utilisateurService, INavigationService navigationService)
         {
             _utilisateurService = utilisateurService;
             _navigationService = navigationService;
+
+            // Restaurer la session si Remember Me est coché
+            if (Properties.Settings.Default.RememberMe)
+            {
+                Username = Properties.Settings.Default.SavedUsername;
+                Password = Properties.Settings.Default.SavedPassword;
+                RememberMe = true;
+            }
+        
         }
 
         private bool CanSignIn() =>
@@ -53,6 +65,21 @@ namespace CineTrack.ViewModels.Auth
                      _utilisateurService.SignIn(Username.Trim(), Password)
                  );
                 SessionManager.Instance.OpenSession(user);
+
+
+                //en soit sa vas nous permettre de garder la session ouverte dans notre porpre disque
+                if (RememberMe)
+                {
+                    Properties.Settings.Default.RememberMe = true;
+                    Properties.Settings.Default.SavedUsername = Username;
+                    Properties.Settings.Default.SavedPassword = Password;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                {
+                    Properties.Settings.Default.Reset();
+                }
+
                 _navigationService.NavigateTo<MainViewModel>();
 
             }
