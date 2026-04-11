@@ -29,5 +29,10 @@ namespace CineTrack.Views.Auth
                 viewModel.Password = ((PasswordBox)sender).Password;
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -23,24 +23,29 @@
                            VerticalAlignment="Center"/>
 
                 <!-- Barre de recherche -->
-                <TextBox Width="250"
-                         Height="32"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"
-                         Background="#0f3460"
-                         Foreground="#888"
-                         CaretBrush="White"
-                         BorderBrush="#0f3460"
-                         Padding="10,0"
-                         Text="(FAKE BAR) Rechercher un anime..."/>
-                
+                <Border Width="250"
+                        Height="32"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Background="#0f3460"
+                        CornerRadius="8" 
+                        BorderBrush="#1a3a6e"
+                        BorderThickness="1">
+                    <TextBox Background="Transparent"
+                             Foreground="#888"
+                             CaretBrush="White"
+                             BorderThickness="0"
+                             Padding="10,0"
+                             VerticalContentAlignment="Center"
+                             Text="Rechercher un anime..."/>
+                </Border>
+
                 <!-- Bouton favoris -->
                 <Button Content="Mes favoris"
                         Width="110"
                         Height="34"
                         HorizontalAlignment="Right"
                         Margin="0,0,125,0"
-                        Grid.ColumnSpan="2"
                         Background="#e94560"
                         Foreground="White"
                         BorderThickness="0"
@@ -48,7 +53,7 @@
                         Command="{Binding FavorisCommand}"/>
 
                 <!-- Bouton disconnect -->
-                <Button Content="Se deconnecter"
+                <Button Content="Se déconnecter"
                         Width="110"
                         Height="34"
                         HorizontalAlignment="Right"
@@ -60,13 +65,12 @@
             </Grid>
         </Border>
 
-        <!-- MAIN CONTENT - landing page -->
+        <!-- MAIN CONTENT -->
         <ScrollViewer x:Name="LandingPage"
                       Grid.Row="1"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="40,30">
 
-                <!-- Titre principal -->
                 <TextBlock Text="Découvrez les meilleurs animes"
                            Foreground="White"
                            FontSize="28"
@@ -90,8 +94,14 @@
                                 CornerRadius="8"/>
                         <TextBlock Text="Anime 1"
                                    Foreground="White"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
                                    HorizontalAlignment="Center"
-                                   Margin="0,8,0,0"/>
+                                   Margin="0,8,0,2"/>
+                        <TextBlock Text="Description courte"
+                                   Foreground="#888"
+                                   FontSize="12"
+                                   HorizontalAlignment="Center"/>
                     </StackPanel>
 
                     <!-- Anime 2 -->
@@ -101,8 +111,14 @@
                                 CornerRadius="8"/>
                         <TextBlock Text="Anime 2"
                                    Foreground="White"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
                                    HorizontalAlignment="Center"
-                                   Margin="0,8,0,0"/>
+                                   Margin="0,8,0,2"/>
+                        <TextBlock Text="Description courte"
+                                   Foreground="#888"
+                                   FontSize="12"
+                                   HorizontalAlignment="Center"/>
                     </StackPanel>
 
                     <!-- Anime 3 -->
@@ -112,12 +128,17 @@
                                 CornerRadius="8"/>
                         <TextBlock Text="Anime 3"
                                    Foreground="White"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
                                    HorizontalAlignment="Center"
-                                   Margin="0,8,0,0"/>
+                                   Margin="0,8,0,2"/>
+                        <TextBlock Text="Description courte"
+                                   Foreground="#888"
+                                   FontSize="12"
+                                   HorizontalAlignment="Center"/>
                     </StackPanel>
 
                 </StackPanel>
-
             </StackPanel>
         </ScrollViewer>
     </Grid>
