@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
+using CineTrack.Services.Jikan;
 
 namespace CineTrack
 {
@@ -50,13 +51,13 @@ namespace CineTrack
             services.AddScoped<IUtilisateurAnimeService, UtilisateurAnimeService>();
 
             services.AddScoped<IAnimeService, AnimeService>();
-            services.AddScoped<IAnimeApiService, AnimeApiService>();
             services.AddScoped<IAnimeRepository, AnimeRepository>();
 
             services.AddScoped<IFavorisRepository, FavorisRepository>();
 
             // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IJikanService, JikanService>();
 
             // ── ViewModels (Transient) ─────────────────────────────────────────
             services.AddTransient<SignInViewModel>();
