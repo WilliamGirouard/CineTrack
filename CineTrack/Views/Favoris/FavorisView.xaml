@@ -36,7 +36,7 @@
                         Width="110"
                         Height="34"
                     
-                        HorizontalAlignment="Left"
+                        HorizontalAlignment="Right"
                         Background="#e94560"
                         Foreground="White"
                         BorderThickness="0"

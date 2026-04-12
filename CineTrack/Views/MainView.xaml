@@ -26,24 +26,6 @@
                            VerticalAlignment="Center"/>
 
                 <!-- Barre de recherche -->
-<<<<<<< HEAD
-                <Border Width="250"
-                        Height="32"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Background="#0f3460"
-                        CornerRadius="8" 
-                        BorderBrush="#1a3a6e"
-                        BorderThickness="1">
-                    <TextBox Background="Transparent"
-                             Foreground="#888"
-                             CaretBrush="White"
-                             BorderThickness="0"
-                             Padding="10,0"
-                             VerticalContentAlignment="Center"
-                             Text="Rechercher un anime..."/>
-                </Border>
-=======
                 <TextBox Width="250"
                          Height="32"
                          VerticalAlignment="Center"
@@ -54,7 +36,6 @@
                          BorderBrush="#0f3460"
                          Padding="10,0"
                          Text="(FAKE BAR) Rechercher un anime..."/>
->>>>>>> 03e09d13d612898c4b856948578a27aac2681c62
 
                 <!-- Bouton favoris -->
                 <Button Content="Mes favoris"
@@ -69,7 +50,7 @@
                         Command="{Binding FavorisCommand}"/>
 
                 <!-- Bouton disconnect -->
-                <Button Content="Se déconnecter"
+                <Button Content="Se deconnecter"
                         Width="110"
                         Height="34"
                         HorizontalAlignment="Right"
@@ -81,13 +62,6 @@
             </Grid>
         </Border>
 
-<<<<<<< HEAD
-        <!-- MAIN CONTENT -->
-        <ScrollViewer x:Name="LandingPage"
-                      Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="40,30">
-=======
         <!-- LOADING -->
         <TextBlock Grid.Row="1"
                    Text="Chargement..."
@@ -102,8 +76,8 @@
                       VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisInverseConverter}}">
             <StackPanel Margin="0,30">
->>>>>>> 03e09d13d612898c4b856948578a27aac2681c62
 
+                <!-- Titre principal -->
                 <TextBlock Text="Découvrez les meilleurs animes"
                            Foreground="White"
                            FontSize="28"
@@ -122,60 +96,6 @@
                         <DataTemplate>
                             <StackPanel Margin="0,0,0,30">
 
-<<<<<<< HEAD
-                    <!-- Anime 1 -->
-                    <StackPanel Margin="10">
-                        <Border Width="180" Height="260"
-                                Background="#e94560"
-                                CornerRadius="8"/>
-                        <TextBlock Text="Anime 1"
-                                   Foreground="White"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,8,0,2"/>
-                        <TextBlock Text="Description courte"
-                                   Foreground="#888"
-                                   FontSize="12"
-                                   HorizontalAlignment="Center"/>
-                    </StackPanel>
-
-                    <!-- Anime 2 -->
-                    <StackPanel Margin="10">
-                        <Border Width="180" Height="260"
-                                Background="#0f3460"
-                                CornerRadius="8"/>
-                        <TextBlock Text="Anime 2"
-                                   Foreground="White"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,8,0,2"/>
-                        <TextBlock Text="Description courte"
-                                   Foreground="#888"
-                                   FontSize="12"
-                                   HorizontalAlignment="Center"/>
-                    </StackPanel>
-
-                    <!-- Anime 3 -->
-                    <StackPanel Margin="10">
-                        <Border Width="180" Height="260"
-                                Background="#16213e"
-                                CornerRadius="8"/>
-                        <TextBlock Text="Anime 3"
-                                   Foreground="White"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,8,0,2"/>
-                        <TextBlock Text="Description courte"
-                                   Foreground="#888"
-                                   FontSize="12"
-                                   HorizontalAlignment="Center"/>
-                    </StackPanel>
-
-                </StackPanel>
-=======
                                 <!-- Carousel title -->
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,12">
@@ -288,7 +208,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
->>>>>>> 03e09d13d612898c4b856948578a27aac2681c62
             </StackPanel>
         </ScrollViewer>
     </Grid>
