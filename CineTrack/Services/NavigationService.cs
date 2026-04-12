@@ -1,6 +1,8 @@
+using CineTrack.Services.Interfaces;
 using CineTrack.ViewModels.Auth;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection.Metadata;
 
 namespace CineTrack.Services
 {
@@ -27,6 +29,16 @@ namespace CineTrack.Services
         public void NavigateTo<T>() where T : ObservableObject
         {
             CurrentView = _serviceProvider.GetRequiredService<T>();
+        }
+
+        public void NavigateTo<T>(object param) where T : ObservableObject
+        {
+            var viewModel = _serviceProvider.GetRequiredService<T>();
+            if (viewModel is ITransferParameter receiver)
+            {
+                receiver.TransferParameter(param);
+            }
+            CurrentView = viewModel;
         }
     }
 }

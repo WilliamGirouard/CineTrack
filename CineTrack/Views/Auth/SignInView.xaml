@@ -186,10 +186,11 @@
                         <TextBlock Text="Mot de passe oublié ?"
                                    Foreground="#e94560" FontSize="13"
                                    Cursor="Hand"
-                                   HorizontalAlignment="Right">
+                                   HorizontalAlignment="Right"
+                                   TextDecorations="Underline">
                             <TextBlock.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
-                                              Command="{Binding ForgotPasswordCommand}"/>
+                                              Command="{Binding NavigateToForgottenPasswordCommand}"/>
                             </TextBlock.InputBindings>
                         </TextBlock>
                     </Grid>

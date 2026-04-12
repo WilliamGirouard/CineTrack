@@ -6,7 +6,7 @@ namespace CineTrack.Data.Services.Interfaces
 {
     public interface IUtilisateurAnimeService
     {
-        List<UtilisateurAnime> GetByUtilisateur(int utilisateurId);
+        Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId);
 
         Task AddEntryAsync(int utilisateurId, int animeId, int? note = null, string? commentaire = null);
 
@@ -14,6 +14,6 @@ namespace CineTrack.Data.Services.Interfaces
 
         Task UpdateCommentaireAsync(int utilisateurId, int animeId, string commentaire);
 
-        void DeleteEntry(int utilisateurId, int animeId);
+        Task DeleteEntryAsync(int utilisateurId, int animeId);
     }
 }

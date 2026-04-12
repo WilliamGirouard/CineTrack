@@ -1,6 +1,7 @@
 ﻿using CineTrack.Data.Context;
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,41 +17,43 @@ namespace CineTrack.Data.Repositories
         {
             _context = context;
         }
-        public void AddAnime(Anime anime)
+        public async Task AddAnimeAsync(Anime anime)
         {
             _context.Animes.Add(anime);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteAnime(Anime anime)
+        public async Task DeleteAnimeAsync(Anime anime)
         {
-            if (GetAnimeByMalId((int)anime.MalId) != null)
+            if (anime.MalId == null) return;
+            var exists = await GetAnimeByMalIdAsync(anime.MalId.Value);
+            if (exists != null)
             {
                 Console.WriteLine(@"Anime Deleted: " + anime.Title);
                 _context.Animes.Remove(anime);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public Anime? GetAnimeByMalId(int id)
-        {
-            return _context.Animes.FirstOrDefault(a => a.MalId == id);
+        public async Task<Anime?> GetAnimeByMalIdAsync(int id)
+        { 
+            return await _context.Animes.FirstOrDefaultAsync(a => a.MalId == id);
         }
 
-        public Anime? GetAnimeById(int id)
+        public async Task<Anime?> GetAnimeByIdAsync(int id)
         {
-            return _context.Animes.FirstOrDefault(a => a.Id == id);
+            return await _context.Animes.FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public List<Anime> GetAnimes()
+        public async Task<List<Anime>> GetAnimesAsync()
         {
-            return _context.Animes.ToList();
+            return await _context.Animes.ToListAsync();
         }
 
-        public void UpdateAnime(Anime anime)
+        public async Task UpdateAnimeAsync(Anime anime)
         {
             _context.Animes.Update(anime);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             Console.WriteLine(@"User Updated: " + anime.Title);
         }
     }

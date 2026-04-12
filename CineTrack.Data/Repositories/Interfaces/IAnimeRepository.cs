@@ -9,11 +9,11 @@ namespace CineTrack.Data.Repositories.Interfaces
 {
     public interface IAnimeRepository
     {
-        Anime? GetAnimeByMalId(int id);
-        Anime? GetAnimeById(int id);
-        List<Anime> GetAnimes();
-        void AddAnime(Anime anime);
-        void UpdateAnime(Anime anime);
-        void DeleteAnime(Anime anime);
+        Task<Anime?> GetAnimeByMalIdAsync(int id);
+        Task<Anime?> GetAnimeByIdAsync(int id);
+        Task<List<Anime>> GetAnimesAsync();
+        Task AddAnimeAsync(Anime anime);
+        Task UpdateAnimeAsync(Anime anime);
+        Task DeleteAnimeAsync(Anime anime);
     }
 }

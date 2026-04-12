@@ -8,31 +8,29 @@ namespace CineTrack.Data.Services
     public class UtilisateurService : IUtilisateurService
     {
         private readonly IUtilisateurRepository _utilisateurRepository;
+        private readonly IEmailService _emailService;
+        private readonly Dictionary<string, (string Code, DateTime Expiry)> _passwordResetCodes;
 
-        public UtilisateurService(IUtilisateurRepository utilisateurRepository)
+        public UtilisateurService(IUtilisateurRepository utilisateurRepository, IEmailService emailService, PasswordResetStore passwordResetStore)
         {
             _utilisateurRepository = utilisateurRepository;
+            _emailService = emailService;
+            _passwordResetCodes = passwordResetStore.Codes;
         }
 
-        public bool IsEmailUsed(string email)
+        public async Task<bool> IsEmailUsedAsync(string email)
         {
-            return _utilisateurRepository.GetByEmail(email) != null;
+            return await _utilisateurRepository.GetByEmailAsync(email) != null;
         }
 
-        public bool IsUsernameUsed(string username)
+        public async Task<bool> IsUsernameUsedAsync(string username)
         {
-            return _utilisateurRepository.GetByUsername(username) != null;
+            return await _utilisateurRepository.GetByUsernameAsync(username) != null;
         }
 
-        public Utilisateur SignIn(string username, string password)
+        public async Task<Utilisateur> SignInAsync(string username, string password)
         {
-            Utilisateur userVerif = _utilisateurRepository.GetByUsername(username);
-            if (userVerif == null)
-            {
-                
-                throw new Exception("Invalid credentials");            
-            }
-
+            Utilisateur userVerif = await _utilisateurRepository.GetByUsernameAsync(username) ?? throw new Exception("Invalid credentials");
             if (!HashService.CompareHashToPassword(password, userVerif.Password)) 
             {
                 throw new Exception("Invalid credentials");
@@ -40,13 +38,13 @@ namespace CineTrack.Data.Services
             return userVerif;
         }
 
-        public void SignUp(string username, string fullName, string email, string password)
+        public async Task SignUpAsync(string username, string fullName, string email, string password)
         {
-            if (IsEmailUsed(email))
+            if (await IsEmailUsedAsync(email))
             {
                 throw new Exception("Email already used");
             }
-            if (IsUsernameUsed(username))
+            if (await IsUsernameUsedAsync(username))
             {
                 throw new Exception("Username already used");
             }
@@ -58,8 +56,37 @@ namespace CineTrack.Data.Services
                 Password = hashedPassword,
                 Email = email
             };
-            _utilisateurRepository.AddUser(user);
+            await _utilisateurRepository.AddUserAsync(user);
         }
-        //Fonction de logout
+
+        public async Task ResetPasswordAsync(string email, string newPassword)
+        {
+            var user = await _utilisateurRepository.GetByEmailAsync(email) ?? throw new Exception("User not found");
+            user.Password = HashService.PasswordHasher(newPassword);
+            await _utilisateurRepository.UpdateUserAsync(user);
+            _passwordResetCodes.Remove(email);
+        }
+
+        public async Task<string> ForgottenPasswordAsync(string username)
+        {
+            var user = await _utilisateurRepository.GetByUsernameAsync(username) ?? throw new Exception("User not found");
+            string code = new Random().Next(100000, 999999).ToString();
+            _passwordResetCodes[user.Email] = (code, DateTime.Now.AddMinutes(5));
+
+            await _emailService.SendPasswordResetCodeAsync(user.Email, code);
+            return user.Email;
+        }
+
+        public Task<bool> IsResetCodeValidAsync(string email, string code)
+        {
+            if (_passwordResetCodes.TryGetValue(email, out var result))
+            {
+                if (result.Expiry > DateTime.Now && result.Code == code)
+                {
+                    return Task.FromResult(true);
+                }
+            }
+            return Task.FromResult(false);
+        }
     }
 }

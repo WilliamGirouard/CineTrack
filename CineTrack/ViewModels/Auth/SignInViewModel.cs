@@ -1,6 +1,7 @@
 ﻿using CineTrack.Data.Services.Interfaces;
-using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.Session;
+using CineTrack.ViewModels.Auth.PasswordReset;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -44,7 +45,7 @@ namespace CineTrack.ViewModels.Auth
                 Password = Properties.Settings.Default.SavedPassword;
                 RememberMe = true;
             }
-        
+
         }
 
         private bool CanSignIn() =>
@@ -61,9 +62,7 @@ namespace CineTrack.ViewModels.Auth
 
             try
             {
-                var user = await Task.Run(() =>
-                     _utilisateurService.SignIn(Username.Trim(), Password)
-                 );
+                var user = await _utilisateurService.SignInAsync(Username.Trim(), Password);
                 SessionManager.Instance.OpenSession(user);
 
 
@@ -106,7 +105,13 @@ namespace CineTrack.ViewModels.Auth
         [RelayCommand]
         private void NavigateToSignUp()
         {
-            _navigationService.NavigateTo<SignUpViewModel>(); // corriger was singIn instead of singUp
+            _navigationService.NavigateTo<SignUpViewModel>();
+        }
+
+        [RelayCommand]
+        private void NavigateToForgottenPassword()
+        {
+            _navigationService.NavigateTo<ForgottenPasswordViewModel>();
         }
     }
 }

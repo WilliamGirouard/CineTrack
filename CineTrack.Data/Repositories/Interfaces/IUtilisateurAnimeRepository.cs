@@ -9,10 +9,10 @@ namespace CineTrack.Data.Repositories.Interfaces
 {
     public interface IUtilisateurAnimeRepository
     {
-        UtilisateurAnime? Get(int utilisateurId, int animeId);
-        List<UtilisateurAnime> GetByUtilisateur(int utilisateurId);
-        void Add(UtilisateurAnime entry);
-        void Update(UtilisateurAnime entry);
-        void Delete(UtilisateurAnime entry);
+        Task<UtilisateurAnime?> GetAsync(int utilisateurId, int animeId);
+        Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId);
+        Task AddAsync(UtilisateurAnime entry);
+        Task UpdateAsync(UtilisateurAnime entry);
+        Task DeleteAsync(UtilisateurAnime entry);
     }
 }

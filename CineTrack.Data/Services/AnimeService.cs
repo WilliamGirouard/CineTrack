@@ -25,7 +25,7 @@ namespace CineTrack.Data.Services
 
         public async Task AddAnimeFromJikanAsync(int malId)
         {
-            if (_animeRepository.GetAnimeByMalId(malId) != null)
+            if (await _animeRepository.GetAnimeByMalIdAsync(malId) != null)
                 throw new Exception("Anime already exists");
 
             var apiAnime = await _apiService.GetAnimeByIdAsync(malId);
@@ -41,22 +41,22 @@ namespace CineTrack.Data.Services
                 Year = apiAnime.Year
             };
 
-            _animeRepository.AddAnime(anime);
+            await _animeRepository.AddAnimeAsync(anime);
         }
 
-        public void DeleteAnime(Models.Anime anime)
+        public async Task DeleteAnimeAsync(Models.Anime anime)
         {
-            _animeRepository.DeleteAnime(anime);
+            await _animeRepository.DeleteAnimeAsync(anime);
         }
 
-        public Models.Anime? GetAnimeByMalId(int malId)
+        public async Task<Models.Anime?> GetAnimeByMalIdAsync(int malId)
         {
-            return _animeRepository.GetAnimeByMalId(malId);
+            return await _animeRepository.GetAnimeByMalIdAsync(malId);
         }
 
-        public List<Models.Anime> GetAnimes()
+        public async Task<List<Models.Anime>> GetAnimesAsync()
         {
-            return _animeRepository.GetAnimes();
+            return await _animeRepository.GetAnimesAsync();
         }
     }
 }

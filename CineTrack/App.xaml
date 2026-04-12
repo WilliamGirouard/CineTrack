@@ -7,7 +7,9 @@
              xmlns:vm="clr-namespace:CineTrack.ViewModels"
              xmlns:favorisV="clr-namespace:CineTrack.Views.Favoris"
              xmlns:favorisVm="clr-namespace:CineTrack.ViewModels.Favoris"
-             xmlns:v="clr-namespace:CineTrack.Views">
+             xmlns:v="clr-namespace:CineTrack.Views"
+             xmlns:passwordv="clr-namespace:CineTrack.Views.Auth.PasswordReset"
+             xmlns:passwordvm="clr-namespace:CineTrack.ViewModels.Auth.PasswordReset">
     <Application.Resources>
         <conv:BoolToVisibilityConverter        x:Key="BoolToVisConverter"/>
         <conv:BoolToVisibilityInverseConverter x:Key="BoolToVisInverseConverter"/>
@@ -25,6 +27,15 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:MainViewModel}">
             <v:MainView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type passwordvm:ForgottenPasswordViewModel}">
+            <passwordv:ForgottenPasswordView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type passwordvm:ResetCodeVerificationViewModel}">
+            <passwordv:ResetCodeVerificationView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type passwordvm:ResetPasswordViewModel}">
+            <passwordv:ResetPasswordView/>
         </DataTemplate>
 
     </Application.Resources>

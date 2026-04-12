@@ -1,4 +1,4 @@
-﻿using CineTrack.Services;
+﻿using CineTrack.Services.Interfaces;
 using CineTrack.Session;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Favoris;

@@ -1,6 +1,6 @@
 using CineTrack.Data.Models;
 using CineTrack.Data.Services.Interfaces;
-using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -132,9 +132,7 @@ namespace CineTrack.ViewModels.Auth
 
             try
             {
-                _utilisateurService.SignUp(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
-
-                // TODO : naviguer vers SignIn après inscription réussie
+                await _utilisateurService.SignUpAsync(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
                 _navigationService.NavigateTo<SignInViewModel>();
             }
             catch (Exception ex)
@@ -165,9 +163,9 @@ namespace CineTrack.ViewModels.Auth
             _navigationService.NavigateTo<SignInViewModel>();
         }
         [RelayCommand]
-        private void ShowT_C()
+        private void ShowTermsAndConditions()
         {
-            var window = new T_C();
+            var window = new TermsAndConditions();
             window.ShowDialog();
         }
     }

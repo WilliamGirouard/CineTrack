@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CineTrack.ViewModels.Auth.PasswordReset;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,22 +12,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CineTrack.Views
+namespace CineTrack.Views.Auth.PasswordReset
 {
     /// <summary>
-    /// Interaction logic for T_A.xaml
+    /// Interaction logic for ForgottenPasswordView.xaml
     /// </summary>
-    public partial class T_C : Window
+    public partial class ForgottenPasswordView : UserControl
     {
-        public T_C()
+        public ForgottenPasswordView()
         {
             InitializeComponent();
-        }
-        private void CloseOnClick(object sender, RoutedEventArgs e)
-        {
-            this.Close();
+            DataContext = App.ServiceProvider.GetRequiredService<ForgottenPasswordViewModel>();
         }
     }
 }
