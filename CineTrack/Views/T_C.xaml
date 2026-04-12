@@ -1,0 +1,81 @@
+﻿<Window x:Class="CineTrack.Views.T_C"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CineTrack.Views"
+        mc:Ignorable="d"
+        Title="Terms and Conditions" Height="450" Width="800"
+        Background="#1a1a2e">
+    
+    <Grid Margin="40">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" ></RowDefinition>
+            <RowDefinition Height="Auto" ></RowDefinition>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0">
+            <TextBlock TextWrapping="Wrap" 
+                       Foreground="White"
+                       HorizontalAlignment="Center">
+                <Run FontSize="13" FontWeight="Bold" Text="CineTrack – Termes et Conditions d'utilisation" />
+                <LineBreak/>
+                <Run Text="Dernière mise à jour : avril 2026" />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="1. Acceptation des conditions" />
+                <LineBreak/>
+                <Run  Text="En créant un compte sur CineTrack, vous acceptez d'être lié par les présentes conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser l'application." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="2. Description du service" />
+                <LineBreak/>
+                <Run Text="CineTrack est une application de bureau permettant aux utilisateurs de suivre, gérer et organiser leurs films, séries et animés regardés ou à regarder." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="3. Création de compte" />
+                <LineBreak/>
+                <Run Text="Vous devez fournir des informations exactes lors de la création de votre compte. Vous êtes responsable de la confidentialité de votre mot de passe. Tout accès non autorisé à votre compte doit être signalé immédiatement." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="4. Utilisation acceptable" />
+                <LineBreak/>
+                <Run Text="Vous vous engagez à ne pas utiliser CineTrack à des fins illégales, à ne pas tenter de compromettre la sécurité de l'application, à ne pas partager votre compte avec des tiers." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="5. Données personnelles" />
+                <LineBreak/>
+                <Run Text="CineTrack collecte uniquement les données nécessaires au fonctionnement de l'application (nom, prénom, nom d'utilisateur, adresse courriel). Vos données ne sont jamais vendues ou partagées avec des tiers. Vous pouvez demander la suppression de votre compte et de vos données en tout temps." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="6. Propriété intellectuelle" />
+                <LineBreak/>
+                <Run Text="Tout le contenu de CineTrack, incluant le code source, les interfaces et les logos, est la propriété exclusive de l'équipe de développement CineTrack. Toute reproduction est interdite sans autorisation écrite." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="7. Limitation de responsabilité" />
+                <LineBreak/>
+                <Run Text="CineTrack est fourni tel quel. L'équipe de développement ne peut être tenue responsable des pertes de données ou interruptions de service." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="8. Modifications des conditions" />
+                <LineBreak/>
+                <Run Text="Nous nous réservons le droit de modifier ces conditions à tout moment. Les utilisateurs seront informés des changements majeurs." />
+                <LineBreak/>
+                <LineBreak/>
+                <Run FontWeight="Bold" Text="9. Contact" />
+                <LineBreak/>
+                <Run Text="Pour toute question, contactez-nous à : support@cinetrack.app" />
+            </TextBlock>
+        </ScrollViewer>
+        <Button Grid.Row="1" Content="Close"
+                        Width="110"
+                        Height="34"
+                        HorizontalAlignment="Right"
+                        Background="#e94560"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Margin="0,100,0,0"
+                        Cursor="Hand"
+                        Click="CloseOnClick"/>
+    </Grid>
+</Window>

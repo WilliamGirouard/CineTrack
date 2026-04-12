@@ -205,6 +205,12 @@
                                  Visibility="{Binding IsPasswordVisible,
                                      Converter={StaticResource BoolToVisConverter}}"/>
                     </Grid>
+                    <Grid Margin="0,0,0,24">
+                        <CheckBox IsChecked="{Binding IsTermsAccepted}"></CheckBox>
+                        <TextBlock Margin="30,0,0,0" 
+                                   Foreground="White">J'accepte les 
+                            <Hyperlink Foreground="#e94560" Command="{Binding ShowT_CCommand}">Termes et Conditions</Hyperlink></TextBlock>
+                    </Grid>
 
                     
                     <Border Background="#3d1a24"
