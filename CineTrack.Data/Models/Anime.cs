@@ -28,5 +28,9 @@ namespace CineTrack.Data.Models
         public string? Season { get; set; }
 
         public int? Year { get; set; }
+
+        public double Ratings { get; set; }
+
+        public int PopularityScore { get; set; }
     }
 }

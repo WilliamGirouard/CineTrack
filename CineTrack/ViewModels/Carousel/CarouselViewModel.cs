@@ -1,12 +1,19 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CineTrack.Data.Models;
+using CineTrack.ViewModels.AnimeCard;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CineTrack.ViewModels.AnimeCard;
+using System.Runtime.CompilerServices;
 
 namespace CineTrack.ViewModels.Carousel
 {
+    public enum AnimeSortType
+    {
+        Trending,
+        None
+    }
     public partial class CarouselViewModel : ObservableObject
     {
         private const int CardWidth = 150; // must match the Width in XAML
@@ -25,20 +32,48 @@ namespace CineTrack.ViewModels.Carousel
         [ObservableProperty]
         private bool _isLoading = true;
 
+        [ObservableProperty]
+        private bool _showRank = false;
+
+
         private readonly List<AnimeCardViewModel> _allAnimes = new();
+
+        private readonly ObservableCollection<AnimeCardViewModel> _rank = new();
 
         // Starting index
         private int _offset = 0;
         public ObservableCollection<AnimeCardViewModel> VisibleAnimes { get; } = new();
 
         // Called by MainViewModel after all animes are added
-        public void Initialize(IEnumerable<Anime> animes)
+        public void Initialize(IEnumerable<JikanDotNet.Anime> animes, AnimeSortType sortType = AnimeSortType.None)
         {
             _allAnimes.Clear(); // clears animes incase there are some already
-            foreach (var anime in animes)
-                _allAnimes.Add(new AnimeCardViewModel(anime));
+            ShowRank = sortType == AnimeSortType.Trending;
+
+            var sortedData = sortType switch
+            {
+                //le "?? 0 " sert a traiter les cas où Score ou Members sont null
+                AnimeSortType.Trending => animes.OrderByDescending(a => a.Score ?? 0),
+                _ => animes
+            };
+
+            int currentRank = 1;
+
+            // on boucle sur la liste des animeCardViewModel trier pour faire le trending
+            foreach (var anime in sortedData)
+            {
+
+                var animeCard = new AnimeCardViewModel(anime)
+                {
+                    Rank = ShowRank ? currentRank++ : 0,
+                    ShowRank = ShowRank
+                };
+                _allAnimes.Add(animeCard);
+            }
+
 
             _offset = 0;
+            IsLoading = false;
             RefreshVisible();
         }
 
@@ -60,7 +95,7 @@ namespace CineTrack.ViewModels.Carousel
 
         public void UpdateWidth(double width)
         {
-            _availableWidth = (int) width;
+            _availableWidth = (int)width;
             RefreshVisible();
         }
 

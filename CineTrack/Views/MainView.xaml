@@ -16,8 +16,7 @@
         </Grid.RowDefinitions>
 
         <!-- HEADER -->
-        <Border Grid.Row="0"
-                Background="#16213e">
+        <Border Grid.Row="0" Background="#16213e">
             <Grid Margin="20,0">
                 <TextBlock Text="CineTrack"
                            Foreground="#e94560"
@@ -25,7 +24,6 @@
                            FontWeight="Bold"
                            VerticalAlignment="Center"/>
 
-                <!-- Barre de recherche -->
                 <TextBox Width="250"
                          Height="32"
                          VerticalAlignment="Center"
@@ -37,7 +35,6 @@
                          Padding="10,0"
                          Text="(FAKE BAR) Rechercher un anime..."/>
 
-                <!-- Bouton favoris -->
                 <Button Content="Mes favoris"
                         Width="110"
                         Height="34"
@@ -49,7 +46,6 @@
                         Cursor="Hand"
                         Command="{Binding FavorisCommand}"/>
 
-                <!-- Bouton disconnect -->
                 <Button Content="Se deconnecter"
                         Width="110"
                         Height="34"
@@ -72,12 +68,12 @@
                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}"/>
 
         <!-- CAROUSELS -->
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer x:Name="LandingPage"
+                      Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisInverseConverter}}">
             <StackPanel Margin="0,30">
 
-                <!-- Titre principal -->
                 <TextBlock Text="Découvrez les meilleurs animes"
                            Foreground="White"
                            FontSize="28"
@@ -90,19 +86,27 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,40"/>
 
-                <ItemsControl ItemsSource="{Binding Carousels}"
-                              Margin="20,0">
+                <ItemsControl ItemsSource="{Binding Carousels}" Margin="20,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="0,0,0,30">
 
                                 <!-- Carousel title -->
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="0,0,0,12">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                     <TextBlock Text="{Binding GenreName}"
-                                               Foreground="White"
                                                FontSize="20"
-                                               FontWeight="Bold"/>
+                                               FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="White"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding GenreName}" Value="Trending">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                     <TextBlock Text=" — chargement..."
                                                Foreground="#888"
                                                FontSize="14"
@@ -111,7 +115,7 @@
                                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}"/>
                                 </StackPanel>
 
-                                <!-- Carousel row: prev button + cards + next button -->
+                                <!-- Carousel row -->
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="40"/>
@@ -119,12 +123,10 @@
                                         <ColumnDefinition Width="40"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- Previous button -->
                                     <Button Grid.Column="0"
                                             Content="❮"
                                             Command="{Binding PreviousCommand}"
-                                            Width="32"
-                                            Height="32"
+                                            Width="32" Height="32"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             Background="#0f3460"
@@ -133,13 +135,12 @@
                                             FontSize="14"
                                             Cursor="Hand"/>
 
-                                    <!-- Anime cards — fixed size, clipped so they never squish -->
                                     <ScrollViewer Grid.Column="1"
                                                   HorizontalScrollBarVisibility="Hidden"
                                                   VerticalScrollBarVisibility="Disabled"
-                                                  IsHitTestVisible="False">
-                                        <ItemsControl ItemsSource="{Binding VisibleAnimes}"
-                                                      SizeChanged="CardsPanel_SizeChanged">
+                                                  SizeChanged="CardsPanel_SizeChanged">
+                                        <ItemsControl HorizontalAlignment="Center"
+                                                      ItemsSource="{Binding VisibleAnimes}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Horizontal"/>
@@ -147,53 +148,91 @@
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Border Width="150"
-                                                            Height="220"
-                                                            Margin="6,0"
-                                                            CornerRadius="8"
-                                                            ClipToBounds="True"
-                                                            Background="#16213e"
-                                                            Cursor="Hand">
-                                                        <Grid>
-                                                            <Image Source="{Binding ImageUrl}"
-                                                                   Stretch="UniformToFill"/>
-                                                            <Border VerticalAlignment="Bottom"
-                                                                    CornerRadius="0,0,8,8">
-                                                                <Border.Background>
-                                                                    <LinearGradientBrush StartPoint="0,0"
-                                                                                         EndPoint="0,1">
-                                                                        <GradientStop Color="Transparent"
-                                                                                      Offset="0"/>
-                                                                        <GradientStop Color="#EE000000"
-                                                                                      Offset="1"/>
-                                                                    </LinearGradientBrush>
-                                                                </Border.Background>
-                                                                <StackPanel Margin="8,4">
-                                                                    <TextBlock Text="{Binding Title}"
-                                                                               Foreground="White"
-                                                                               FontSize="11"
-                                                                               FontWeight="SemiBold"
-                                                                               TextWrapping="Wrap"
-                                                                               MaxHeight="36"/>
-                                                                    <TextBlock Text="{Binding CommunityScoreDisplay}"
-                                                                               Foreground="#f0c040"
-                                                                               FontSize="10"
-                                                                               Margin="0,2,0,4"/>
-                                                                </StackPanel>
-                                                            </Border>
-                                                        </Grid>
-                                                    </Border>
+                                                    <Button Command="{Binding SelectAnimeCommand}"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Padding="0"
+                                                            Cursor="Hand"
+                                                            IsTabStop="False"
+                                                            ClickMode="Release">
+                                                        <Border Width="150" Height="220"
+                                                                Margin="6,0"
+                                                                CornerRadius="8"
+                                                                ClipToBounds="True"
+                                                                Background="#16213e">
+                                                            <Grid>
+                                                                <Image Source="{Binding ImageUrl}"
+                                                                       Stretch="UniformToFill"/>
+
+                                                                <!-- Gradient + titre + score -->
+                                                                <Border VerticalAlignment="Bottom"
+                                                                        CornerRadius="0,0,8,8">
+                                                                    <Border.Background>
+                                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                            <GradientStop Color="Transparent" Offset="0"/>
+                                                                            <GradientStop Color="#EE000000" Offset="1"/>
+                                                                        </LinearGradientBrush>
+                                                                    </Border.Background>
+                                                                    <StackPanel>
+                                                                        <StackPanel.Style>
+                                                                            <Style TargetType="StackPanel">
+                                                                                <Setter Property="Margin" Value="8,4"/>
+                                                                                <Style.Triggers>
+                                                                                    <!-- Décale le texte à droite quand le rank est affiché -->
+                                                                                    <DataTrigger Binding="{Binding Rank}" Value="0">
+                                                                                        <Setter Property="Margin" Value="8,4"/>
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </StackPanel.Style>
+                                                                        <TextBlock Text="{Binding Title}"
+                                                                                   Foreground="White"
+                                                                                   FontSize="11"
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextWrapping="Wrap"
+                                                                                   MaxHeight="36"/>
+                                                                        <TextBlock Text="{Binding CommunityScoreDisplay}"
+                                                                                   Foreground="#f0c040"
+                                                                                   FontSize="10"
+                                                                                   Margin="0,2,0,4"/>
+                                                                    </StackPanel>
+                                                                </Border>
+
+                                                                <!-- Rank — Collapsed si Rank = 0 (non-trending) -->
+                                                                <TextBlock Text="{Binding Rank, StringFormat='{}{0:00}'}"
+                                                                           Foreground="#e94560"
+                                                                           FontSize="38"
+                                                                           FontWeight="Black"
+                                                                           VerticalAlignment="Top"
+                                                                           HorizontalAlignment="Left"
+                                                                           Margin="5,0,0,-8">
+                                                                    <TextBlock.Effect>
+                                                                        <DropShadowEffect BlurRadius="4" ShadowDepth="2" Color="Black"/>
+                                                                    </TextBlock.Effect>
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding ShowRank}" Value="True">
+                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+
+                                                            </Grid>
+                                                        </Border>
+                                                    </Button>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
 
-                                    <!-- Next button -->
                                     <Button Grid.Column="2"
                                             Content="❯"
                                             Command="{Binding NextCommand}"
-                                            Width="32"
-                                            Height="32"
+                                            Width="32" Height="32"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             Background="#0f3460"

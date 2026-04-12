@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Media;
 using CineTrack.Services;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
@@ -7,6 +8,7 @@ using CineTrack.ViewModels.Carousel;
 using CineTrack.ViewModels.Favoris;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.IdentityModel.Protocols;
 
 namespace CineTrack.ViewModels;
 
@@ -54,6 +56,22 @@ public partial class MainViewModel : ObservableObject
         IsLoading = true;
         Carousels.Clear();
 
+
+        var trendingCarousel = new CarouselViewModel { GenreName = "Trending" };
+        Carousels.Add(trendingCarousel);
+
+        try {
+            var trendingAnimes = await _jikanService.GetTrendingAnimesAsync();
+
+            trendingCarousel.Initialize(trendingAnimes, AnimeSortType.Trending);
+
+
+
+        } catch (Exception ex) {
+            /* skip genre on failure */
+        }
+
+
         foreach (var (name, id) in Genres)
         {
             var carousel = new CarouselViewModel { GenreName = name };
@@ -63,7 +81,7 @@ public partial class MainViewModel : ObservableObject
             {
                 await Task.Delay(600); // respect Jikan's rate limit
                 var animes = await _jikanService.GetAnimesByGenreAsync(id);
-                carousel.Initialize(animes);
+                carousel.Initialize(animes, AnimeSortType.None);
             }
             catch
             {

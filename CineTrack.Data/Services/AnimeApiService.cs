@@ -13,7 +13,7 @@ namespace CineTrack.Data.Services
         private readonly IJikan _api;
 
         public AnimeApiService()
-        { 
+        {
             _api = new Jikan();
         }
 
@@ -22,5 +22,12 @@ namespace CineTrack.Data.Services
             var response = await _api.GetAnimeFullDataAsync(id);
             return response.Data;
         }
+
+        public async Task<ICollection<Anime>> GetTrendingAnimesAsync()
+        {
+            var response = await _api.GetTopAnimeAsync();
+            return response.Data;
+        }
+
     }
 }
