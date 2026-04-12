@@ -1,36 +1,80 @@
-﻿using CineTrack.Services.Interfaces;
+﻿using System.Collections.ObjectModel;
+using CineTrack.Services;
+using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.Auth;
+using CineTrack.ViewModels.Carousel;
 using CineTrack.ViewModels.Favoris;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CineTrack.ViewModels
+namespace CineTrack.ViewModels;
+
+public partial class MainViewModel : ObservableObject
 {
-    public partial class MainViewModel : ObservableObject
+    // to add more, refer to the official github https://github.com/Ervie/jikan.net/blob/master/JikanDotNet/Enumerations/AnimeGenreSearch.cs#L8
+    private static readonly List<(string Name, int Id)> Genres = new()
     {
-        private readonly INavigationService _navigationService;
+        ("Action", 1),
+        ("Adventure", 2),
+        ("Fantasy", 10),
+        ("Romance", 22),
+        ("Sci-Fi", 24),
+        ("Mystery", 7)
+    };
 
-        public MainViewModel(INavigationService navigationService)
+    private readonly IJikanService _jikanService;
+    private readonly INavigationService _navigationService;
+
+    [ObservableProperty] private bool _isLoading = true;
+    public ObservableCollection<CarouselViewModel> Carousels { get; } = new();
+
+    public MainViewModel(INavigationService navigationService, IJikanService jikanService)
+    {
+        _navigationService = navigationService;
+        _jikanService = jikanService;
+    }
+
+    [RelayCommand]
+    private void Disconnect()
+    {
+        SessionManager.Instance.CloseSession();
+        _navigationService.NavigateTo<SignInViewModel>();
+    }
+
+    [RelayCommand]
+    private void Favoris()
+    {
+        _navigationService.NavigateTo<FavorisViewModel>();
+    }
+
+    [RelayCommand]
+    private async Task LoadAsync()
+    {
+        IsLoading = true;
+        Carousels.Clear();
+
+        foreach (var (name, id) in Genres)
         {
-            _navigationService = navigationService;
+            var carousel = new CarouselViewModel { GenreName = name };
+            Carousels.Add(carousel);
+
+            try
+            {
+                await Task.Delay(600); // respect Jikan's rate limit
+                var animes = await _jikanService.GetAnimesByGenreAsync(id);
+                carousel.Initialize(animes);
+            }
+            catch
+            {
+                /* skip genre on failure */
+            }
+            finally
+            {
+                carousel.IsLoading = false;
+            }
         }
 
-        [RelayCommand]
-        private void Disconnect()
-        {
-            SessionManager.Instance.CloseSession();
-            _navigationService.NavigateTo<SignInViewModel>();
-        }
-        [RelayCommand]
-        private void Favoris()
-        {
-            _navigationService.NavigateTo<FavorisViewModel>(); 
-        }
+        IsLoading = false;
     }
 }
