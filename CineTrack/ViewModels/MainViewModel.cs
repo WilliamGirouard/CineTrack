@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.Auth;

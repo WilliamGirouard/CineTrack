@@ -210,7 +210,7 @@
 
                     <Button Style="{StaticResource PrimaryButton}"
                             Command="{Binding SignInCommand}"
-                            Margin="0,0,0,20" Click="Button_Click">
+                            Margin="0,0,0,20">
                         <Button.Content>
                             <TextBlock>
                                 <TextBlock.Text>
