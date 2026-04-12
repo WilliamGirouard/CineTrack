@@ -51,6 +51,8 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadAsync()
     {
+        if (Carousels.Count > 0) return; // skip the process if its already loaded
+
         IsLoading = true;
         Carousels.Clear();
 
@@ -63,7 +65,7 @@ public partial class MainViewModel : ObservableObject
             {
                 await Task.Delay(600); // respect Jikan's rate limit
                 var animes = await _jikanService.GetAnimesByGenreAsync(id);
-                carousel.Initialize(animes);
+                carousel.Initialize(animes, _navigationService);
             }
             catch
             {

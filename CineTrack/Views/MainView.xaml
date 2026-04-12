@@ -72,7 +72,8 @@
                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}"/>
 
         <!-- CAROUSELS -->
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer x:Name="LandingPage"
+                      Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisInverseConverter}}">
             <StackPanel Margin="0,30">
@@ -137,53 +138,66 @@
                                     <ScrollViewer Grid.Column="1"
                                                   HorizontalScrollBarVisibility="Hidden"
                                                   VerticalScrollBarVisibility="Disabled"
-                                                  IsHitTestVisible="False">
-                                        <ItemsControl ItemsSource="{Binding VisibleAnimes}"
-                                                      SizeChanged="CardsPanel_SizeChanged">
+                                                  PreviewMouseWheel="OnPreviewMouseWheel"
+                                                  SizeChanged="CardsPanel_SizeChanged">
+                                        <ItemsControl HorizontalAlignment="Center"
+                                                      ItemsSource="{Binding VisibleAnimes}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Horizontal"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
+
                                                 <DataTemplate>
-                                                    <Border Width="150"
+                                                    <Button Command="{Binding SelectAnimeCommand}"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Padding="0"
+                                                            Cursor="Hand"
+                                                            IsTabStop="False"
+                                                            ClickMode="Release">
+
+                                                        <Border Width="150"
                                                             Height="220"
                                                             Margin="6,0"
                                                             CornerRadius="8"
                                                             ClipToBounds="True"
                                                             Background="#16213e"
                                                             Cursor="Hand">
-                                                        <Grid>
-                                                            <Image Source="{Binding ImageUrl}"
-                                                                   Stretch="UniformToFill"/>
-                                                            <Border VerticalAlignment="Bottom"
-                                                                    CornerRadius="0,0,8,8">
-                                                                <Border.Background>
-                                                                    <LinearGradientBrush StartPoint="0,0"
-                                                                                         EndPoint="0,1">
-                                                                        <GradientStop Color="Transparent"
-                                                                                      Offset="0"/>
-                                                                        <GradientStop Color="#EE000000"
-                                                                                      Offset="1"/>
-                                                                    </LinearGradientBrush>
-                                                                </Border.Background>
-                                                                <StackPanel Margin="8,4">
-                                                                    <TextBlock Text="{Binding Title}"
-                                                                               Foreground="White"
-                                                                               FontSize="11"
-                                                                               FontWeight="SemiBold"
-                                                                               TextWrapping="Wrap"
-                                                                               MaxHeight="36"/>
-                                                                    <TextBlock Text="{Binding CommunityScoreDisplay}"
-                                                                               Foreground="#f0c040"
-                                                                               FontSize="10"
-                                                                               Margin="0,2,0,4"/>
-                                                                </StackPanel>
-                                                            </Border>
-                                                        </Grid>
-                                                    </Border>
+                                                            <Grid>
+                                                                <Image Source="{Binding ImageUrl}"
+                                                                       Stretch="UniformToFill"/>
+                                                                <Border VerticalAlignment="Bottom"
+                                                                        CornerRadius="0,0,8,8">
+                                                                    <Border.Background>
+                                                                        <LinearGradientBrush StartPoint="0,0"
+                                                                                             EndPoint="0,1">
+                                                                            <GradientStop Color="Transparent"
+                                                                                          Offset="0"/>
+                                                                            <GradientStop Color="#EE000000"
+                                                                                          Offset="1"/>
+                                                                        </LinearGradientBrush>
+                                                                    </Border.Background>
+                                                                    <StackPanel Margin="8,4">
+                                                                        <TextBlock Text="{Binding Title}"
+                                                                                   Foreground="White"
+                                                                                   FontSize="11"
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextWrapping="Wrap"
+                                                                                   MaxHeight="36"/>
+                                                                        <TextBlock Text="{Binding CommunityScoreDisplay}"
+                                                                                   Foreground="#f0c040"
+                                                                                   FontSize="10"
+                                                                                   Margin="0,2,0,4"/>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                    </Button>
+
                                                 </DataTemplate>
+
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>

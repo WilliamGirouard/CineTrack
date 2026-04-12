@@ -1,3 +1,4 @@
+using CineTrack.Services.Jikan;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CineTrack.Services
@@ -12,5 +13,7 @@ namespace CineTrack.Services
 
         ///Navigue vers le ViewModel de type T.
         void NavigateTo<T>() where T : ObservableObject;
+
+        void NavigateTo<T>(long param) where T : ObservableObject, IRequiresJikanData;
     }
 }
