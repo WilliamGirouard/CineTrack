@@ -1,6 +1,8 @@
+using CineTrack.Services.Jikan;
 using CineTrack.ViewModels.Auth;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection.Metadata;
 
 namespace CineTrack.Services
 {
@@ -28,5 +30,18 @@ namespace CineTrack.Services
         {
             CurrentView = _serviceProvider.GetRequiredService<T>();
         }
+
+        public void NavigateTo<T>(long param) where T : ObservableObject, IRequiresJikanData
+        {
+            var vm = _serviceProvider.GetRequiredService<T>(); // Gets the view model
+
+            if (vm is IRequiresJikanData receiver) // if the view model needs data from Jikan...
+            {
+                receiver.ReceiveAnimeId(param); // ...it will get the data 
+            }
+
+            CurrentView = vm;
+        }
+
     }
 }
