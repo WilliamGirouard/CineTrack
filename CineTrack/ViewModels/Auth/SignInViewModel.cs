@@ -41,7 +41,7 @@ namespace CineTrack.ViewModels.Auth
             if (Properties.Settings.Default.RememberMe)
             {
                 Username = Properties.Settings.Default.SavedUsername;
-                Password = Properties.Settings.Default.SavedPassword;
+                Password = Properties.Settings.Default.SavedPassword;  
                 RememberMe = true;
             }
         
