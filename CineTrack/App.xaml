@@ -7,6 +7,8 @@
              xmlns:vm="clr-namespace:CineTrack.ViewModels"
              xmlns:favorisV="clr-namespace:CineTrack.Views.Favoris"
              xmlns:favorisVm="clr-namespace:CineTrack.ViewModels.Favoris"
+             xmlns:detailVm="clr-namespace:CineTrack.ViewModels.AnimeDetails"
+             xmlns:detailV="clr-namespace:CineTrack.Views.AnimeDetails"
              xmlns:v="clr-namespace:CineTrack.Views">
     <Application.Resources>
         <conv:BoolToVisibilityConverter        x:Key="BoolToVisConverter"/>
@@ -25,6 +27,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:MainViewModel}">
             <v:MainView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type detailVm:AnimeDetailsViewModel}">
+            <detailV:AnimeDetailsView/>
         </DataTemplate>
 
     </Application.Resources>

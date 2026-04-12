@@ -101,7 +101,7 @@
                                                 <Setter Property="Foreground" Value="White"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding GenreName}" Value="Trending">
-                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Setter Property="Foreground" Value="#e94560"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -138,6 +138,7 @@
                                     <ScrollViewer Grid.Column="1"
                                                   HorizontalScrollBarVisibility="Hidden"
                                                   VerticalScrollBarVisibility="Disabled"
+                                                  PreviewMouseWheel="OnPreviewMouseWheel"
                                                   SizeChanged="CardsPanel_SizeChanged">
                                         <ItemsControl HorizontalAlignment="Center"
                                                       ItemsSource="{Binding VisibleAnimes}">
@@ -155,11 +156,13 @@
                                                             Cursor="Hand"
                                                             IsTabStop="False"
                                                             ClickMode="Release">
-                                                        <Border Width="150" Height="220"
+                                                        <Border Width="150"
+                                                                Height="220"
                                                                 Margin="6,0"
                                                                 CornerRadius="8"
                                                                 ClipToBounds="True"
-                                                                Background="#16213e">
+                                                                Background="#16213e"
+                                                                Cursor="Hand">
                                                             <Grid>
                                                                 <Image Source="{Binding ImageUrl}"
                                                                        Stretch="UniformToFill"/>
@@ -173,18 +176,7 @@
                                                                             <GradientStop Color="#EE000000" Offset="1"/>
                                                                         </LinearGradientBrush>
                                                                     </Border.Background>
-                                                                    <StackPanel>
-                                                                        <StackPanel.Style>
-                                                                            <Style TargetType="StackPanel">
-                                                                                <Setter Property="Margin" Value="8,4"/>
-                                                                                <Style.Triggers>
-                                                                                    <!-- Décale le texte à droite quand le rank est affiché -->
-                                                                                    <DataTrigger Binding="{Binding Rank}" Value="0">
-                                                                                        <Setter Property="Margin" Value="8,4"/>
-                                                                                    </DataTrigger>
-                                                                                </Style.Triggers>
-                                                                            </Style>
-                                                                        </StackPanel.Style>
+                                                                    <StackPanel Margin="8,4">
                                                                         <TextBlock Text="{Binding Title}"
                                                                                    Foreground="White"
                                                                                    FontSize="11"
@@ -198,7 +190,7 @@
                                                                     </StackPanel>
                                                                 </Border>
 
-                                                                <!-- Rank — Collapsed si Rank = 0 (non-trending) -->
+                                                                <!-- Rank — visible seulement si Trending -->
                                                                 <TextBlock Text="{Binding Rank, StringFormat='{}{0:00}'}"
                                                                            Foreground="#e94560"
                                                                            FontSize="38"

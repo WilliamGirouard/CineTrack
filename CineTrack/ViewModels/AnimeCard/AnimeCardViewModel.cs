@@ -1,15 +1,19 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CineTrack.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
+using JikanDotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JikanDotNet;
+using CineTrack.ViewModels.AnimeDetails;
+using CommunityToolkit.Mvvm.Input;
 
 namespace CineTrack.ViewModels.AnimeCard
 {
     public partial class AnimeCardViewModel : ObservableObject
     {
+        private readonly INavigationService _navigationService;
         private readonly Anime _anime;
 
         // Data from Jikan
@@ -29,14 +33,21 @@ namespace CineTrack.ViewModels.AnimeCard
 
         // utilise score de l'anime si le score communautaire n'est pas disponible
         public string CommunityScoreDisplay => (_communityScore ?? _anime.Score).HasValue
-            ? $"★ {CommunityScore.Value:F1} / 10"
+            ? $"★ {CommunityScore.Value:F1} / 5"
             : "No ratings yet";
 
-        public AnimeCardViewModel(Anime anime)
+        public AnimeCardViewModel(Anime anime, INavigationService navigationService)
         {
             _anime = anime;
 
-            _communityScore = anime.Score.HasValue ? anime.Score.Value : null; // Convert to 5-star scale
+            _communityScore = anime.Score.HasValue ? anime.Score.Value / 2: null; // Convert to 5-star scale
+            _navigationService = navigationService;
+        }
+
+        [RelayCommand]
+        public void SelectAnime()
+        {
+            _navigationService.NavigateTo<AnimeDetailsViewModel>(MalId.Value);
         }
     }
 }

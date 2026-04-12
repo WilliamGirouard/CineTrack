@@ -4,7 +4,9 @@ using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services;
 using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services;
+using CineTrack.ViewModels.AnimeDetails;
 using CineTrack.Services.Interfaces;
+using CineTrack.Services.Jikan;
 using CineTrack.ViewModels;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Favoris;
@@ -16,7 +18,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
-using CineTrack.Services.Jikan;
 
 namespace CineTrack
 {
@@ -58,12 +59,13 @@ namespace CineTrack
             // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IJikanService, JikanService>();
+            services.AddSingleton<MainViewModel>();
 
             // ── ViewModels (Transient) ─────────────────────────────────────────
             services.AddTransient<SignInViewModel>();
             services.AddTransient<SignUpViewModel>();
-            services.AddTransient<MainViewModel>();
             services.AddTransient<FavorisViewModel>();
+            services.AddTransient<AnimeDetailsViewModel>();
 
             // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();

@@ -1,12 +1,11 @@
 ﻿using CineTrack.Data.Models;
 using CineTrack.ViewModels.AnimeCard;
+using CineTrack.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-
 namespace CineTrack.ViewModels.Carousel
 {
     public enum AnimeSortType
@@ -45,32 +44,29 @@ namespace CineTrack.ViewModels.Carousel
         public ObservableCollection<AnimeCardViewModel> VisibleAnimes { get; } = new();
 
         // Called by MainViewModel after all animes are added
-        public void Initialize(IEnumerable<JikanDotNet.Anime> animes, AnimeSortType sortType = AnimeSortType.None)
+
+        public void Initialize(IEnumerable<JikanDotNet.Anime> animes, INavigationService navigationService, AnimeSortType sortType = AnimeSortType.None)
         {
-            _allAnimes.Clear(); // clears animes incase there are some already
+            _allAnimes.Clear();
             ShowRank = sortType == AnimeSortType.Trending;
 
             var sortedData = sortType switch
             {
-                //le "?? 0 " sert a traiter les cas où Score ou Members sont null
                 AnimeSortType.Trending => animes.OrderByDescending(a => a.Score ?? 0),
                 _ => animes
             };
 
             int currentRank = 1;
 
-            // on boucle sur la liste des animeCardViewModel trier pour faire le trending
             foreach (var anime in sortedData)
             {
-
-                var animeCard = new AnimeCardViewModel(anime)
+                var animeCard = new AnimeCardViewModel(anime, navigationService)
                 {
                     Rank = ShowRank ? currentRank++ : 0,
                     ShowRank = ShowRank
                 };
                 _allAnimes.Add(animeCard);
             }
-
 
             _offset = 0;
             IsLoading = false;
