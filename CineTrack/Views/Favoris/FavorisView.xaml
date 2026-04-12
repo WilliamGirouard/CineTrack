@@ -8,26 +8,41 @@
       d:DesignHeight="700" d:DesignWidth="500"
       d:DataContext="{d:DesignInstance Type=vm:FavorisViewModel}"
       Background="#1a1a2e">
-    <Grid Margin="20">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Mes Favoris"
-                   FontSize="22" FontWeight="Bold"
-                   Foreground="White" Margin="0,0,0,0"/>
+
+        <Border Grid.Row="0" Background="#16213e">
+            <Grid Margin="20,0">
+                <TextBlock Text="CineTrack"
+                           Foreground="#e94560"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+                <TextBlock 
+                   Text="Mes Favoris"
+                   Foreground="#e94560"
+                   FontSize="22"
+                   FontWeight="SemiBold"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"/>
+            </Grid>
+        </Border>
+
         <!-- Bouton favoris -->
         <Button Content="Page d'accueil"
                         Width="110"
                         Height="34"
+                    
                         HorizontalAlignment="Right"
-                        Grid.ColumnSpan="2"
                         Background="#e94560"
                         Foreground="White"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Command="{Binding RetourCommand}"/>
-        
+                        Command="{Binding RetourCommand}" Margin="378,13,0,13"/>
+
         <TextBlock Grid.Row="1"
                    Text="Aucun favori pour l'instant."
                    Foreground="White" FontSize="14"
@@ -43,19 +58,25 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="DarkBlue"
-                                Padding="10" Margin="8" Width="150">
+                        <Border Background="#16213e"
+                                Padding="10" Margin="8" Width="160">
                             <StackPanel>
                                 <Image Source="{Binding ImageUrl}"
-                                       Height="200" Stretch="UniformToFill"/>
+                                       Height="210" Stretch="UniformToFill"/>
                                 <TextBlock Text="{Binding TitreAnime}"
-                                           Foreground="White" FontSize="12"
-                                           TextWrapping="Wrap" Margin="0,6,0,0"
+                                           Foreground="White" 
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           TextWrapping="Wrap" 
+                                           Margin="0,8,0,2"
                                            TextAlignment="Center"/>
                                 <Button Content="Retirer"
-                                        Margin="0,8,0,0" Height="28"
-                                        Background="#e94560" Foreground="White"
-                                        BorderThickness="0" Cursor="Hand"
+                                        Margin="0,8,0,0" 
+                                        Height="28"
+                                        Background="#e94560" 
+                                        Foreground="White"
+                                        BorderThickness="0" 
+                                        Cursor="Hand"
                                         Command="{Binding DataContext.RemoveFavorisCommand,
                                                   RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding}"/>

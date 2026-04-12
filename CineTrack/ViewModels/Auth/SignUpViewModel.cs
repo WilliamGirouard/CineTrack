@@ -10,7 +10,7 @@ namespace CineTrack.ViewModels.Auth
     public partial class SignUpViewModel : ObservableObject
     {
         private readonly IUtilisateurService _utilisateurService;
-        
+
         private readonly INavigationService _navigationService;
 
 

@@ -179,6 +179,20 @@
                                 Command="{Binding TogglePasswordVisibilityCommand}"
                                 FontSize="15"/>
                     </Grid>
+                    <Grid Margin="0,0,0,20">
+                        <CheckBox IsChecked="{Binding RememberMe}"
+                                  Content="Se souvenir de moi"
+                                  Foreground="#888" FontSize="13"/>
+                        <TextBlock Text="Mot de passe oublié ?"
+                                   Foreground="#e94560" FontSize="13"
+                                   Cursor="Hand"
+                                   HorizontalAlignment="Right">
+                            <TextBlock.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding ForgotPasswordCommand}"/>
+                            </TextBlock.InputBindings>
+                        </TextBlock>
+                    </Grid>
 
                     <Border Background="#3d1a24"
                             CornerRadius="6"
@@ -195,7 +209,7 @@
 
                     <Button Style="{StaticResource PrimaryButton}"
                             Command="{Binding SignInCommand}"
-                            Margin="0,0,0,20">
+                            Margin="0,0,0,20" Click="Button_Click">
                         <Button.Content>
                             <TextBlock>
                                 <TextBlock.Text>

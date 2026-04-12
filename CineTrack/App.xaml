@@ -9,7 +9,6 @@
              xmlns:favorisVm="clr-namespace:CineTrack.ViewModels.Favoris"
              xmlns:v="clr-namespace:CineTrack.Views">
     <Application.Resources>
-        <!-- Converters globaux accessibles dans toutes les vues -->
         <conv:BoolToVisibilityConverter        x:Key="BoolToVisConverter"/>
         <conv:BoolToVisibilityInverseConverter x:Key="BoolToVisInverseConverter"/>
         <conv:StringToVisibilityConverter      x:Key="StringToVisConverter"/>

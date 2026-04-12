@@ -39,6 +39,8 @@ namespace CineTrack.Session
             Token = Guid.NewGuid().ToString();
         }
 
+        
+
         ///Ferme la session et efface toutes les données en mémoire.
         public void CloseSession()
         {

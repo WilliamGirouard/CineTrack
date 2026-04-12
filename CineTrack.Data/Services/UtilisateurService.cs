@@ -29,6 +29,7 @@ namespace CineTrack.Data.Services
             Utilisateur userVerif = _utilisateurRepository.GetByUsername(username);
             if (userVerif == null)
             {
+                
                 throw new Exception("Invalid credentials");            
             }
 

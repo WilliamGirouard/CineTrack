@@ -15,6 +15,11 @@ namespace CineTrack.Views.Auth
             InitializeComponent();
 
             DataContext = App.ServiceProvider.GetRequiredService<SignInViewModel>();
+
+            //pour re remplir le password box si remember me est coché
+            if (DataContext is SignInViewModel valeurUser && valeurUser.RememberMe) {
+                PasswordBox.Password = valeurUser.Password;
+            }
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
@@ -23,6 +28,11 @@ namespace CineTrack.Views.Auth
             {
                 viewModel.Password = ((PasswordBox)sender).Password;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

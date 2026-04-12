@@ -29,9 +29,22 @@ namespace CineTrack.ViewModels.Auth
         [NotifyCanExecuteChangedFor(nameof(SignInCommand))]
         private bool _isLoading = false;
 
-        public SignInViewModel(IUtilisateurService utilisateurService, INavigationService navigationService) {
+        [ObservableProperty]
+        private bool _rememberMe = false;
+
+        public SignInViewModel(IUtilisateurService utilisateurService, INavigationService navigationService)
+        {
             _utilisateurService = utilisateurService;
             _navigationService = navigationService;
+
+            // Restaurer la session si Remember Me est coché
+            if (Properties.Settings.Default.RememberMe)
+            {
+                Username = Properties.Settings.Default.SavedUsername;
+                Password = Properties.Settings.Default.SavedPassword;  
+                RememberMe = true;
+            }
+        
         }
 
         private bool CanSignIn() =>
@@ -40,17 +53,33 @@ namespace CineTrack.ViewModels.Auth
             !IsLoading;
 
         [RelayCommand(CanExecute = nameof(CanSignIn))]
-        private async Task SignIn() {
-            
+        private async Task SignIn()
+        {
+
             ErrorMsg = string.Empty;
             IsLoading = true;
 
             try
             {
-               var user = await Task.Run(() =>
-                    _utilisateurService.SignIn(Username.Trim(), Password)
-                );
+                var user = await Task.Run(() =>
+                     _utilisateurService.SignIn(Username.Trim(), Password)
+                 );
                 SessionManager.Instance.OpenSession(user);
+
+
+                //en soit sa vas nous permettre de garder la session ouverte dans notre porpre disque
+                if (RememberMe)
+                {
+                    Properties.Settings.Default.RememberMe = true;
+                    Properties.Settings.Default.SavedUsername = Username;
+                    Properties.Settings.Default.SavedPassword = Password;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                {
+                    Properties.Settings.Default.Reset();
+                }
+
                 _navigationService.NavigateTo<MainViewModel>();
 
             }
@@ -62,7 +91,8 @@ namespace CineTrack.ViewModels.Auth
                     _ => "Une erreur est survenue lors de la connexion."
                 };
             }
-            finally {
+            finally
+            {
                 IsLoading = false;
             }
         }
@@ -76,8 +106,7 @@ namespace CineTrack.ViewModels.Auth
         [RelayCommand]
         private void NavigateToSignUp()
         {
-             _navigationService.NavigateTo<SignUpViewModel>(); // corriger was singIn instead of singUp
+            _navigationService.NavigateTo<SignUpViewModel>(); // corriger was singIn instead of singUp
         }
     }
 }
-
