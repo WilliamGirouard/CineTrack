@@ -1,13 +1,19 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CineTrack.Data.Models;
+using CineTrack.ViewModels.AnimeCard;
+using CineTrack.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CineTrack.Services;
-using CineTrack.ViewModels.AnimeCard;
-
+using CineTrack.Services.Interfaces;
 namespace CineTrack.ViewModels.Carousel
 {
+    public enum AnimeSortType
+    {
+        Trending,
+        None
+    }
     public partial class CarouselViewModel : ObservableObject
     {
         private const int CardWidth = 150; // must match the Width in XAML
@@ -26,20 +32,45 @@ namespace CineTrack.ViewModels.Carousel
         [ObservableProperty]
         private bool _isLoading = true;
 
+        [ObservableProperty]
+        private bool _showRank = false;
+
+
         private readonly List<AnimeCardViewModel> _allAnimes = new();
+
+        private readonly ObservableCollection<AnimeCardViewModel> _rank = new();
 
         // Starting index
         private int _offset = 0;
         public ObservableCollection<AnimeCardViewModel> VisibleAnimes { get; } = new();
 
         // Called by MainViewModel after all animes are added
-        public void Initialize(IEnumerable<Anime> animes, INavigationService navigationService)
+
+        public void Initialize(IEnumerable<JikanDotNet.Anime> animes, INavigationService navigationService, AnimeSortType sortType = AnimeSortType.None)
         {
-            _allAnimes.Clear(); // clears animes incase there are some already
-            foreach (var anime in animes)
-                _allAnimes.Add(new AnimeCardViewModel(anime, navigationService));
+            _allAnimes.Clear();
+            ShowRank = sortType == AnimeSortType.Trending;
+
+            var sortedData = sortType switch
+            {
+                AnimeSortType.Trending => animes.OrderByDescending(a => a.Score ?? 0),
+                _ => animes
+            };
+
+            int currentRank = 1;
+
+            foreach (var anime in sortedData)
+            {
+                var animeCard = new AnimeCardViewModel(anime, navigationService)
+                {
+                    Rank = ShowRank ? currentRank++ : 0,
+                    ShowRank = ShowRank
+                };
+                _allAnimes.Add(animeCard);
+            }
 
             _offset = 0;
+            IsLoading = false;
             RefreshVisible();
         }
 
@@ -61,7 +92,7 @@ namespace CineTrack.ViewModels.Carousel
 
         public void UpdateWidth(double width)
         {
-            _availableWidth = (int) width;
+            _availableWidth = (int)width;
             RefreshVisible();
         }
 

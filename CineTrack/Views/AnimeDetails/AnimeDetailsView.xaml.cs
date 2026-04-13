@@ -24,12 +24,13 @@ namespace CineTrack.Views.AnimeDetails
         public AnimeDetailsView()
         {
             InitializeComponent();
+            DataContextChanged += UserControl_Loaded;
         }
 
-        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private async void UserControl_Loaded(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (DataContext is AnimeDetailsViewModel vm && vm.LoadCommand.CanExecute(null))
-                vm.LoadCommand.Execute(null);
+            if (DataContext is AnimeDetailsViewModel vm)
+                await vm.LoadCommand.ExecuteAsync(null);
         }
     }
 }

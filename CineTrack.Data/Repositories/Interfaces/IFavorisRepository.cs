@@ -9,8 +9,8 @@ namespace CineTrack.Data.Repositories.Interfaces
 {
     public interface IFavorisRepository
     {
-        List<Favoris> GetFavorisByUserId(int userId);
-        void AddFavoris(Favoris favoris);
-        void RemoveFavoris(int Id);
+        Task<List<Favoris>> GetFavorisByUserIdAsync(int userId);
+        Task AddFavorisAsync(Favoris favoris);
+        Task RemoveFavorisAsync(int Id);
     }
 }

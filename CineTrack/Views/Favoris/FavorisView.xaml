@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="CineTrack.Views.Favoris.FavorisView"
+<UserControl x:Class="CineTrack.Views.Favoris.FavorisView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -41,68 +41,76 @@
                         Foreground="White"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Command="{Binding RetourCommand}"/>
+                        Command="{Binding RetourCommand}"
+                        Margin="0,0,20,0"/>
             </Grid>
         </Border>
 
-        <!-- BODY -->
-        <Grid Grid.Row="1">
+        <!-- EMPTY STATE -->
+        <TextBlock Text="Aucun favori pour l'instant."
+                   Foreground="White"
+                   FontSize="14"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding FavorisList.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
 
-            <!-- EMPTY STATE -->
-            <TextBlock Text="Aucun favori pour l'instant."
-                       Foreground="White"
-                       FontSize="14"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding FavorisList.Count}" Value="0">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
+        <!-- LIST -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
 
-            <!-- LIST -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding FavorisList}">
 
-                <ItemsControl ItemsSource="{Binding FavorisList}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Command="{Binding SelectAnimeCommand}"
-                    Background="Transparent"
-                    BorderThickness="0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                                <Border Width="150"
-                        Height="220"
-                        Margin="6"
-                        CornerRadius="8"
-                        Background="#16213e">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
 
-                                    <Grid>
+                        <Button Command="{Binding SelectAnimeCommand}"
+                                Background="Transparent"
+                                BorderThickness="0">
 
-                                        <Image Source="{Binding ImageUrl}"
-                               Stretch="UniformToFill"/>
+                            <Border Width="150"
+                                    Height="220"
+                                    Margin="6"
+                                    CornerRadius="8"
+                                    Background="#16213e">
 
-                                        <TextBlock Text="{Binding Title}"
-                                   VerticalAlignment="Bottom"
-                                   Foreground="White"
-                                   Margin="8"/>
-                                    </Grid>
+                                <Grid>
 
-                                </Border>
+                                    <Image Source="{Binding ImageUrl}"
+                                           Stretch="UniformToFill"/>
 
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                    <TextBlock Text="{Binding Title}"
+                                               VerticalAlignment="Bottom"
+                                               Foreground="White"
+                                               Margin="8"
+                                               TextWrapping="Wrap"/>
 
-            </ScrollViewer>
+                                </Grid>
 
-        </Grid>
+                            </Border>
+
+                        </Button>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+        </ScrollViewer>
 
     </Grid>
 </UserControl>

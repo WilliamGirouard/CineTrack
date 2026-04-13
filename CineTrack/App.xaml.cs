@@ -9,7 +9,10 @@ using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.ViewModels;
 using CineTrack.ViewModels.Auth;
+using CineTrack.ViewModels.Auth.PasswordReset;
+using CineTrack.ViewModels.Favoris;
 using CineTrack.Views.Auth;
+using CineTrack.Views.Auth.PasswordReset;
 using CineTrack.Views.Favoris;
 using JikanDotNet;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +36,8 @@ namespace CineTrack
                 .AddJsonFile("appsettings.json")
                 .Build();
 
+            var emailConfiguration = configuration.GetSection("Email");
+
             var services = new ServiceCollection();
 
             // ── Base de données ────────────────────────────────────────────────
@@ -42,7 +47,13 @@ namespace CineTrack
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlite(connectionString));
             else if (provider == "SqlServer")
                 services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
-
+            // Email Service
+            services.AddSingleton<IEmailService>(new EmailService(
+                emailConfiguration["mail"]!,
+                emailConfiguration["password"]!,
+                emailConfiguration["SmtpHost"]!,
+                int.Parse(emailConfiguration["SmtpPort"]!)
+                ));
 
             // ── Repositories (Scoped) ──────────────────────────────────────────
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
@@ -61,17 +72,25 @@ namespace CineTrack
             services.AddSingleton<IJikanService, JikanService>();
             services.AddSingleton<MainViewModel>();
 
+            //PasswordResetCodeStorage
+            services.AddSingleton<PasswordResetStore>();
             // ── ViewModels (Transient) ─────────────────────────────────────────
             services.AddTransient<SignInViewModel>();
             services.AddTransient<SignUpViewModel>();
             services.AddTransient<FavorisViewModel>();
             services.AddTransient<AnimeDetailsViewModel>();
+            services.AddTransient<ForgottenPasswordViewModel>();
+            services.AddTransient<ResetCodeVerificationViewModel>();
+            services.AddTransient<ResetPasswordViewModel>();
 
             // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();
             services.AddTransient<SignUpView>();
             services.AddTransient<SignInView>();
             services.AddTransient<FavorisView>();
+            services.AddTransient<ForgottenPasswordView>();
+            services.AddTransient<ResetCodeVerificationView>();
+            services.AddTransient<ResetPasswordView>();
 
             ServiceProvider = services.BuildServiceProvider();
 

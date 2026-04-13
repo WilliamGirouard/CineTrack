@@ -28,16 +28,14 @@ namespace CineTrack.Services.Jikan
                 var config = new AnimeSearchConfig
                 {
                     PageSize = 25,
-                    Page = currentPage
+                    Page = currentPage,
+                    Genres = new List<AnimeGenreSearch> { (AnimeGenreSearch)genreId },
+                    OrderBy = AnimeSearchOrderBy.Score,
+                    SortDirection = SortDirection.Descending
                 };
 
                 var response = await _api.SearchAnimeAsync(config);
-
-                var filtered = response.Data
-                    .Where(a => a.Genres.Any(g => g.MalId == genreId))
-                    .ToList();
-
-                result.AddRange(filtered);
+                result.AddRange(response.Data);
                 currentPage++;
 
                 // Stop if Jikan has no more pages
@@ -61,4 +59,12 @@ namespace CineTrack.Services.Jikan
         }
     }
 
+        public async Task<ICollection<Anime>> GetTrendingAnimesAsync()
+        {
+            var response = await _api.GetTopAnimeAsync();
+            return response.Data;
+
+
+        }
+    }
 }

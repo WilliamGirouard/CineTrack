@@ -2,6 +2,7 @@
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,44 +17,43 @@ namespace CineTrack.Data.Repositories
             _context = context;
         }
 
-        public void Add(UtilisateurAnime entry)
+        public async Task AddAsync(UtilisateurAnime entry)
         {
             _context.UtilisateurAnimes.Add(entry);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(UtilisateurAnime entry)
+        public async Task DeleteAsync(UtilisateurAnime entry)
         {
             _context.UtilisateurAnimes.Remove(entry);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public UtilisateurAnime? Get(int utilisateurId, int malId)
+        public async Task<UtilisateurAnime?> GetAsync(int utilisateurId, int animeId)
         {
-            return _context.UtilisateurAnimes
-                .FirstOrDefault(ua => ua.UtilisateurId == utilisateurId && ua.MalId == malId);
+            return await _context.UtilisateurAnimes.FirstOrDefaultAsync(ua => ua.UtilisateurId == utilisateurId && ua.AnimeId == animeId);
         }
 
-        public List<UtilisateurAnime> GetByUtilisateur(int utilisateurId)
+        public async Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId)
         {
-            return _context.UtilisateurAnimes
-                .Where(ua => ua.UtilisateurId == utilisateurId)
-                .Include(ua => ua.Utilisateur)
-                .ToList();
+          return await _context.UtilisateurAnimes
+            .Where(ua => ua.UtilisateurId == utilisateurId)
+            .Include(ua => ua.Utilisateur)
+            .ToListAsync();
         }
 
-        public List<UtilisateurAnime> GetByMalId(int malId)
+        public async Task<List<UtilisateurAnime>> GetByMalIdAsync(int malId)
         {
-            return _context.UtilisateurAnimes
-                .Where(ua => ua.MalId == malId)
-                .Include(ua => ua.Utilisateur)
-                .ToList();
+            return await _context.UtilisateurAnimes
+              .Where(ua => ua.MalId == malId)
+              .Include(ua => ua.Utilisateur)
+              .ToListAsync();
         }
 
-        public void Update(UtilisateurAnime entry)
+        public async Task UpdateAsync(UtilisateurAnime entry)
         {
             _context.UtilisateurAnimes.Update(entry);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

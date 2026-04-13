@@ -1,5 +1,6 @@
-﻿using CineTrack.Data.Repositories.Interfaces;
+using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.Carousel;
@@ -7,10 +8,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.ObjectModel;
+using ITransferParameter = CineTrack.Services.Interfaces.ITransferParameter;
 
 namespace CineTrack.ViewModels.AnimeDetails;
 
-public partial class AnimeDetailsViewModel : ObservableObject, IRequiresJikanData
+public partial class AnimeDetailsViewModel : ObservableObject, ITransferParameter
 {
     private readonly IJikanService _jikanService;
     private readonly INavigationService _navigationService;
@@ -86,7 +88,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, IRequiresJikanDat
         IsLoading = true;
 
         // get the data
-        _anime = await _jikanService.GetAnimeByIdAsync((int) _malId);
+        _anime = await _jikanService.GetAnimeByIdAsync((int)_malId);
 
         // set the properties
         Title = _anime.Title;
@@ -94,6 +96,8 @@ public partial class AnimeDetailsViewModel : ObservableObject, IRequiresJikanDat
         Desc = _anime.Synopsis;
         Episodes = _anime.Episodes.HasValue ? $"{_anime.Episodes} episodes" : "Unknown episodes";
         AgeRating = _anime.Rating ?? "No rating";
+        CommunityScore = _anime.Score.HasValue ? _anime.Score.Value / 2: null;
+        OnPropertyChanged(nameof(CommunityScoreDisplay));
 
         CheckFavorite();
 
@@ -143,5 +147,13 @@ public partial class AnimeDetailsViewModel : ObservableObject, IRequiresJikanDat
     private void GoBack()
     {
         _navigationService.NavigateTo<MainViewModel>();
-    } 
+    }
+
+    public void TransferParameter(object param)
+    {
+        if (param is long malId)
+        {
+            _malId = malId;
+        }
+    }
 }

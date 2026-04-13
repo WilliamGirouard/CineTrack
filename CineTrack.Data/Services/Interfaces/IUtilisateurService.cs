@@ -9,11 +9,14 @@ namespace CineTrack.Data.Services.Interfaces
 {
     public interface IUtilisateurService
     {
-        void SignUp(string username, string fullName, string email, string password);
-        Utilisateur SignIn(string username, string password);
+        Task SignUpAsync(string username, string fullName, string email, string password);
+        Task<Utilisateur> SignInAsync(string username, string password);
 
-        //Fonction de logout a ajouter
-        bool IsUsernameUsed(string username);
-        bool IsEmailUsed(string email);
+        Task<bool> IsUsernameUsedAsync(string username);
+        Task<bool> IsEmailUsedAsync(string email);
+        Task<string> ForgottenPasswordAsync(string username);
+        Task<bool> IsResetCodeValidAsync(string email, string code);
+
+        Task ResetPasswordAsync(string email, string newPassword);
     }
 }

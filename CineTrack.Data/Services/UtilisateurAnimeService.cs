@@ -16,19 +16,19 @@ namespace CineTrack.Data.Services
             _repository = repository;
         }
 
-        public List<UtilisateurAnime> GetByUtilisateur(int utilisateurId)
+        public async Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId)
         {
-            return _repository.GetByUtilisateur(utilisateurId);
-        }
-
-        public List<UtilisateurAnime> GetByMalId(int malId)
-        {
-            return _repository.GetByMalId(malId);
+            var entries = await _repository.GetByUtilisateurAsync(utilisateurId);
+            foreach (var entry in entries)
+            {
+                entry.Anime = await _animeRepository.GetAnimeByIdAsync(entry.AnimeId);
+            }
+            return entries;
         }
 
         public async Task AddEntryAsync(int utilisateurId, int malId, int? note = null, string? commentaire = null)
         {
-            var existing = _repository.Get(utilisateurId, malId);
+            var existing = await _repository.GetAsync(utilisateurId, animeId);
             if (existing != null)
                 throw new Exception("Entry already exists for this user-anime pair.");
 
@@ -41,35 +41,35 @@ namespace CineTrack.Data.Services
                 DateAjout = DateTime.UtcNow
             };
 
-            await Task.Run(() => _repository.Add(entry));
+            await _repository.AddAsync(entry);
         }
 
         public async Task UpdateNoteAsync(int utilisateurId, int malId, int note)
         {
-            var entry = _repository.Get(utilisateurId, malId);
+            var entry = await _repository.GetAsync(utilisateurId, animeId);
             if (entry == null)
                 throw new Exception("Entry not found for this user-anime pair.");
 
             entry.Note = note;
-            await Task.Run(() => _repository.Update(entry));
+            await _repository.UpdateAsync(entry);
         }
 
         public async Task UpdateCommentaireAsync(int utilisateurId, int malId, string commentaire)
         {
-            var entry = _repository.Get(utilisateurId, malId);
+            var entry = await _repository.GetAsync(utilisateurId, animeId);
             if (entry == null)
                 throw new Exception("Entry not found for this user-anime pair.");
 
             entry.Commentaire = commentaire;
-            await Task.Run(() => _repository.Update(entry));
+            await _repository.UpdateAsync(entry);
         }
 
-        public void DeleteEntry(int utilisateurId, int malId)
+        public async Task DeleteEntryAsync(int utilisateurId, int animeId)
         {
-            var entry = _repository.Get(utilisateurId, malId);
+            var entry = await _repository.GetAsync(utilisateurId, animeId);
             if (entry != null)
             {
-                _repository.Delete(entry);
+                await _repository.DeleteAsync(entry);
             }
         }
     }
