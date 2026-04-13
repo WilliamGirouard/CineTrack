@@ -7,8 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="900"
              d:DataContext="{d:DesignInstance Type=vm:AnimeDetailsViewModel}"
-             Background="#1a1a2e"
-             Loaded="UserControl_Loaded">
+             Background="#1a1a2e">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>

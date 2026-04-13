@@ -45,7 +45,7 @@ namespace CineTrack.ViewModels.Auth.PasswordReset
                 ErrorMessage = e.Message switch
                 {
                     "User not found" => "Nom d'utilisateur invalide",
-                    _ => "Erreur"
+                    _ => $"Erreur : {e.Message}"
                 };
             } finally 
             {

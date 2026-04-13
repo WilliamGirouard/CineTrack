@@ -42,17 +42,5 @@ namespace CineTrack.Services
             CurrentView = viewModel;
         }
 
-        public void NavigateTo<T>(long param) where T : ObservableObject, IRequiresJikanData
-        {
-            var vm = _serviceProvider.GetRequiredService<T>(); // Gets the view model
-
-            if (vm is IRequiresJikanData receiver) // if the view model needs data from Jikan...
-            {
-                receiver.ReceiveAnimeId(param); // ...it will get the data 
-            }
-
-            CurrentView = vm;
-        }
-
     }
 }
