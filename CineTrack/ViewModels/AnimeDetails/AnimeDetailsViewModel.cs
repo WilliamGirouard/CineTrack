@@ -70,6 +70,8 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         Desc = _anime.Synopsis;
         Episodes = _anime.Episodes.HasValue ? $"{_anime.Episodes} episodes" : "Unknown episodes";
         AgeRating = _anime.Rating ?? "No rating";
+        CommunityScore = _anime.Score.HasValue ? _anime.Score.Value / 2: null;
+        OnPropertyChanged(nameof(CommunityScoreDisplay));
 
         IsLoading = false;
     }
