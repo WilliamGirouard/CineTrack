@@ -51,7 +51,8 @@
                    Foreground="White"
                    FontSize="14"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center">
+                   VerticalAlignment="Center"
+                   Grid.Row="1">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Collapsed"/>

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineTrack.Data.Migrations
 {
     [DbContext(typeof(CineTrackDbContext))]
-    [Migration("20260413014753_RemoveFavorisImageAndTitle")]
-    partial class RemoveFavorisImageAndTitle
+    [Migration("20260413133143_FixFavoris")]
+    partial class FixFavoris
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,12 @@ namespace CineTrack.Data.Migrations
 
                     b.Property<int?>("MalId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<int>("PopularityScore")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Ratings")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("Season")
                         .HasMaxLength(10)

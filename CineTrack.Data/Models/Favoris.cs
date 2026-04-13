@@ -20,10 +20,10 @@ namespace CineTrack.Data.Models
         public int AnimeId { get; set; }
 
         //[Required]
-        //public string? ImageUrl { get; set; }
+        //public string ImageUrl { get; set; }
 
         //[Required]
-        //public string? TitreAnime { get; set; }
+        //public string TitreAnime { get; set; }
 
     }
 }

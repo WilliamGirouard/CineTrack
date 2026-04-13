@@ -7,6 +7,8 @@ namespace CineTrack.Services.Jikan
     {
         private readonly IJikan _api;
 
+        private readonly Dictionary<int, AnimeFull> _animeCache = new();
+
         public JikanService()
         {
             _api = new JikanDotNet.Jikan();
@@ -14,7 +16,14 @@ namespace CineTrack.Services.Jikan
 
         public async Task<AnimeFull> GetAnimeByIdAsync(int id)
         {
+            if (_animeCache.TryGetValue(id, out var cached))
+                return cached;
+
             var response = await _api.GetAnimeFullDataAsync(id);
+
+            if (response?.Data != null)
+                _animeCache[id] = response.Data;
+
             return response.Data;
         }
 

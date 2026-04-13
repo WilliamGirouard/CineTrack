@@ -7,6 +7,7 @@ using CineTrack.ViewModels.AnimeCard;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace CineTrack.ViewModels.Favoris;
 
@@ -41,32 +42,38 @@ public partial class FavorisViewModel : ObservableObject
         try
         {
             var user = SessionManager.Instance.CurrentUser;
-
             if (user == null)
             {
-                _favorisList.Clear();
+                FavorisList.Clear();
                 return;
             }
 
             var favoris = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
 
-            var list = new List<AnimeCardViewModel>();
+            var semaphore = new SemaphoreSlim(5);
 
-            foreach (var fav in favoris)
+            var tasks = favoris.Select(async f =>
             {
-                var anime = await _jikanService.GetAnimeByIdAsync((int)fav.AnimeId);
-                if (anime == null) continue;
+                await semaphore.WaitAsync();
+                try
+                {
+                    var anime = await _jikanService.GetAnimeByIdAsync((int)f.AnimeId);
+                    return anime;
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
 
-                list.Add(new AnimeCardViewModel(anime, _navigationService));
-            }
+            var animes = await Task.WhenAll(tasks);
 
             FavorisList.Clear();
-            foreach (var item in list)
-                FavorisList.Add(item);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
+
+            foreach (var anime in animes.Where(a => a != null))
+            {
+                FavorisList.Add(new AnimeCardViewModel(anime, _navigationService));
+            }
         }
         finally
         {
