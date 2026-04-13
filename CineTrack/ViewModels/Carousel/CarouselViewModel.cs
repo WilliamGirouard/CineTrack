@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CineTrack.Services.Interfaces;
 namespace CineTrack.ViewModels.Carousel
 {
     public enum AnimeSortType
