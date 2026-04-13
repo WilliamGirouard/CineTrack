@@ -1,6 +1,7 @@
 ﻿using CineTrack.Data.Context;
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CineTrack.Data.Repositories
@@ -13,40 +14,40 @@ namespace CineTrack.Data.Repositories
             _context = context;
         }
 
-        public List<Utilisateur> GetUtilisateurs()
+        public async Task<List<Utilisateur>> GetUtilisateursAsync()
         {
-            return _context.Utilisateurs.ToList();
+            return await _context.Utilisateurs.ToListAsync();
         }
-        public Utilisateur GetUtilisateurById(int id)
+        public async Task<Utilisateur?> GetUtilisateurByIdAsync(int id)
         {
-            return _context.Utilisateurs.Find(id);
+            return await _context.Utilisateurs.FindAsync(id);
         }
-        public Utilisateur GetByUsername(string username) {
-            return _context.Utilisateurs.FirstOrDefault(u => u.Username == username);
+        public async Task<Utilisateur?> GetByUsernameAsync(string username) {
+            return await _context.Utilisateurs.FirstOrDefaultAsync(u => u.Username == username);
         }
-        public Utilisateur GetByEmail(string email) {
-            return _context.Utilisateurs.FirstOrDefault(u => u.Email == email);
+        public async Task<Utilisateur?> GetByEmailAsync(string email) {
+            return await _context.Utilisateurs.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public void AddUser(Utilisateur user) {
+        public async Task AddUserAsync(Utilisateur user) {
             _context.Utilisateurs.Add(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             Console.WriteLine(@"User added: " + user.Username);
         }
 
-        public void UpdateUser(Utilisateur user)
+        public async Task UpdateUserAsync(Utilisateur user)
         {
             _context.Utilisateurs.Update(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             Console.WriteLine(@"User Updated: " + user.Username);
         }
-        public void DeleteUser(Utilisateur user)
+        public async Task DeleteUserAsync(Utilisateur user)
         {
-            if (GetByUsername(user.Username) != null)
+            if (await GetByUsernameAsync(user.Username) != null)
             {
                 Console.WriteLine(@"User Deleted: " + user.Username);
                 _context.Utilisateurs.Remove(user);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

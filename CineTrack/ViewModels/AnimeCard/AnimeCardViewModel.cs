@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CineTrack.ViewModels.AnimeDetails;
 using CommunityToolkit.Mvvm.Input;
+using CineTrack.Services.Interfaces;
 
 namespace CineTrack.ViewModels.AnimeCard
 {

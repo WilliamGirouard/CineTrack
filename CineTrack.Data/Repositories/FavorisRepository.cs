@@ -1,6 +1,7 @@
 ﻿using CineTrack.Data.Context;
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CineTrack.Data.Repositories
 {
@@ -13,21 +14,21 @@ namespace CineTrack.Data.Repositories
             _context = context;
         }
 
-        public List<Favoris> GetFavorisByUserId(int userId)
+        public async Task<List<Favoris>> GetFavorisByUserIdAsync(int userId)
         {
-            return _context.Favoris.Where(f => f.UtilisateurId == userId).ToList();
+            return await _context.Favoris.Where(f => f.UtilisateurId == userId).ToListAsync();
         }
 
-        public void AddFavoris(Favoris favoris)
+        public async Task AddFavorisAsync(Favoris favoris)
         {
             _context.Favoris.Add(favoris);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             Console.WriteLine(@"Favoris ajouté: " + favoris.Id);
         }
 
-        public void RemoveFavoris(int Id)
+        public async Task RemoveFavorisAsync(int Id)
         {
-            var favoris = _context.Favoris.Find(Id);
+            var favoris = await _context.Favoris.FindAsync(Id);
             if (favoris == null)
             {
                 Console.WriteLine(@"Favoris non trouvé: " + Id);
@@ -36,7 +37,7 @@ namespace CineTrack.Data.Repositories
             else
             {
                 _context.Favoris.Remove(favoris);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 Console.WriteLine(@"Favoris supprimé: " + Id);
             }
                 

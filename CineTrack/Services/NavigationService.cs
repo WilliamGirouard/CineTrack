@@ -1,3 +1,4 @@
+using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.ViewModels.Auth;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -31,16 +32,14 @@ namespace CineTrack.Services
             CurrentView = _serviceProvider.GetRequiredService<T>();
         }
 
-        public void NavigateTo<T>(long param) where T : ObservableObject, IRequiresJikanData
+        public void NavigateTo<T>(object param) where T : ObservableObject
         {
-            var vm = _serviceProvider.GetRequiredService<T>(); // Gets the view model
-
-            if (vm is IRequiresJikanData receiver) // if the view model needs data from Jikan...
+            var viewModel = _serviceProvider.GetRequiredService<T>();
+            if (viewModel is ITransferParameter receiver)
             {
-                receiver.ReceiveAnimeId(param); // ...it will get the data 
+                receiver.TransferParameter(param);
             }
-
-            CurrentView = vm;
+            CurrentView = viewModel;
         }
 
     }

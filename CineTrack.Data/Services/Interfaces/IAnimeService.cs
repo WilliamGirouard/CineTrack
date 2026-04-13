@@ -9,9 +9,9 @@ namespace CineTrack.Data.Services.Interfaces
 {
     public interface IAnimeService
     {
-        Anime? GetAnimeByMalId(int malId);
-        List<Anime> GetAnimes(); 
-        void DeleteAnime(Anime anime);
+        Task<Anime?> GetAnimeByMalIdAsync(int malId);
+        Task<List<Anime>> GetAnimesAsync(); 
+        Task DeleteAnimeAsync(Anime anime);
         Task AddAnimeFromJikanAsync(int malId);
     }
 }

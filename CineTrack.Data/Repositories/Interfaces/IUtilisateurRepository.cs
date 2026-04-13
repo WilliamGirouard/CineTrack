@@ -9,12 +9,12 @@ namespace CineTrack.Data.Repositories.Interfaces
 {
     public interface IUtilisateurRepository
     {
-        List<Utilisateur> GetUtilisateurs();
-        Utilisateur GetUtilisateurById(int id);
-        Utilisateur GetByUsername(string username);
-        Utilisateur GetByEmail(string email);
-        void AddUser(Utilisateur user);
-        void UpdateUser(Utilisateur user);
-        void DeleteUser(Utilisateur user);
+        Task<List<Utilisateur>> GetUtilisateursAsync();
+        Task<Utilisateur?> GetUtilisateurByIdAsync(int id);
+        Task<Utilisateur?> GetByUsernameAsync(string username);
+        Task<Utilisateur?> GetByEmailAsync(string email);
+        Task AddUserAsync(Utilisateur user);
+        Task UpdateUserAsync(Utilisateur user);
+        Task DeleteUserAsync(Utilisateur user);
     }
 }

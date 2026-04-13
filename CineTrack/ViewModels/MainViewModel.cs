@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Media;
 using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.Auth;

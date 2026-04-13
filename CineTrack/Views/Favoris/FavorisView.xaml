@@ -35,13 +35,14 @@
         <Button Content="Page d'accueil"
                         Width="110"
                         Height="34"
-                    
+                        Grid.Row="0"
                         HorizontalAlignment="Right"
                         Background="#e94560"
                         Foreground="White"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Command="{Binding RetourCommand}" Margin="378,13,0,13"/>
+                        Command="{Binding RetourCommand}" 
+                        Margin="20, 0"/>
 
         <TextBlock Grid.Row="1"
                    Text="Aucun favori pour l'instant."

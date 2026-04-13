@@ -1,6 +1,7 @@
 using CineTrack.Data.Models;
 using CineTrack.Data.Services.Interfaces;
-using CineTrack.Services;
+using CineTrack.Services.Interfaces;
+using CineTrack.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel.DataAnnotations;
@@ -46,6 +47,12 @@ namespace CineTrack.ViewModels.Auth
         [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
         private bool _isLoading = false;
 
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SignUpCommand))]
+        private bool _isTermsAccepted = false;
+
+
+
 
         public SignUpViewModel(IUtilisateurService utilisateurService, INavigationService navigationService)
         {
@@ -60,6 +67,7 @@ namespace CineTrack.ViewModels.Auth
             !string.IsNullOrWhiteSpace(Email) &&
             !string.IsNullOrWhiteSpace(Password) &&
             !string.IsNullOrWhiteSpace(ConfirmPassword) &&
+            IsTermsAccepted &&
             !IsLoading;
 
         private bool ValiderChamps(out string erreur)
@@ -124,9 +132,7 @@ namespace CineTrack.ViewModels.Auth
 
             try
             {
-                _utilisateurService.SignUp(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
-
-                // TODO : naviguer vers SignIn après inscription réussie
+                await _utilisateurService.SignUpAsync(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
                 _navigationService.NavigateTo<SignInViewModel>();
             }
             catch (Exception ex)
@@ -155,6 +161,12 @@ namespace CineTrack.ViewModels.Auth
         private void NavigateToSignIn()
         {
             _navigationService.NavigateTo<SignInViewModel>();
+        }
+        [RelayCommand]
+        private void ShowTermsAndConditions()
+        {
+            var window = new TermsAndConditions();
+            window.ShowDialog();
         }
     }
 }
