@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CineTrack.Services;
 using CineTrack.ViewModels.AnimeCard;
 
 namespace CineTrack.ViewModels.Carousel
@@ -32,11 +33,11 @@ namespace CineTrack.ViewModels.Carousel
         public ObservableCollection<AnimeCardViewModel> VisibleAnimes { get; } = new();
 
         // Called by MainViewModel after all animes are added
-        public void Initialize(IEnumerable<Anime> animes)
+        public void Initialize(IEnumerable<Anime> animes, INavigationService navigationService)
         {
             _allAnimes.Clear(); // clears animes incase there are some already
             foreach (var anime in animes)
-                _allAnimes.Add(new AnimeCardViewModel(anime));
+                _allAnimes.Add(new AnimeCardViewModel(anime, navigationService));
 
             _offset = 0;
             RefreshVisible();
