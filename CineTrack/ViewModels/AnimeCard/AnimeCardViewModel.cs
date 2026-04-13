@@ -40,5 +40,6 @@ namespace CineTrack.ViewModels.AnimeCard
         {
             _navigationService.NavigateTo<AnimeDetailsViewModel>(MalId.Value);
         }
+
     }
 }

@@ -9,6 +9,7 @@
              d:DesignWidth="800"
              Background="#1a1a2e"
              Loaded="UserControl_Loaded">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -19,6 +20,7 @@
         <Border Grid.Row="0"
                 Background="#16213e">
             <Grid Margin="20,0">
+
                 <TextBlock Text="CineTrack"
                            Foreground="#e94560"
                            FontSize="22"
@@ -35,7 +37,7 @@
                          CaretBrush="White"
                          BorderBrush="#0f3460"
                          Padding="10,0"
-                         Text="(FAKE BAR) Rechercher un anime..."/>
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Bouton favoris -->
                 <Button Content="Mes favoris"
@@ -59,7 +61,75 @@
                         BorderThickness="0"
                         Cursor="Hand"
                         Command="{Binding DisconnectCommand}"/>
+
             </Grid>
+        </Border>
+
+        <!-- SEARCH OVERLAY -->
+        <Border Grid.Row="1"
+                Margin="20,0,20,0"
+                Background="#16213e"
+                CornerRadius="8"
+                Padding="10"
+                Panel.ZIndex="10"
+                VerticalAlignment="Top"
+                MaxHeight="750"
+                Visibility="{Binding SearchResults.Count, Converter={StaticResource IntToVisibilityConverter}}">
+
+            <ScrollViewer VerticalScrollBarVisibility="Hidden"
+              HorizontalScrollBarVisibility="Disabled">
+
+                <ItemsControl ItemsSource="{Binding SearchResults}"
+              HorizontalContentAlignment="Stretch">
+                    <ItemsControl.ItemTemplate>
+
+                        <DataTemplate>
+                            <Button Command="{Binding OpenCommand}"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Padding="0"
+                                Cursor="Hand"
+                                HorizontalAlignment="Stretch">
+
+                                <Border Margin="5"
+                                    Padding="10"
+                                    Background="#0f3460"
+                                    CornerRadius="6"
+                                    HorizontalAlignment="Stretch"
+                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
+
+                                    <Grid Height="90">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Image Width="50"
+                                           Height="70"
+                                           Source="{Binding ImageUrl}"
+                                           Stretch="UniformToFill"/>
+
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+
+                                            <TextBlock Text="{Binding Title}"
+                                                   Foreground="White"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"/>
+
+                                            <TextBlock Text="{Binding Synopsis}"
+                                                   Foreground="#aaa"
+                                                   FontSize="11"
+                                                   TextWrapping="Wrap"
+                                                   MaxHeight="45"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Border>
 
         <!-- LOADING -->
@@ -76,6 +146,7 @@
                       Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisInverseConverter}}">
+
             <StackPanel Margin="0,30">
 
                 <!-- Titre principal -->
@@ -85,6 +156,7 @@
                            FontWeight="Bold"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,8"/>
+
                 <TextBlock Text="Suivez, notez et partagez vos animes préférés"
                            Foreground="#888"
                            FontSize="14"
@@ -93,23 +165,28 @@
 
                 <ItemsControl ItemsSource="{Binding Carousels}"
                               Margin="20,0">
+
                     <ItemsControl.ItemTemplate>
+
                         <DataTemplate>
                             <StackPanel Margin="0,0,0,30">
 
                                 <!-- Carousel title -->
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,12">
+
                                     <TextBlock Text="{Binding GenreName}"
                                                Foreground="White"
                                                FontSize="20"
                                                FontWeight="Bold"/>
+
                                     <TextBlock Text=" — chargement..."
                                                Foreground="#888"
                                                FontSize="14"
                                                VerticalAlignment="Bottom"
                                                Margin="8,0,0,2"
                                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}"/>
+
                                 </StackPanel>
 
                                 <!-- Carousel row: prev button + cards + next button -->
@@ -120,7 +197,6 @@
                                         <ColumnDefinition Width="40"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- Previous button -->
                                     <Button Grid.Column="0"
                                             Content="❮"
                                             Command="{Binding PreviousCommand}"
@@ -134,19 +210,21 @@
                                             FontSize="14"
                                             Cursor="Hand"/>
 
-                                    <!-- Anime cards — fixed size, clipped so they never squish -->
                                     <ScrollViewer Grid.Column="1"
                                                   HorizontalScrollBarVisibility="Hidden"
                                                   VerticalScrollBarVisibility="Disabled"
                                                   PreviewMouseWheel="OnPreviewMouseWheel"
                                                   SizeChanged="CardsPanel_SizeChanged">
-                                        <ItemsControl HorizontalAlignment="Center"
-                                                      ItemsSource="{Binding VisibleAnimes}">
+
+                                        <ItemsControl ItemsSource="{Binding VisibleAnimes}"
+                                                      HorizontalAlignment="Center">
+
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Horizontal"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+
                                             <ItemsControl.ItemTemplate>
 
                                                 <DataTemplate>
@@ -159,50 +237,57 @@
                                                             ClickMode="Release">
 
                                                         <Border Width="150"
-                                                            Height="220"
-                                                            Margin="6,0"
-                                                            CornerRadius="8"
-                                                            ClipToBounds="True"
-                                                            Background="#16213e"
-                                                            Cursor="Hand">
+                                                                Height="220"
+                                                                Margin="6,0"
+                                                                CornerRadius="8"
+                                                                ClipToBounds="True"
+                                                                Background="#16213e">
+
                                                             <Grid>
+
                                                                 <Image Source="{Binding ImageUrl}"
                                                                        Stretch="UniformToFill"/>
+
                                                                 <Border VerticalAlignment="Bottom"
                                                                         CornerRadius="0,0,8,8">
+
                                                                     <Border.Background>
                                                                         <LinearGradientBrush StartPoint="0,0"
                                                                                              EndPoint="0,1">
-                                                                            <GradientStop Color="Transparent"
-                                                                                          Offset="0"/>
-                                                                            <GradientStop Color="#EE000000"
-                                                                                          Offset="1"/>
+                                                                            <GradientStop Color="Transparent" Offset="0"/>
+                                                                            <GradientStop Color="#EE000000" Offset="1"/>
                                                                         </LinearGradientBrush>
                                                                     </Border.Background>
+
                                                                     <StackPanel Margin="8,4">
+
                                                                         <TextBlock Text="{Binding Title}"
                                                                                    Foreground="White"
                                                                                    FontSize="11"
                                                                                    FontWeight="SemiBold"
                                                                                    TextWrapping="Wrap"
                                                                                    MaxHeight="36"/>
+
                                                                         <TextBlock Text="{Binding CommunityScoreDisplay}"
                                                                                    Foreground="#f0c040"
                                                                                    FontSize="10"
                                                                                    Margin="0,2,0,4"/>
+
                                                                     </StackPanel>
+
                                                                 </Border>
                                                             </Grid>
+
                                                         </Border>
                                                     </Button>
-
                                                 </DataTemplate>
 
                                             </ItemsControl.ItemTemplate>
+
                                         </ItemsControl>
+
                                     </ScrollViewer>
 
-                                    <!-- Next button -->
                                     <Button Grid.Column="2"
                                             Content="❯"
                                             Command="{Binding NextCommand}"
@@ -215,14 +300,17 @@
                                             BorderThickness="0"
                                             FontSize="14"
                                             Cursor="Hand"/>
+
                                 </Grid>
 
                             </StackPanel>
                         </DataTemplate>
+
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
             </StackPanel>
         </ScrollViewer>
+
     </Grid>
 </UserControl>

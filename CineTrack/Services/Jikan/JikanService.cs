@@ -47,6 +47,18 @@ namespace CineTrack.Services.Jikan
 
             return result.Take(20).ToList();
         }
+
+        public async Task<ICollection<Anime>> SearchAnimeAsync(string query, int page = 1)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return new List<Anime>();
+
+            var response = await _api.SearchAnimeAsync(query);
+
+            return response.Data
+                .Take(10)
+                .ToList();
+        }
     }
 
 }

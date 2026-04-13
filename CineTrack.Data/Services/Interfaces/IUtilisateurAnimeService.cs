@@ -8,6 +8,8 @@ namespace CineTrack.Data.Services.Interfaces
     {
         List<UtilisateurAnime> GetByUtilisateur(int utilisateurId);
 
+        List<UtilisateurAnime> GetByMalId(int malId);
+
         Task AddEntryAsync(int utilisateurId, int animeId, int? note = null, string? commentaire = null);
 
         Task UpdateNoteAsync(int utilisateurId, int animeId, int note);

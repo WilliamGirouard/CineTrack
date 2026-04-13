@@ -8,83 +8,101 @@
       d:DesignHeight="700" d:DesignWidth="500"
       d:DataContext="{d:DesignInstance Type=vm:FavorisViewModel}"
       Background="#1a1a2e">
+
     <Grid>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- HEADER -->
         <Border Grid.Row="0" Background="#16213e">
             <Grid Margin="20,0">
+
                 <TextBlock Text="CineTrack"
                            Foreground="#e94560"
                            FontSize="22"
                            FontWeight="Bold"
                            VerticalAlignment="Center"/>
-                <TextBlock 
-                   Text="Mes Favoris"
-                   Foreground="#e94560"
-                   FontSize="22"
-                   FontWeight="SemiBold"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"/>
-            </Grid>
-        </Border>
 
-        <!-- Bouton favoris -->
-        <Button Content="Page d'accueil"
+                <TextBlock Text="Mes Favoris"
+                           Foreground="#e94560"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+
+                <Button Content="Accueil"
                         Width="110"
                         Height="34"
-                    
                         HorizontalAlignment="Right"
                         Background="#e94560"
                         Foreground="White"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Command="{Binding RetourCommand}" Margin="378,13,0,13"/>
+                        Command="{Binding RetourCommand}"/>
+            </Grid>
+        </Border>
 
-        <TextBlock Grid.Row="1"
-                   Text="Aucun favori pour l'instant."
-                   Foreground="White" FontSize="14"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Visibility="Visible"/>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding FavorisList}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="#16213e"
-                                Padding="10" Margin="8" Width="160">
-                            <StackPanel>
-                                <Image Source="{Binding ImageUrl}"
-                                       Height="210" Stretch="UniformToFill"/>
-                                <TextBlock Text="{Binding TitreAnime}"
-                                           Foreground="White" 
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           TextWrapping="Wrap" 
-                                           Margin="0,8,0,2"
-                                           TextAlignment="Center"/>
-                                <Button Content="Retirer"
-                                        Margin="0,8,0,0" 
-                                        Height="28"
-                                        Background="#e94560" 
-                                        Foreground="White"
-                                        BorderThickness="0" 
-                                        Cursor="Hand"
-                                        Command="{Binding DataContext.RemoveFavorisCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"/>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <!-- BODY -->
+        <Grid Grid.Row="1">
+
+            <!-- EMPTY STATE -->
+            <TextBlock Text="Aucun favori pour l'instant."
+                       Foreground="White"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FavorisList.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <!-- LIST -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                <ItemsControl ItemsSource="{Binding FavorisList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding SelectAnimeCommand}"
+                    Background="Transparent"
+                    BorderThickness="0">
+
+                                <Border Width="150"
+                        Height="220"
+                        Margin="6"
+                        CornerRadius="8"
+                        Background="#16213e">
+
+                                    <Grid>
+
+                                        <Image Source="{Binding ImageUrl}"
+                               Stretch="UniformToFill"/>
+
+                                        <TextBlock Text="{Binding Title}"
+                                   VerticalAlignment="Bottom"
+                                   Foreground="White"
+                                   Margin="8"/>
+                                    </Grid>
+
+                                </Border>
+
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </ScrollViewer>
+
+        </Grid>
+
     </Grid>
 </UserControl>

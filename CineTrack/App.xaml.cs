@@ -9,7 +9,6 @@ using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.ViewModels;
 using CineTrack.ViewModels.Auth;
-using CineTrack.ViewModels.Favoris;
 using CineTrack.Views.Auth;
 using CineTrack.Views.Favoris;
 using JikanDotNet;
@@ -18,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
+using CineTrack.ViewModels.Favoris;
 
 namespace CineTrack
 {

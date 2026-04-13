@@ -1,5 +1,7 @@
-﻿using CineTrack.Services;
+﻿using CineTrack.Data.Repositories.Interfaces;
+using CineTrack.Services;
 using CineTrack.Services.Jikan;
+using CineTrack.Session;
 using CineTrack.ViewModels.Carousel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -12,6 +14,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, IRequiresJikanDat
 {
     private readonly IJikanService _jikanService;
     private readonly INavigationService _navigationService;
+    private readonly IFavorisRepository _favorisRepository;
 
     private Anime? _anime;
     private long? _malId;
@@ -39,19 +42,42 @@ public partial class AnimeDetailsViewModel : ObservableObject, IRequiresJikanDat
     [ObservableProperty]
     private double? _communityScore;
 
+    [ObservableProperty]
+    private bool _isFavorite;
+
+    partial void OnIsFavoriteChanged(bool value)
+    {
+        OnPropertyChanged(nameof(FavoriteButtonText));
+    }
+
+    public string FavoriteButtonText =>
+    IsFavorite ? "Retirer des favoris ❤️" : "Ajouter aux favoris 🤍";
+
     public string CommunityScoreDisplay => CommunityScore.HasValue
         ? $"★ {CommunityScore.Value:F1} / 5"
         : "No ratings yet";
 
-    public AnimeDetailsViewModel(INavigationService navigationService, IJikanService jikanService)
+    public AnimeDetailsViewModel(INavigationService navigationService, IJikanService jikanService, IFavorisRepository favorisRepository)
     {
         _navigationService = navigationService;
         _jikanService = jikanService;
+        _favorisRepository = favorisRepository;
     }
 
     public void ReceiveAnimeId(long malId)
     {
         _malId = malId;
+    }
+
+    private void CheckFavorite()
+    {
+        var user = SessionManager.Instance.CurrentUser;
+        if (user == null || !_malId.HasValue)
+            return;
+
+        var fav = _favorisRepository.GetFavorisByUserId(user.Id);
+
+        IsFavorite = fav.Any(f => f.AnimeId == _malId.Value);
     }
 
     [RelayCommand]
@@ -69,7 +95,48 @@ public partial class AnimeDetailsViewModel : ObservableObject, IRequiresJikanDat
         Episodes = _anime.Episodes.HasValue ? $"{_anime.Episodes} episodes" : "Unknown episodes";
         AgeRating = _anime.Rating ?? "No rating";
 
+        CheckFavorite();
+
         IsLoading = false;
+    }
+
+    [RelayCommand]
+    private void ToggleFavorite()
+    {
+        var user = SessionManager.Instance.CurrentUser;
+        if (user == null || !_malId.HasValue)
+            return;
+
+        try
+        {
+            if (IsFavorite)
+            {
+                var existing = _favorisRepository
+                    .GetFavorisByUserId(user.Id)
+                    .FirstOrDefault(f => f.AnimeId == _malId.Value);
+
+                if (existing != null)
+                    _favorisRepository.RemoveFavoris(existing.Id);
+
+                IsFavorite = false;
+            }
+            else
+            {
+                var fav = new CineTrack.Data.Models.Favoris
+                {
+                    UtilisateurId = user.Id,
+                    AnimeId = (int)_malId.Value
+                };
+
+                _favorisRepository.AddFavoris(fav);
+
+                IsFavorite = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Favorite error: {ex.Message}");
+        }
     }
 
     [RelayCommand]

@@ -11,6 +11,7 @@ namespace CineTrack.Data.Repositories.Interfaces
     {
         UtilisateurAnime? Get(int utilisateurId, int animeId);
         List<UtilisateurAnime> GetByUtilisateur(int utilisateurId);
+        List<UtilisateurAnime> GetByMalId(int MalId);
         void Add(UtilisateurAnime entry);
         void Update(UtilisateurAnime entry);
         void Delete(UtilisateurAnime entry);

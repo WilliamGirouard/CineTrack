@@ -15,6 +15,8 @@
         <conv:BoolToVisibilityInverseConverter x:Key="BoolToVisInverseConverter"/>
         <conv:StringToVisibilityConverter      x:Key="StringToVisConverter"/>
         <conv:LoadingTextConverter             x:Key="LoadingTextConverter"/>
+        <conv:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+        <conv:FavoriteColorConverter x:Key="FavoriteColorConverter"/>
 
         <DataTemplate DataType="{x:Type authVm:SignInViewModel}">
             <authV:SignInView/>

@@ -1,11 +1,9 @@
 ﻿using CineTrack.Data.Context;
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CineTrack.Data.Repositories
 {
@@ -30,14 +28,26 @@ namespace CineTrack.Data.Repositories
             _context.SaveChanges();
         }
 
-        public UtilisateurAnime? Get(int utilisateurId, int animeId)
+        public UtilisateurAnime? Get(int utilisateurId, int malId)
         {
-            return _context.UtilisateurAnimes.FirstOrDefault(ua => ua.UtilisateurId == utilisateurId && ua.AnimeId == animeId);
+            return _context.UtilisateurAnimes
+                .FirstOrDefault(ua => ua.UtilisateurId == utilisateurId && ua.MalId == malId);
         }
 
         public List<UtilisateurAnime> GetByUtilisateur(int utilisateurId)
         {
-            return _context.UtilisateurAnimes.Where(ua => ua.UtilisateurId == utilisateurId).ToList();
+            return _context.UtilisateurAnimes
+                .Where(ua => ua.UtilisateurId == utilisateurId)
+                .Include(ua => ua.Utilisateur)
+                .ToList();
+        }
+
+        public List<UtilisateurAnime> GetByMalId(int malId)
+        {
+            return _context.UtilisateurAnimes
+                .Where(ua => ua.MalId == malId)
+                .Include(ua => ua.Utilisateur)
+                .ToList();
         }
 
         public void Update(UtilisateurAnime entry)

@@ -47,7 +47,7 @@
 
         <!-- CONTENT -->
         <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Hidden"
                       Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisInverseConverter}}">
             <Grid Margin="40,30">
                 <Grid.ColumnDefinitions>
@@ -85,6 +85,22 @@
                                        Margin="0,4,0,0"/>
                         </StackPanel>
                     </Border>
+
+                    <!-- Favorite -->
+                    <Button Command="{Binding ToggleFavoriteCommand}"
+                        Width="160"
+                        Height="36"
+                        Margin="0,10,0,0"
+                        Background="{Binding IsFavorite, Converter={StaticResource FavoriteColorConverter}}"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand">
+
+                        <TextBlock Text="{Binding FavoriteButtonText}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="White"/>
+                    </Button>
 
                     <!-- Episode count badge -->
                     <Border Background="#0f3460"

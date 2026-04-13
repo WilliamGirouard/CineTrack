@@ -1,5 +1,4 @@
 ﻿using CineTrack.Data.Models;
-using CineTrack.Data.Repositories;
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services.Interfaces;
 using System;
@@ -11,34 +10,32 @@ namespace CineTrack.Data.Services
     public class UtilisateurAnimeService : IUtilisateurAnimeService
     {
         private readonly IUtilisateurAnimeRepository _repository;
-        private readonly IAnimeRepository _animeRepository;
 
-        public UtilisateurAnimeService(IUtilisateurAnimeRepository repository, IAnimeRepository animeRepository)
+        public UtilisateurAnimeService(IUtilisateurAnimeRepository repository)
         {
             _repository = repository;
-            _animeRepository = animeRepository;
         }
 
         public List<UtilisateurAnime> GetByUtilisateur(int utilisateurId)
         {
-            var entries = _repository.GetByUtilisateur(utilisateurId);
-            foreach (var entry in entries)
-            {
-                entry.Anime = _animeRepository.GetAnimeById(entry.AnimeId);
-            }
-            return entries;
+            return _repository.GetByUtilisateur(utilisateurId);
         }
 
-        public async Task AddEntryAsync(int utilisateurId, int animeId, int? note = null, string? commentaire = null)
+        public List<UtilisateurAnime> GetByMalId(int malId)
         {
-            var existing = _repository.Get(utilisateurId, animeId);
+            return _repository.GetByMalId(malId);
+        }
+
+        public async Task AddEntryAsync(int utilisateurId, int malId, int? note = null, string? commentaire = null)
+        {
+            var existing = _repository.Get(utilisateurId, malId);
             if (existing != null)
                 throw new Exception("Entry already exists for this user-anime pair.");
 
             var entry = new UtilisateurAnime
             {
                 UtilisateurId = utilisateurId,
-                AnimeId = animeId,
+                MalId = malId,
                 Note = note,
                 Commentaire = commentaire,
                 DateAjout = DateTime.UtcNow
@@ -47,9 +44,9 @@ namespace CineTrack.Data.Services
             await Task.Run(() => _repository.Add(entry));
         }
 
-        public async Task UpdateNoteAsync(int utilisateurId, int animeId, int note)
+        public async Task UpdateNoteAsync(int utilisateurId, int malId, int note)
         {
-            var entry = _repository.Get(utilisateurId, animeId);
+            var entry = _repository.Get(utilisateurId, malId);
             if (entry == null)
                 throw new Exception("Entry not found for this user-anime pair.");
 
@@ -57,9 +54,9 @@ namespace CineTrack.Data.Services
             await Task.Run(() => _repository.Update(entry));
         }
 
-        public async Task UpdateCommentaireAsync(int utilisateurId, int animeId, string commentaire)
+        public async Task UpdateCommentaireAsync(int utilisateurId, int malId, string commentaire)
         {
-            var entry = _repository.Get(utilisateurId, animeId);
+            var entry = _repository.Get(utilisateurId, malId);
             if (entry == null)
                 throw new Exception("Entry not found for this user-anime pair.");
 
@@ -67,9 +64,9 @@ namespace CineTrack.Data.Services
             await Task.Run(() => _repository.Update(entry));
         }
 
-        public void DeleteEntry(int utilisateurId, int animeId)
+        public void DeleteEntry(int utilisateurId, int malId)
         {
-            var entry = _repository.Get(utilisateurId, animeId);
+            var entry = _repository.Get(utilisateurId, malId);
             if (entry != null)
             {
                 _repository.Delete(entry);

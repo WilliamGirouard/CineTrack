@@ -22,5 +22,12 @@ namespace CineTrack.Data.Services
             var response = await _api.GetAnimeFullDataAsync(id);
             return response.Data;
         }
+
+        public async Task<List<Anime>> SearchAnimeAsync(string query)
+        {
+            var response = await _api.SearchAnimeAsync(query);
+
+            return response.Data.ToList();
+        }
     }
 }
