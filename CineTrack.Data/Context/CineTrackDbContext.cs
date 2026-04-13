@@ -31,15 +31,9 @@ namespace CineTrack.Data.Context
                 entity.HasIndex(u => u.Username).IsUnique();
             });
 
-            modelBuilder.Entity<Anime>(entity =>
-            {
-                entity.HasIndex(a => a.MalId)
-                .IsUnique();
-            });
-
             modelBuilder.Entity<UtilisateurAnime>(entity =>
             {
-                entity.HasKey(ua => new { ua.UtilisateurId, ua.AnimeId });
+                entity.HasKey(ua => new { ua.UtilisateurId, ua.MalId});
             });
 
         }

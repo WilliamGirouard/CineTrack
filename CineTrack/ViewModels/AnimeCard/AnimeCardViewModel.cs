@@ -17,6 +17,12 @@ namespace CineTrack.ViewModels.AnimeCard
         private readonly INavigationService _navigationService;
         private readonly Anime _anime;
 
+        public AnimeCardViewModel(Anime anime, INavigationService navigationService)
+        {
+            _anime = anime ?? throw new ArgumentNullException(nameof(anime));
+            _navigationService = navigationService;
+        }
+
         // Data from Jikan
         public string Title => _anime.Title;
         public string? ImageUrl => _anime.Images?.JPG?.ImageUrl;
@@ -34,21 +40,16 @@ namespace CineTrack.ViewModels.AnimeCard
 
         // utilise score de l'anime si le score communautaire n'est pas disponible
         public string CommunityScoreDisplay => (_communityScore ?? _anime.Score).HasValue
-            ? $"★ {CommunityScore.Value:F1} / 5"
+            ? $"★ {(_communityScore ?? _anime.Score):F1} / 5"
             : "No ratings yet";
-
-        public AnimeCardViewModel(Anime anime, INavigationService navigationService)
-        {
-            _anime = anime;
-
-            _communityScore = anime.Score.HasValue ? anime.Score.Value / 2: null; // Convert to 5-star scale
-            _navigationService = navigationService;
-        }
 
         [RelayCommand]
         public void SelectAnime()
         {
-            _navigationService.NavigateTo<AnimeDetailsViewModel>(MalId.Value);
+            if (MalId.HasValue)
+            {
+                _navigationService.NavigateTo<AnimeDetailsViewModel>(MalId.Value);
+            }
         }
     }
 }

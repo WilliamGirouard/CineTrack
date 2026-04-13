@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows.Media;
 using CineTrack.Services;
 using CineTrack.Services.Interfaces;
@@ -7,8 +7,12 @@ using CineTrack.Session;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Carousel;
 using CineTrack.ViewModels.Favoris;
+using CineTrack.ViewModels.Search;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using JikanDotNet;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Microsoft.IdentityModel.Protocols;
 
 namespace CineTrack.ViewModels;
@@ -50,6 +54,66 @@ public partial class MainViewModel : ObservableObject
     {
         _navigationService.NavigateTo<FavorisViewModel>();
     }
+
+    [ObservableProperty]
+    private string searchText;
+
+    [ObservableProperty]
+    private ObservableCollection<SearchAnimeCardViewModel> searchResults = new();
+
+    [RelayCommand]
+    private async Task SearchAsync()
+    {
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            SearchResults.Clear();
+            return;
+        }
+
+        var results = await _jikanService.SearchAnimeAsync(SearchText);
+
+        SearchResults.Clear();
+
+        foreach (var anime in results)
+        {
+            SearchResults.Add(new SearchAnimeCardViewModel(anime, _navigationService));
+        }
+    }
+
+    private async Task DebouncedSearch(string query)
+    {
+        await Task.Delay(450);
+
+        if (query != _lastSearchText)
+            return;
+
+        if (string.IsNullOrWhiteSpace(query) || query.Length < 3)
+        {
+            SearchResults.Clear();
+            return;
+        }
+
+        var results = await _jikanService.SearchAnimeAsync(query);
+
+        if (query != _lastSearchText)
+            return;
+
+        SearchResults.Clear();
+
+        foreach (var anime in results)
+            SearchResults.Add(new SearchAnimeCardViewModel(anime, _navigationService));
+    }
+
+    private string _lastSearchText = "";
+    private Task _debounceTask;
+
+    partial void OnSearchTextChanged(string value)
+    {
+        _lastSearchText = value;
+        _debounceTask = DebouncedSearch(value);
+    }
+
+
 
     [RelayCommand]
     private async Task LoadAsync()

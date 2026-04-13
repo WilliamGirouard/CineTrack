@@ -35,10 +35,12 @@ namespace CineTrack.Services
         public void NavigateTo<T>(object param) where T : ObservableObject
         {
             var viewModel = _serviceProvider.GetRequiredService<T>();
+
             if (viewModel is ITransferParameter receiver)
             {
                 receiver.TransferParameter(param);
             }
+
             CurrentView = viewModel;
         }
 

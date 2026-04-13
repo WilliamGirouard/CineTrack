@@ -1,11 +1,14 @@
-﻿using CineTrack.Services;
+using CineTrack.Data.Repositories.Interfaces;
+using CineTrack.Services;
 using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
+using CineTrack.Session;
 using CineTrack.ViewModels.Carousel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using ITransferParameter = CineTrack.Services.Interfaces.ITransferParameter;
 
 namespace CineTrack.ViewModels.AnimeDetails;
@@ -14,6 +17,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 {
     private readonly IJikanService _jikanService;
     private readonly INavigationService _navigationService;
+    private readonly IFavorisRepository _favorisRepository;
 
     private Anime? _anime;
     private long? _malId;
@@ -41,19 +45,36 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     [ObservableProperty]
     private double? _communityScore;
 
+    [ObservableProperty]
+    private bool _isFavorite;
+
+    partial void OnIsFavoriteChanged(bool value)
+    {
+        OnPropertyChanged(nameof(FavoriteButtonText));
+    }
+
+    public string FavoriteButtonText =>
+    _isFavorite ? "Retirer des favoris ❤️" : "Ajouter aux favoris 🤍";
+
     public string CommunityScoreDisplay => CommunityScore.HasValue
         ? $"★ {CommunityScore.Value:F1} / 5"
         : "No ratings yet";
 
-    public AnimeDetailsViewModel(INavigationService navigationService, IJikanService jikanService)
+    public AnimeDetailsViewModel(INavigationService navigationService, IJikanService jikanService, IFavorisRepository favorisRepository)
     {
         _navigationService = navigationService;
         _jikanService = jikanService;
+        _favorisRepository = favorisRepository;
     }
-
-    public void ReceiveAnimeId(long malId)
+    private async Task CheckFavoriteAsync()
     {
-        _malId = malId;
+        var user = SessionManager.Instance.CurrentUser;
+        if (user == null || !_malId.HasValue)
+            return;
+
+        var fav = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
+
+        IsFavorite = fav.Any(f => f.AnimeId == _malId.Value);
     }
 
     [RelayCommand]
@@ -61,8 +82,14 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     {
         IsLoading = true;
 
+        if (!_malId.HasValue)
+        {
+            IsLoading = false;
+            return; // ou gérer l'erreur / charger un état "vide"
+        }
+
         // get the data
-        _anime = await _jikanService.GetAnimeByIdAsync((int)_malId);
+        _anime = await _jikanService.GetAnimeByIdAsync((int)_malId.Value);
 
         // set the properties
         Title = _anime.Title;
@@ -73,7 +100,45 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         CommunityScore = _anime.Score.HasValue ? _anime.Score.Value / 2: null;
         OnPropertyChanged(nameof(CommunityScoreDisplay));
 
+        Debug.WriteLine($"Loading anime with ID: {_malId}");
+        await CheckFavoriteAsync();
+
         IsLoading = false;
+    }
+
+    [RelayCommand]
+    private async Task ToggleFavorite()
+    {
+        var user = SessionManager.Instance.CurrentUser;
+        if (user == null || !_malId.HasValue)
+            return;
+
+        try
+        {
+            var favorisList = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
+            var existing = favorisList.FirstOrDefault(f => f.AnimeId == _malId.Value);
+
+            if (existing != null)
+            {
+                await _favorisRepository.RemoveFavorisAsync(existing.Id);
+                IsFavorite = false;
+            }
+            else
+            {
+                var fav = new CineTrack.Data.Models.Favoris
+                {
+                    UtilisateurId = user.Id,
+                    AnimeId = (int)_malId.Value
+                };
+
+                await _favorisRepository.AddFavorisAsync(fav);
+                IsFavorite = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Favorite error: {ex.Message}");
+        }
     }
 
     [RelayCommand]
@@ -84,9 +149,11 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
     public void TransferParameter(object param)
     {
-        if (param is long malId)
-        {
-            _malId = malId;
-        }
+        if (param is long id)
+            _malId = id;
+        else if (param is int idInt)
+            _malId = idInt;
+
+        _ = LoadAsync();
     }
 }

@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CineTrack.Data.Repositories
 {
@@ -33,12 +31,23 @@ namespace CineTrack.Data.Repositories
 
         public async Task<UtilisateurAnime?> GetAsync(int utilisateurId, int animeId)
         {
-            return await _context.UtilisateurAnimes.FirstOrDefaultAsync(ua => ua.UtilisateurId == utilisateurId && ua.AnimeId == animeId);
+            return await _context.UtilisateurAnimes.FirstOrDefaultAsync(ua => ua.UtilisateurId == utilisateurId && ua.MalId == animeId);
         }
 
         public async Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId)
         {
-            return await _context.UtilisateurAnimes.Where(ua => ua.UtilisateurId == utilisateurId).ToListAsync();
+          return await _context.UtilisateurAnimes
+            .Where(ua => ua.UtilisateurId == utilisateurId)
+            .Include(ua => ua.Utilisateur)
+            .ToListAsync();
+        }
+
+        public async Task<List<UtilisateurAnime>> GetByMalIdAsync(int malId)
+        {
+            return await _context.UtilisateurAnimes
+              .Where(ua => ua.MalId == malId)
+              .Include(ua => ua.Utilisateur)
+              .ToListAsync();
         }
 
         public async Task UpdateAsync(UtilisateurAnime entry)

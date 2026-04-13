@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\Anime\**" />
+    <Compile Remove="Views\Anime\**" />
+    <EmbeddedResource Remove="ViewModels\Anime\**" />
+    <EmbeddedResource Remove="Views\Anime\**" />
+    <None Remove="ViewModels\Anime\**" />
+    <None Remove="Views\Anime\**" />
+    <Page Remove="ViewModels\Anime\**" />
+    <Page Remove="Views\Anime\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.25">

@@ -13,10 +13,12 @@
              xmlns:passwordv="clr-namespace:CineTrack.Views.Auth.PasswordReset"
              xmlns:passwordvm="clr-namespace:CineTrack.ViewModels.Auth.PasswordReset">
     <Application.Resources>
-        <conv:BoolToVisibilityConverter        x:Key="BoolToVisConverter"/>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
         <conv:BoolToVisibilityInverseConverter x:Key="BoolToVisInverseConverter"/>
-        <conv:StringToVisibilityConverter      x:Key="StringToVisConverter"/>
+        <conv:StringToVisibilityConverter      x:Key="StringToVisibilityConverter"/>
         <conv:LoadingTextConverter             x:Key="LoadingTextConverter"/>
+        <conv:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+        <conv:FavoriteColorConverter x:Key="FavoriteColorConverter"/>
 
         <DataTemplate DataType="{x:Type authVm:SignInViewModel}">
             <authV:SignInView/>

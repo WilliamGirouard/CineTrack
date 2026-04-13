@@ -11,6 +11,7 @@ namespace CineTrack.Data.Repositories.Interfaces
     {
         Task<UtilisateurAnime?> GetAsync(int utilisateurId, int animeId);
         Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId);
+        Task<List<UtilisateurAnime>> GetByMalIdAsync(int MalId);
         Task AddAsync(UtilisateurAnime entry);
         Task UpdateAsync(UtilisateurAnime entry);
         Task DeleteAsync(UtilisateurAnime entry);
