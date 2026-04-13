@@ -74,7 +74,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
         var fav = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
 
-        IsFavorite = fav.Any(f => f.AnimeId == _malId.Value);
+        IsFavorite = fav.Any(f => f.AnimeId == (int)_malId.Value);
     }
 
     [RelayCommand]
@@ -116,7 +116,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         try
         {
             var favorisList = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
-            var existing = favorisList.FirstOrDefault(f => f.AnimeId == _malId.Value);
+            var existing = favorisList.FirstOrDefault(f => f.AnimeId == (int)_malId.Value);
 
             if (existing != null)
             {
@@ -137,7 +137,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Favorite error: {ex.Message}");
+            Debug.WriteLine(ex.ToString());
         }
     }
 
