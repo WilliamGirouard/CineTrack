@@ -25,13 +25,22 @@ namespace CineTrack.ViewModels.AnimeCard
         [ObservableProperty]
         private double? _communityScore;
 
-        public string CommunityScoreDisplay => CommunityScore.HasValue
+        [ObservableProperty]
+        private int _rank;
+
+        [ObservableProperty]
+        private bool _showRank = false;
+
+        // utilise score de l'anime si le score communautaire n'est pas disponible
+        public string CommunityScoreDisplay => (_communityScore ?? _anime.Score).HasValue
             ? $"★ {CommunityScore.Value:F1} / 5"
             : "No ratings yet";
 
         public AnimeCardViewModel(Anime anime, INavigationService navigationService)
         {
             _anime = anime;
+
+            _communityScore = anime.Score.HasValue ? anime.Score.Value / 2: null; // Convert to 5-star scale
             _navigationService = navigationService;
         }
 
