@@ -1,4 +1,5 @@
 ﻿using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.ViewModels.AnimeDetails;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

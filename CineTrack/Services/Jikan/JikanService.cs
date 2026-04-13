@@ -57,7 +57,6 @@ namespace CineTrack.Services.Jikan
                 .Take(10)
                 .ToList();
         }
-    }
 
         public async Task<ICollection<Anime>> GetTrendingAnimesAsync()
         {

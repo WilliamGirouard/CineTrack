@@ -1,5 +1,6 @@
 ﻿using CineTrack.Data.Models;
 using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.ViewModels.AnimeDetails;
 using CommunityToolkit.Mvvm.ComponentModel;

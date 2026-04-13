@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using ITransferParameter = CineTrack.Services.Interfaces.ITransferParameter;
 
 namespace CineTrack.ViewModels.AnimeDetails;
@@ -53,7 +54,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     }
 
     public string FavoriteButtonText =>
-    IsFavorite ? "Retirer des favoris ❤️" : "Ajouter aux favoris 🤍";
+    _isFavorite ? "Retirer des favoris ❤️" : "Ajouter aux favoris 🤍";
 
     public string CommunityScoreDisplay => CommunityScore.HasValue
         ? $"★ {CommunityScore.Value:F1} / 5"
@@ -65,19 +66,13 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         _jikanService = jikanService;
         _favorisRepository = favorisRepository;
     }
-
-    public void ReceiveAnimeId(long malId)
-    {
-        _malId = malId;
-    }
-
-    private void CheckFavorite()
+    private async Task CheckFavoriteAsync()
     {
         var user = SessionManager.Instance.CurrentUser;
         if (user == null || !_malId.HasValue)
             return;
 
-        var fav = _favorisRepository.GetFavorisByUserId(user.Id);
+        var fav = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
 
         IsFavorite = fav.Any(f => f.AnimeId == _malId.Value);
     }
@@ -87,8 +82,14 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     {
         IsLoading = true;
 
+        if (!_malId.HasValue)
+        {
+            IsLoading = false;
+            return; // ou gérer l'erreur / charger un état "vide"
+        }
+
         // get the data
-        _anime = await _jikanService.GetAnimeByIdAsync((int)_malId);
+        _anime = await _jikanService.GetAnimeByIdAsync((int)_malId.Value);
 
         // set the properties
         Title = _anime.Title;
@@ -99,13 +100,14 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         CommunityScore = _anime.Score.HasValue ? _anime.Score.Value / 2: null;
         OnPropertyChanged(nameof(CommunityScoreDisplay));
 
-        CheckFavorite();
+        Debug.WriteLine($"Loading anime with ID: {_malId}");
+        await CheckFavoriteAsync();
 
         IsLoading = false;
     }
 
     [RelayCommand]
-    private void ToggleFavorite()
+    private async Task ToggleFavorite()
     {
         var user = SessionManager.Instance.CurrentUser;
         if (user == null || !_malId.HasValue)
@@ -113,15 +115,12 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
         try
         {
-            if (IsFavorite)
+            var favorisList = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
+            var existing = favorisList.FirstOrDefault(f => f.AnimeId == _malId.Value);
+
+            if (existing != null)
             {
-                var existing = _favorisRepository
-                    .GetFavorisByUserId(user.Id)
-                    .FirstOrDefault(f => f.AnimeId == _malId.Value);
-
-                if (existing != null)
-                    _favorisRepository.RemoveFavoris(existing.Id);
-
+                await _favorisRepository.RemoveFavorisAsync(existing.Id);
                 IsFavorite = false;
             }
             else
@@ -132,14 +131,13 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
                     AnimeId = (int)_malId.Value
                 };
 
-                _favorisRepository.AddFavoris(fav);
-
+                await _favorisRepository.AddFavorisAsync(fav);
                 IsFavorite = true;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Favorite error: {ex.Message}");
+            Debug.WriteLine($"Favorite error: {ex.Message}");
         }
     }
 
@@ -151,9 +149,11 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
     public void TransferParameter(object param)
     {
-        if (param is long malId)
-        {
-            _malId = malId;
-        }
+        if (param is long id)
+            _malId = id;
+        else if (param is int idInt)
+            _malId = idInt;
+
+        _ = LoadAsync();
     }
 }

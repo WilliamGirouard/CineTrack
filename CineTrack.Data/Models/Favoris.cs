@@ -19,11 +19,11 @@ namespace CineTrack.Data.Models
         [Required]
         public int AnimeId { get; set; }
 
-        [Required]
-        public string? ImageUrl { get; set; }
+        //[Required]
+        //public string? ImageUrl { get; set; }
 
-        [Required]
-        public string? TitreAnime { get; set; }
+        //[Required]
+        //public string? TitreAnime { get; set; }
 
     }
 }

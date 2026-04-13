@@ -1,5 +1,6 @@
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Services;
+using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.AnimeCard;
@@ -16,10 +17,10 @@ public partial class FavorisViewModel : ObservableObject
     private readonly IJikanService _jikanService;
 
     [ObservableProperty]
-    private ObservableCollection<AnimeCardViewModel> favorisList = new();
+    private ObservableCollection<AnimeCardViewModel> _favorisList = new();
 
     [ObservableProperty]
-    private bool isLoading;
+    private bool _isLoading;
 
     public FavorisViewModel(
         IFavorisRepository favorisRepository,
@@ -43,11 +44,11 @@ public partial class FavorisViewModel : ObservableObject
 
             if (user == null)
             {
-                FavorisList.Clear();
+                _favorisList.Clear();
                 return;
             }
 
-            var favoris = _favorisRepository.GetFavorisByUserId(user.Id);
+            var favoris = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
 
             var list = new List<AnimeCardViewModel>();
 
@@ -59,7 +60,9 @@ public partial class FavorisViewModel : ObservableObject
                 list.Add(new AnimeCardViewModel(anime, _navigationService));
             }
 
-            FavorisList = new ObservableCollection<AnimeCardViewModel>(list);
+            FavorisList.Clear();
+            foreach (var item in list)
+                FavorisList.Add(item);
         }
         catch (Exception ex)
         {
@@ -72,19 +75,18 @@ public partial class FavorisViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void RemoveFavoris(AnimeCardViewModel card)
+    private async Task RemoveFavoris(AnimeCardViewModel card)
     {
         var user = SessionManager.Instance.CurrentUser;
         if (user == null) return;
 
-        var fav = _favorisRepository
-            .GetFavorisByUserId(user.Id)
-            .FirstOrDefault(f => f.AnimeId == card.MalId);
+        var favorisList = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
+        var fav = favorisList.FirstOrDefault(f => f.AnimeId == card.MalId);
 
         if (fav == null) return;
 
-        _favorisRepository.RemoveFavoris(fav.Id);
-        FavorisList.Remove(card);
+        await _favorisRepository.RemoveFavorisAsync(fav.Id);
+        _favorisList.Remove(card);
     }
 
     [RelayCommand]
