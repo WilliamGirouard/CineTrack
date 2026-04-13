@@ -31,7 +31,7 @@ namespace CineTrack.Data.Repositories
 
         public async Task<UtilisateurAnime?> GetAsync(int utilisateurId, int animeId)
         {
-            return await _context.UtilisateurAnimes.FirstOrDefaultAsync(ua => ua.UtilisateurId == utilisateurId && ua.AnimeId == animeId);
+            return await _context.UtilisateurAnimes.FirstOrDefaultAsync(ua => ua.UtilisateurId == utilisateurId && ua.MalId == animeId);
         }
 
         public async Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId)

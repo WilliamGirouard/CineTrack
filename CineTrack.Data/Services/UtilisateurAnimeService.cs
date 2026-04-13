@@ -18,17 +18,12 @@ namespace CineTrack.Data.Services
 
         public async Task<List<UtilisateurAnime>> GetByUtilisateurAsync(int utilisateurId)
         {
-            var entries = await _repository.GetByUtilisateurAsync(utilisateurId);
-            foreach (var entry in entries)
-            {
-                entry.Anime = await _animeRepository.GetAnimeByIdAsync(entry.AnimeId);
-            }
-            return entries;
+            return await _repository.GetByUtilisateurAsync(utilisateurId);
         }
 
         public async Task AddEntryAsync(int utilisateurId, int malId, int? note = null, string? commentaire = null)
         {
-            var existing = await _repository.GetAsync(utilisateurId, animeId);
+            var existing = await _repository.GetAsync(utilisateurId, malId);
             if (existing != null)
                 throw new Exception("Entry already exists for this user-anime pair.");
 
@@ -46,9 +41,9 @@ namespace CineTrack.Data.Services
 
         public async Task UpdateNoteAsync(int utilisateurId, int malId, int note)
         {
-            var entry = await _repository.GetAsync(utilisateurId, animeId);
+            var entry = await _repository.GetAsync(utilisateurId, malId);
             if (entry == null)
-                throw new Exception("Entry not found for this user-anime pair.");
+                throw new Exception("Entry not found.");
 
             entry.Note = note;
             await _repository.UpdateAsync(entry);
@@ -56,21 +51,26 @@ namespace CineTrack.Data.Services
 
         public async Task UpdateCommentaireAsync(int utilisateurId, int malId, string commentaire)
         {
-            var entry = await _repository.GetAsync(utilisateurId, animeId);
+            var entry = await _repository.GetAsync(utilisateurId, malId);
             if (entry == null)
-                throw new Exception("Entry not found for this user-anime pair.");
+                throw new Exception("Entry not found.");
 
             entry.Commentaire = commentaire;
             await _repository.UpdateAsync(entry);
         }
 
-        public async Task DeleteEntryAsync(int utilisateurId, int animeId)
+        public async Task DeleteEntryAsync(int utilisateurId, int malId)
         {
-            var entry = await _repository.GetAsync(utilisateurId, animeId);
+            var entry = await _repository.GetAsync(utilisateurId, malId);
             if (entry != null)
             {
                 await _repository.DeleteAsync(entry);
             }
+        }
+
+        public async Task<List<UtilisateurAnime>> GetByMalIdAsync(int malId)
+        {
+            return await _repository.GetByMalIdAsync(malId);
         }
     }
 }
