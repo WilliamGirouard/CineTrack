@@ -40,7 +40,7 @@ namespace CineTrack.ViewModels.AnimeCard
 
         // utilise score de l'anime si le score communautaire n'est pas disponible
         public string CommunityScoreDisplay => (_communityScore ?? _anime.Score).HasValue
-            ? $"★ {(_communityScore ?? _anime.Score):F1} / 5"
+            ? $"★ {(_communityScore ?? _anime.Score)/2:F1} / 5"
             : "No ratings yet";
 
         [RelayCommand]

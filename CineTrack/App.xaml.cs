@@ -4,23 +4,25 @@ using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services;
 using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services;
-using CineTrack.ViewModels.AnimeDetails;
 using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.ViewModels;
+using CineTrack.ViewModels.AnimeDetails;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Auth.PasswordReset;
 using CineTrack.ViewModels.Favoris;
+using CineTrack.ViewModels.Favoris;
+using CineTrack.ViewModels.Search;
 using CineTrack.Views.Auth;
 using CineTrack.Views.Auth.PasswordReset;
 using CineTrack.Views.Favoris;
+using CineTrack.Views.Search;
 using JikanDotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
-using CineTrack.ViewModels.Favoris;
 
 namespace CineTrack
 {
@@ -91,6 +93,8 @@ namespace CineTrack
             services.AddTransient<ForgottenPasswordView>();
             services.AddTransient<ResetCodeVerificationView>();
             services.AddTransient<ResetPasswordView>();
+            services.AddTransient<SearchViewModel>();
+            services.AddTransient<SearchView>();
 
             ServiceProvider = services.BuildServiceProvider();
 

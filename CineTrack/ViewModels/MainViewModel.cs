@@ -1,6 +1,3 @@
-using System.Collections.ObjectModel;
-using System.Windows.Media;
-using CineTrack.Services;
 using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
@@ -10,16 +7,13 @@ using CineTrack.ViewModels.Favoris;
 using CineTrack.ViewModels.Search;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JikanDotNet;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Microsoft.IdentityModel.Protocols;
+using System.Threading;
 
 namespace CineTrack.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    // to add more, refer to the official github https://github.com/Ervie/jikan.net/blob/master/JikanDotNet/Enumerations/AnimeGenreSearch.cs#L8
     private static readonly List<(string Name, int Id)> Genres = new()
     {
         ("Action", 1),
@@ -33,8 +27,13 @@ public partial class MainViewModel : ObservableObject
     private readonly IJikanService _jikanService;
     private readonly INavigationService _navigationService;
 
-    [ObservableProperty] private bool _isLoading = true;
+    [ObservableProperty] private bool isLoading = true;
+    [ObservableProperty] private string searchText = string.Empty;
+
     public ObservableCollection<CarouselViewModel> Carousels { get; } = new();
+    public ObservableCollection<SearchAnimeCardViewModel> SearchResults { get; } = new();
+
+    private CancellationTokenSource? _searchCts;
 
     public MainViewModel(INavigationService navigationService, IJikanService jikanService)
     {
@@ -55,89 +54,63 @@ public partial class MainViewModel : ObservableObject
         _navigationService.NavigateTo<FavorisViewModel>();
     }
 
-    [ObservableProperty]
-    private string searchText;
-
-    [ObservableProperty]
-    private ObservableCollection<SearchAnimeCardViewModel> searchResults = new();
-
     [RelayCommand]
-    private async Task SearchAsync()
+    private void OpenSearch()
     {
-        if (string.IsNullOrWhiteSpace(SearchText))
-        {
-            SearchResults.Clear();
-            return;
-        }
+        _navigationService.NavigateTo<SearchViewModel>();
+    }
 
-        var results = await _jikanService.SearchAnimeAsync(SearchText);
-
-        SearchResults.Clear();
-
-        foreach (var anime in results)
-        {
-            SearchResults.Add(new SearchAnimeCardViewModel(anime, _navigationService));
-        }
+    partial void OnSearchTextChanged(string value)
+    {
+        _ = DebouncedSearch(value);
     }
 
     private async Task DebouncedSearch(string query)
     {
-        await Task.Delay(450);
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
 
-        if (query != _lastSearchText)
-            return;
-
-        if (string.IsNullOrWhiteSpace(query) || query.Length < 3)
+        try
         {
+            await Task.Delay(300, _searchCts.Token);
+
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+            {
+                SearchResults.Clear();
+                return;
+            }
+
+            var results = await _jikanService.SearchAnimeAsync(query);
+
             SearchResults.Clear();
-            return;
+
+            foreach (var anime in results.Take(8))
+            {
+                SearchResults.Add(new SearchAnimeCardViewModel(anime, _navigationService));
+            }
         }
-
-        var results = await _jikanService.SearchAnimeAsync(query);
-
-        if (query != _lastSearchText)
-            return;
-
-        SearchResults.Clear();
-
-        foreach (var anime in results)
-            SearchResults.Add(new SearchAnimeCardViewModel(anime, _navigationService));
+        catch (TaskCanceledException)
+        {
+        }
     }
-
-    private string _lastSearchText = "";
-    private Task _debounceTask;
-
-    partial void OnSearchTextChanged(string value)
-    {
-        _lastSearchText = value;
-        _debounceTask = DebouncedSearch(value);
-    }
-
-
 
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (Carousels.Count > 0) return; // skip the process if its already loaded
+        if (Carousels.Count > 0) return;
 
         IsLoading = true;
         Carousels.Clear();
 
+        var trending = new CarouselViewModel { GenreName = "Trending" };
+        Carousels.Add(trending);
 
-        var trendingCarousel = new CarouselViewModel { GenreName = "Trending" };
-        Carousels.Add(trendingCarousel);
-
-        try {
+        try
+        {
             var trendingAnimes = await _jikanService.GetTrendingAnimesAsync();
-
-            trendingCarousel.Initialize(trendingAnimes, _navigationService, AnimeSortType.Trending);
-
-
-
-        } catch (Exception ex) {
-            /* skip genre on failure */
+            trending.Initialize(trendingAnimes, _navigationService, AnimeSortType.Trending);
         }
-
+        catch { }
 
         foreach (var (name, id) in Genres)
         {
@@ -146,18 +119,11 @@ public partial class MainViewModel : ObservableObject
 
             try
             {
-                await Task.Delay(600); // respect Jikan's rate limit
+                await Task.Delay(600);
                 var animes = await _jikanService.GetAnimesByGenreAsync(id);
-
-                carousel.Initialize(animes, _navigationService, AnimeSortType.None);
-
                 carousel.Initialize(animes, _navigationService);
-
             }
-            catch
-            {
-                /* skip genre on failure */
-            }
+            catch { }
             finally
             {
                 carousel.IsLoading = false;
