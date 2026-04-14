@@ -20,6 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Converters\StringNotEmptyConverter.cs" />
+    <Compile Remove="Converters\StringNotEmptyToVisibility.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.25">

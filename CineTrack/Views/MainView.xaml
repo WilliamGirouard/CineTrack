@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:CineTrack.Views"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -26,16 +25,29 @@
                            FontWeight="Bold"
                            VerticalAlignment="Center"/>
 
-                <TextBox Width="250"
-                         Height="32"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"
-                         Background="#0f3460"
-                         Foreground="#888"
-                         CaretBrush="White"
-                         BorderBrush="#0f3460"
-                         Padding="10,0"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                <!-- SEARCH BAR -->
+                <Grid Width="300"
+                      Height="32"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+
+                    <TextBox Background="#0f3460"
+                             Foreground="#888"
+                             CaretBrush="White"
+                             BorderBrush="#0f3460"
+                             Padding="10,0"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Button Content="⚙"
+                            Width="32"
+                            Height="32"
+                            HorizontalAlignment="Right"
+                            Background="#e94560"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Command="{Binding OpenSearchCommand}"/>
+                </Grid>
 
                 <Button Content="Mes favoris"
                         Width="110"
@@ -186,7 +198,6 @@
                                                VerticalAlignment="Bottom"
                                                Margin="8,0,0,2"
                                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}"/>
-
                                 </StackPanel>
 
                                 <!-- Carousel row -->

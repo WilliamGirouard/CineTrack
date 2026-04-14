@@ -21,7 +21,7 @@ public partial class FavorisViewModel : ObservableObject
     private ObservableCollection<AnimeCardViewModel> _favorisList = new();
 
     [ObservableProperty]
-    private bool _isLoading;
+    private bool _isLoading; 
 
     public FavorisViewModel(
         IFavorisRepository favorisRepository,
