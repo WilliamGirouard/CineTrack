@@ -19,6 +19,8 @@ namespace CineTrack.Data.Context
         public DbSet<UtilisateurAnime> UtilisateurAnimes { get; set; }
         public DbSet<Favoris> Favoris { get; set; }
 
+        public DbSet<Commentaire> Commentaires { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
