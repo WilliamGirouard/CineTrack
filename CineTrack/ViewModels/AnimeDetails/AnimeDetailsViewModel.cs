@@ -1,3 +1,4 @@
+using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Services;
 using CineTrack.Services.Interfaces;
@@ -6,7 +7,7 @@ using CineTrack.Session;
 using CineTrack.ViewModels.Carousel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JikanDotNet;
+using JikanAnime = JikanDotNet.Anime;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ITransferParameter = CineTrack.Services.Interfaces.ITransferParameter;
@@ -18,8 +19,9 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     private readonly IJikanService _jikanService;
     private readonly INavigationService _navigationService;
     private readonly IFavorisRepository _favorisRepository;
+    private readonly ICommentaireRepository _commentaireRepository;
 
-    private Anime? _anime;
+    private JikanAnime? _anime;
     private long? _malId;
 
     [ObservableProperty]
@@ -48,6 +50,12 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     [ObservableProperty]
     private bool _isFavorite;
 
+    [ObservableProperty]
+    private ObservableCollection<Commentaire> _commentaires = new();
+
+    [ObservableProperty]
+    private string _newComment = string.Empty;
+
     partial void OnIsFavoriteChanged(bool value)
     {
         OnPropertyChanged(nameof(FavoriteButtonText));
@@ -60,11 +68,12 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         ? $"★ {CommunityScore.Value:F1} / 5"
         : "No ratings yet";
 
-    public AnimeDetailsViewModel(INavigationService navigationService, IJikanService jikanService, IFavorisRepository favorisRepository)
+    public AnimeDetailsViewModel(INavigationService navigationService, IJikanService jikanService, IFavorisRepository favorisRepository, ICommentaireRepository commentaireRepository)
     {
         _navigationService = navigationService;
         _jikanService = jikanService;
         _favorisRepository = favorisRepository;
+        _commentaireRepository = commentaireRepository;
     }
     private async Task CheckFavoriteAsync()
     {
@@ -102,6 +111,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
         Debug.WriteLine($"Loading anime with ID: {_malId}");
         await CheckFavoriteAsync();
+        await LoadCommentsAsync();
 
         IsLoading = false;
     }
@@ -155,5 +165,76 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             _malId = idInt;
 
         _ = LoadAsync();
+    }
+
+    private async Task LoadCommentsAsync()
+    {
+        var currentUser = SessionManager.Instance.CurrentUser;
+
+        try
+        {
+            var commentaires = await _commentaireRepository.GetCommentairesByAnimeIdAsync((int)_anime.MalId);
+
+            Commentaires.Clear();
+            foreach (var commentaire in commentaires)
+            {
+                commentaire.IsCurrentUserAuthor = (currentUser != null && commentaire.UtilisateurId == currentUser.Id);
+                Commentaires.Add(commentaire);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Erreurs lors du chargement des commentaires : {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private async Task AddCommentsAsync()
+    {
+        var currentUser = SessionManager.Instance.CurrentUser;
+        if (currentUser == null || string.IsNullOrEmpty(NewComment) || _anime is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var commentaire = new Commentaire
+            {
+                AnimeId = (int)_anime.MalId,
+                UtilisateurId = currentUser.Id,
+                Texte = NewComment,
+                DateCreation = DateTime.Now,
+                IsCurrentUserAuthor = true
+            };
+
+            await _commentaireRepository.AddCommentaireAsync(commentaire);
+            NewComment = string.Empty;
+            await LoadCommentsAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Erreur lors de l'ajout du commentaire : {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteCommentsAsync(Commentaire commentaire)
+    {
+        Console.WriteLine($"Tentative de suppression du commentaire ID: {commentaire.Id}, Auteur ID: {commentaire.UtilisateurId}"); 
+
+        var currentUser = SessionManager.Instance.CurrentUser;
+        if (currentUser == null || commentaire.UtilisateurId != currentUser.Id)
+            return;
+
+        try
+        {
+            await _commentaireRepository.RemoveCommentaireAsync(commentaire.Id);
+            await LoadCommentsAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Erreur lors de la suppression du commentaire : {ex.Message}");
+        }
     }
 }
