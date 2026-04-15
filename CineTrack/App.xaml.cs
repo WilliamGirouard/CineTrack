@@ -11,7 +11,6 @@ using CineTrack.ViewModels.AnimeDetails;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Auth.PasswordReset;
 using CineTrack.ViewModels.Favoris;
-using CineTrack.ViewModels.Favoris;
 using CineTrack.ViewModels.Search;
 using CineTrack.Views.Auth;
 using CineTrack.Views.Auth.PasswordReset;
@@ -68,6 +67,8 @@ namespace CineTrack
             services.AddScoped<IAnimeRepository, AnimeRepository>();
 
             services.AddScoped<IFavorisRepository, FavorisRepository>();
+
+            services.AddScoped<ICommentaireRepository, CommentaireRepository>();
 
             // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();
