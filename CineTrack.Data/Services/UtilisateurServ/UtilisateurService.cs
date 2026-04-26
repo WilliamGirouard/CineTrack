@@ -1,9 +1,16 @@
 ﻿using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
-using CineTrack.Data.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CineTrack.Data.Services.EmailServ;
+using CineTrack.Data.Services.HashServ;
+using CineTrack.Data.Services.PasswordResetStoreServ;
 
-
-namespace CineTrack.Data.Services
+namespace CineTrack.Data.Services.UtilisateurServ
 {
     public class UtilisateurService : IUtilisateurService
     {

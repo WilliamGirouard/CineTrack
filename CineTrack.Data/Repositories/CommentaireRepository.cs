@@ -25,10 +25,11 @@ namespace CineTrack.Data.Repositories
             await _context.SaveChangesAsync();
             return commentaire;
         }
-        public async Task<List<Commentaire>> GetCommentairesByAnimeIdAsync(int animeId)
+
+        public async Task<List<Commentaire>> GetCommentairesByAnimeIdAsync(long malId)
         {
             return await _context.Commentaires
-               .Where(c => c.AnimeId == animeId)
+               .Where(c => c.MalId == malId)
                .Include(c => c.Utilisateur)
                .OrderByDescending(c => c.DateCreation)
                .ToListAsync();

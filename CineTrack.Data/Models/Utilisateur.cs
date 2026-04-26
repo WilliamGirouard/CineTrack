@@ -30,11 +30,6 @@ namespace CineTrack.Data.Models
         [EmailAddress]
         [MaxLength(100)]
         public string Email { get; set; }
-        public DateTime DateCreation { get; set; }
-
-        public Utilisateur()
-        {
-            DateCreation = DateTime.Now;
-        }
+        public DateTime DateCreation { get; set; } = DateTime.Now;
     }
 }
