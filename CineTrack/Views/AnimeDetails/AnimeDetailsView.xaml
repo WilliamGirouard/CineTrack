@@ -65,13 +65,33 @@
                                Stretch="UniformToFill"/>
                     </Border>
 
+                    <!-- MAL Score -->
+                    <Border Background="#16213e"
+                            CornerRadius="8"
+                            Margin="0,10,0,0"
+                            Padding="12,10">
+                        <StackPanel>
+                            <TextBlock Text="Global Rating"
+                                       Foreground="#888"
+                                       FontSize="10"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding JikanScore}"
+                                       Foreground="#f0c040"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
                     <!-- Community score -->
                     <Border Background="#16213e"
                             CornerRadius="8"
                             Margin="0,16,0,0"
                             Padding="12,10">
                         <StackPanel>
-                            <TextBlock Text="COMMUNITY SCORE"
+                            <TextBlock Text="CineTrack Community Rating"
                                        Foreground="#888"
                                        FontSize="10"
                                        FontWeight="Bold"
@@ -85,21 +105,135 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Favorite -->
-                    <Button Command="{Binding ToggleFavoriteCommand}"
-                        Width="160"
-                        Height="36"
-                        Margin="0,10,0,0"
-                        Background="{Binding IsFavorite, Converter={StaticResource FavoriteColorConverter}}"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand">
+                    
 
-                        <TextBlock Text="{Binding FavoriteButtonText}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Foreground="White"/>
-                    </Button>
+                    <!-- User rating -->
+                    <Border Background="#16213e"
+                            CornerRadius="8"
+                            Margin="0,10,0,0"
+                            Padding="12,10">
+                        <StackPanel>
+                            <TextBlock Text="YOUR RATING"
+                                       Foreground="#888"
+                                       FontSize="10"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,8"/>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <Button Content="1"
+                                        Command="{Binding RateCommand}"
+                                        CommandParameter="1"
+                                        Width="36" Height="36" Margin="2,0"
+                                        FontSize="13" FontWeight="Bold"
+                                        BorderThickness="0" Cursor="Hand"
+                                        Foreground="White">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#0f3460"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UserRating}" Value="1">
+                                                    <Setter Property="Background" Value="#e94560"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Content="2"
+                                        Command="{Binding RateCommand}"
+                                        CommandParameter="2"
+                                        Width="36" Height="36" Margin="2,0"
+                                        FontSize="13" FontWeight="Bold"
+                                        BorderThickness="0" Cursor="Hand"
+                                        Foreground="White">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#0f3460"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UserRating}" Value="2">
+                                                    <Setter Property="Background" Value="#e94560"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Content="3"
+                                        Command="{Binding RateCommand}"
+                                        CommandParameter="3"
+                                        Width="36" Height="36" Margin="2,0"
+                                        FontSize="13" FontWeight="Bold"
+                                        BorderThickness="0" Cursor="Hand"
+                                        Foreground="White">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#0f3460"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UserRating}" Value="3">
+                                                    <Setter Property="Background" Value="#e94560"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Content="4"
+                                        Command="{Binding RateCommand}"
+                                        CommandParameter="4"
+                                        Width="36" Height="36" Margin="2,0"
+                                        FontSize="13" FontWeight="Bold"
+                                        BorderThickness="0" Cursor="Hand"
+                                        Foreground="White">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#0f3460"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UserRating}" Value="4">
+                                                    <Setter Property="Background" Value="#e94560"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Content="5"
+                                        Command="{Binding RateCommand}"
+                                        CommandParameter="5"
+                                        Width="36" Height="36" Margin="2,0"
+                                        FontSize="13" FontWeight="Bold"
+                                        BorderThickness="0" Cursor="Hand"
+                                        Foreground="White">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#0f3460"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UserRating}" Value="5">
+                                                    <Setter Property="Background" Value="#e94560"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Favorite -->
+                    <!-- Favorite -->
+                    <Border CornerRadius="8"
+                            Margin="0,10,0,0"
+                            ClipToBounds="True">
+                        <Button Command="{Binding ToggleFavoriteCommand}"
+                                Background="{Binding IsFavorite, Converter={StaticResource FavoriteColorConverter}}"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Padding="12,10">
+                            <TextBlock Text="{Binding FavoriteButtonText}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="White"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"/>
+                        </Button>
+                    </Border>
 
                     <!-- Episode count badge -->
                     <Border Background="#0f3460"
@@ -268,7 +402,7 @@
                                                            Foreground="#e94560"
                                                            FontSize="13"
                                                            VerticalAlignment="Center"/>
-                                                <TextBlock Text="{Binding Utilisateur.Username}"
+                                                <TextBlock Text="{Binding Username}"
                                                            Foreground="#e94560"
                                                            FontSize="13"
                                                            FontWeight="Bold"
@@ -281,6 +415,13 @@
                                                            Foreground="#555"
                                                            FontSize="12"
                                                            VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding RatingDisplay}"
+                                                           Foreground="#f0c040"
+                                                           FontSize="12"
+                                                           FontWeight="Bold"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,0,0"
+                                                           Visibility="{Binding RatingDisplay, Converter={StaticResource StringNotEmptyToVisibilityConverter}}"/>
                                             </StackPanel>
 
                                             <!-- Delete button (only if author) -->

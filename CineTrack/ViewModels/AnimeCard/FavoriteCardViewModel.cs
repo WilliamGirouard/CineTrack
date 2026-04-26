@@ -10,7 +10,7 @@ public partial class FavoriteCardViewModel : ObservableObject
 {
     private readonly INavigationService _navigationService;
 
-    public long AnimeId { get; }
+    public long MalId { get; }
 
     [ObservableProperty]
     private string title = "Loading...";
@@ -20,7 +20,7 @@ public partial class FavoriteCardViewModel : ObservableObject
 
     public FavoriteCardViewModel(Favoris fav, INavigationService navigationService, IJikanService jikanService)
     {
-        AnimeId = fav.AnimeId;
+        MalId = fav.MalId;
         _navigationService = navigationService;
 
         _ = LoadAsync(jikanService);
@@ -28,7 +28,7 @@ public partial class FavoriteCardViewModel : ObservableObject
 
     private async Task LoadAsync(IJikanService jikanService)
     {
-        var anime = await jikanService.GetAnimeByIdAsync((int)AnimeId);
+        var anime = await jikanService.GetAnimeByIdAsync((int)MalId);
 
         if (anime == null)
         {
@@ -43,6 +43,6 @@ public partial class FavoriteCardViewModel : ObservableObject
     [RelayCommand]
     private void Open()
     {
-        _navigationService.NavigateTo<AnimeDetailsViewModel>(AnimeId);
+        _navigationService.NavigateTo<AnimeDetailsViewModel>(MalId);
     }
 }
