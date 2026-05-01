@@ -5,12 +5,14 @@ using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.Carousel;
+using CineTrack.ViewModels.Favoris;
+using CineTrack.ViewModels.Watch;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JikanAnime = JikanDotNet.Anime;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ITransferParameter = CineTrack.Services.Interfaces.ITransferParameter;
+using JikanAnime = JikanDotNet.Anime;
 
 namespace CineTrack.ViewModels.AnimeDetails;
 
@@ -56,6 +58,13 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     [ObservableProperty]
     private string _newComment = string.Empty;
 
+    // Liste des épisodes pour la simulation de visionnage
+    [ObservableProperty]
+    private ObservableCollection<int> _episodeList = new();
+
+    // Source de navigation (main ou favoris)
+    private string _source = "main";
+
     partial void OnIsFavoriteChanged(bool value)
     {
         OnPropertyChanged(nameof(FavoriteButtonText));
@@ -75,6 +84,8 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         _favorisRepository = favorisRepository;
         _commentaireRepository = commentaireRepository;
     }
+
+    // Vérifie si l'anime est dans les favoris de l'utilisateur
     private async Task CheckFavoriteAsync()
     {
         var user = SessionManager.Instance.CurrentUser;
@@ -100,6 +111,12 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         // get the data
         _anime = await _jikanService.GetAnimeByIdAsync((int)_malId.Value);
 
+        if (_anime == null)
+        { 
+            IsLoading = false;
+            return;
+        }
+
         // set the properties
         Title = _anime.Title;
         ImageUrl = _anime.Images?.JPG?.ImageUrl;
@@ -109,11 +126,34 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         CommunityScore = _anime.Score.HasValue ? _anime.Score.Value / 2: null;
         OnPropertyChanged(nameof(CommunityScoreDisplay));
 
+        // Génère la liste des épisodes
+        if (_anime.Episodes.HasValue)
+        {
+            EpisodeList.Clear();
+            for (int i = 1; i <= _anime.Episodes.Value; i++)
+            {
+                EpisodeList.Add(i);
+            }
+
+        }
+
         Debug.WriteLine($"Loading anime with ID: {_malId}");
         await CheckFavoriteAsync();
         await LoadCommentsAsync();
 
         IsLoading = false;
+    }
+
+    // Navigue vers la page de visionnage de l'épisode sélectionné
+    [RelayCommand]
+    private async Task WatchEpisodeDetails(int episodeNumber)
+    {
+        _navigationService.NavigateTo<WatchViewModel>(new WatchNavParam
+        {
+            MalId = _malId!.Value,
+            EpisodeNumber = episodeNumber,
+            Source = _source
+        });
     }
 
     [RelayCommand]
@@ -151,21 +191,39 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         }
     }
 
+
+
+    // Retourne vers la page précédente selon la source de navigation
     [RelayCommand]
-    private void GoBack()
+    private async Task GoBack()
     {
-        _navigationService.NavigateTo<MainViewModel>();
+        if (_source == "favoris")
+            _navigationService.NavigateTo<FavorisViewModel>();
+        else
+            _navigationService.NavigateTo<MainViewModel>();
     }
 
-    public void TransferParameter(object param)
-    {
-        if (param is long id)
-            _malId = id;
-        else if (param is int idInt)
-            _malId = idInt;
 
-        _ = LoadAsync();
+   public void TransferParameter(object param)
+{
+    if (param is AnimeNavParam navParam)
+    {
+        _malId = navParam.MalId;
+        _source = navParam.Source;
     }
+    else if (param is long id)
+    {
+        _malId = id;
+        _source = "main";
+    }
+    else if (param is int idInt)
+    {
+        _malId = idInt;
+        _source = "main";
+    }
+
+    _ = LoadAsync();
+}
 
     private async Task LoadCommentsAsync()
     {

@@ -28,6 +28,9 @@ namespace CineTrack.ViewModels.AnimeCard
         public string? ImageUrl => _anime.Images?.JPG?.ImageUrl;
         public long? MalId => _anime.MalId;
 
+        // Source de navigation (main ou favoris)
+        public string Source { get; set; } = "main";
+
         // Our Data
         [ObservableProperty]
         private double? _communityScore;
@@ -40,7 +43,7 @@ namespace CineTrack.ViewModels.AnimeCard
 
         // utilise score de l'anime si le score communautaire n'est pas disponible
         public string CommunityScoreDisplay => (_communityScore ?? _anime.Score).HasValue
-            ? $"★ {(_communityScore ?? _anime.Score)/2:F1} / 5"
+            ? $"★ {(_communityScore ?? _anime.Score) / 2:F1} / 5"
             : "No ratings yet";
 
         [RelayCommand]
@@ -48,7 +51,12 @@ namespace CineTrack.ViewModels.AnimeCard
         {
             if (MalId.HasValue)
             {
-                _navigationService.NavigateTo<AnimeDetailsViewModel>(MalId.Value);
+                _navigationService.NavigateTo<AnimeDetailsViewModel>(new AnimeNavParam
+                { 
+                    MalId = MalId.Value,
+                    Source = Source
+                
+                });
             }
         }
     }
