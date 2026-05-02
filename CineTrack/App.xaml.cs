@@ -19,11 +19,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
+<<<<<<< HEAD
+using CineTrack.ViewModels.Watch;
+using CineTrack.Views.Watch;
+=======
 using CineTrack.Data.Services.EmailServ;
 using CineTrack.Data.Services.NoteServ;
 using CineTrack.Data.Services.PasswordResetStoreServ;
 using CineTrack.Data.Services.UtilisateurServ;
-using CineTrack.Data.Services.AdminServ;
 
 namespace CineTrack
 {
@@ -73,6 +76,7 @@ namespace CineTrack
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IJikanService, JikanService>();
             services.AddSingleton<MainViewModel>();
+            services.AddSingleton<WatchViewModel>();
 
             //PasswordResetCodeStorage
             services.AddSingleton<PasswordResetStore>();
@@ -84,6 +88,7 @@ namespace CineTrack
             services.AddTransient<ForgottenPasswordViewModel>();
             services.AddTransient<ResetCodeVerificationViewModel>();
             services.AddTransient<ResetPasswordViewModel>();
+            services.AddTransient<WatchView>();
 
             // ── Views (Transient) ──────────────────────────────────────────────
             services.AddTransient<MainWindow>();

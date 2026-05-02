@@ -72,7 +72,10 @@ public partial class FavorisViewModel : ObservableObject
 
             foreach (var anime in animes.Where(a => a != null))
             {
-                FavorisList.Add(new AnimeCardViewModel(anime, _navigationService));
+                FavorisList.Add(new AnimeCardViewModel(anime, _navigationService) 
+                { 
+                    Source = "favoris" // source pour le retour
+                });
             }
         }
         finally
@@ -97,7 +100,7 @@ public partial class FavorisViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Retour()
+    private async Task Retour()
     {
         _navigationService.NavigateTo<MainViewModel>();
     }

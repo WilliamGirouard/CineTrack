@@ -13,7 +13,9 @@
              xmlns:passwordv="clr-namespace:CineTrack.Views.Auth.PasswordReset"
              xmlns:passwordvm="clr-namespace:CineTrack.ViewModels.Auth.PasswordReset"
              xmlns:searchVm="clr-namespace:CineTrack.ViewModels.Search"
-             xmlns:searchV="clr-namespace:CineTrack.Views.Search">
+             xmlns:searchV="clr-namespace:CineTrack.Views.Search"
+             xmlns:watchVm="clr-namespace:CineTrack.ViewModels.Watch"
+             xmlns:watchV="clr-namespace:CineTrack.Views.Watch">
 
     <Application.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
@@ -50,6 +52,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type searchVm:SearchViewModel}">
             <searchV:SearchView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type watchVm:WatchViewModel}">
+            <watchV:WatchView/>
         </DataTemplate>
 
 
