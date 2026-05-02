@@ -19,14 +19,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
-<<<<<<< HEAD
 using CineTrack.ViewModels.Watch;
 using CineTrack.Views.Watch;
-=======
 using CineTrack.Data.Services.EmailServ;
 using CineTrack.Data.Services.NoteServ;
 using CineTrack.Data.Services.PasswordResetStoreServ;
 using CineTrack.Data.Services.UtilisateurServ;
+using CineTrack.Data.Services.AdminServ;
 
 namespace CineTrack
 {
@@ -50,9 +49,9 @@ namespace CineTrack
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var provider = configuration["DatabaseProvider"];
             if (provider == "SQLite")
-                services.AddDbContext<CineTrackDbContext>(o => o.UseSqlite(connectionString));
+                services.AddDbContextFactory<CineTrackDbContext>(o => o.UseSqlite(connectionString));
             else if (provider == "SqlServer")
-                services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
+                services.AddDbContextFactory<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
             // Email Service
             services.AddSingleton<IEmailService>(new EmailService(
                 emailConfiguration["mail"]!,

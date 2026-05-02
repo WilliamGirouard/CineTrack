@@ -186,6 +186,7 @@
                                 BorderThickness="0"
                                 Cursor="Hand"
                                 Command="{Binding TogglePasswordVisibilityCommand}"
+                                Click="ToggleButton_Click"
                                 FontSize="15"/>
                     </Grid>
                     <TextBlock Text="Min. 10 caractères, 1 chiffre, 1 caractère spécial"

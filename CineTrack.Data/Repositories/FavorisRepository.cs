@@ -7,28 +7,31 @@ namespace CineTrack.Data.Repositories
 {
     public class FavorisRepository : IFavorisRepository
     {
-        private readonly CineTrackDbContext _context;
+        private readonly IDbContextFactory<CineTrackDbContext> _context;
 
-        public FavorisRepository(CineTrackDbContext context)
+        public FavorisRepository(IDbContextFactory<CineTrackDbContext> context)
         {
             _context = context;
         }
 
         public async Task<List<Favoris>> GetFavorisByUserIdAsync(int userId)
         {
-            return await _context.Favoris.Where(f => f.UtilisateurId == userId).ToListAsync();
+            using var context = _context.CreateDbContext();
+            return await context.Favoris.Where(f => f.UtilisateurId == userId).ToListAsync();
         }
 
         public async Task AddFavorisAsync(Favoris favoris)
         {
-            _context.Favoris.Add(favoris);
-            await _context.SaveChangesAsync();
+            using var context = _context.CreateDbContext();
+            context.Favoris.Add(favoris);
+            await context.SaveChangesAsync();
             Console.WriteLine(@"Favoris ajouté: " + favoris.Id);
         }
 
         public async Task RemoveFavorisAsync(int Id)
         {
-            var favoris = await _context.Favoris.FindAsync(Id);
+            using var context = _context.CreateDbContext();
+            var favoris = await context.Favoris.FindAsync(Id);
             if (favoris == null)
             {
                 Console.WriteLine(@"Favoris non trouvé: " + Id);
@@ -36,8 +39,8 @@ namespace CineTrack.Data.Repositories
             }
             else
             {
-                _context.Favoris.Remove(favoris);
-                await _context.SaveChangesAsync();
+                context.Favoris.Remove(favoris);
+                await context.SaveChangesAsync();
                 Console.WriteLine(@"Favoris supprimé: " + Id);
             }
                 
