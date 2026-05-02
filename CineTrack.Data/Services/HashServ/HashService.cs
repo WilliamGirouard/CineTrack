@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CineTrack.Data.Services
+namespace CineTrack.Data.Services.HashServ
 {
     public static class HashService
     {

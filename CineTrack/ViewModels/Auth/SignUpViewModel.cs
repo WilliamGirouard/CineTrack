@@ -1,10 +1,10 @@
 using CineTrack.Data.Models;
-using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services.Interfaces;
 using CineTrack.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel.DataAnnotations;
+using CineTrack.Data.Services.UtilisateurServ;
 
 namespace CineTrack.ViewModels.Auth
 {

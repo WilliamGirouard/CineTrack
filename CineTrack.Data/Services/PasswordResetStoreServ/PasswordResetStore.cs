@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CineTrack.Data.Services
+namespace CineTrack.Data.Services.PasswordResetStoreServ
 {
     public class PasswordResetStore
     {

@@ -1,4 +1,3 @@
-using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services.Interfaces;
 using CineTrack.ViewModels.Auth;
 using CineTrack.Views.Auth;
