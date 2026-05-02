@@ -424,7 +424,7 @@
                                                            Visibility="{Binding RatingDisplay, Converter={StaticResource StringNotEmptyToVisibilityConverter}}"/>
                                             </StackPanel>
 
-                                            <!-- Delete button (only if author) -->
+                                            <!-- Delete button (only if author OR ADMIN UPDATE) -->
                                             <Button Content="🗑️"
                                                     HorizontalAlignment="Right"
                                                     Background="Transparent"
@@ -434,7 +434,7 @@
                                                     Command="{Binding DataContext.DeleteCommentsCommand, 
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
-                                                    Visibility="{Binding IsCurrentUserAuthor, 
+                                                    Visibility="{Binding CanDelete, 
                                                                  Converter={StaticResource BoolToVisConverter}}"/>
                                         </Grid>
 

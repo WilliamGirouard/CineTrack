@@ -19,32 +19,35 @@ namespace CineTrack.Data.Services.NoteServ
 
         public async Task RateAsync(int utilisateurId, long malId, int note)
         {
-            var existing = _repository.GetByUserAndAnime(utilisateurId, malId);
+            var existing = await _repository.GetNoteByUserIdAndAnimeIdAsync(utilisateurId, malId);
             if (existing == null)
             {
-                await Task.Run(() => _repository.Add(new Note
+                await _repository.AddNoteAsync(new Note
                 {
                     UtilisateurId = utilisateurId,
                     MalId = malId,
                     NoteUtilisateur = note,
                     DateAdded = DateTime.UtcNow
-                }));
+                });
             }
             else
             {
                 existing.NoteUtilisateur = note;
-                await Task.Run(() => _repository.Update(existing));
+                await _repository.UpdateNoteAsync(existing);
             }
         }
 
-        public double? GetCommunityScore(long malId)
+        public async Task<double?> GetCommunityScoreAsync(long malId)
         {
-            var notes = _repository.GetByAnime(malId);
+            var notes = await _repository.GetNotesByAnimeIdAsync(malId);
             if (notes.Count == 0) return null;
             return notes.Average(r => (double)r.NoteUtilisateur);
         }
 
-        public int? GetNote(int utilisateurId, long malId)
-            => _repository.GetByUserAndAnime(utilisateurId, malId)?.NoteUtilisateur;
+        public async Task<int?> GetNoteAsync(int utilisateurId, long malId)
+        {
+            var note = await _repository.GetNoteByUserIdAndAnimeIdAsync(utilisateurId, malId);
+            return note?.NoteUtilisateur;
+        }
     }
 }

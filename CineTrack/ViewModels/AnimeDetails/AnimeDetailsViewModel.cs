@@ -89,13 +89,13 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         JikanScore = _anime.Score.HasValue ? $"★ {_anime.Score.Value / 2:F1} / 5" : "No score yet";
 
         // Community score from our DB, not Jikan
-        CommunityScore = _noteService.GetCommunityScore(_malId.Value);
+        CommunityScore = await _noteService.GetCommunityScoreAsync(_malId.Value);
         OnPropertyChanged(nameof(CommunityScoreDisplay));
 
         // Load this user's existing rating
         var currentUser = SessionManager.Instance.CurrentUser;
         if (currentUser != null)
-            UserRating = _noteService.GetNote(currentUser.Id, _malId.Value);
+            UserRating = await _noteService.GetNoteAsync(currentUser.Id, _malId.Value);
 
         await CheckFavoriteAsync();
         await LoadCommentsAsync();
@@ -114,7 +114,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         await _noteService.RateAsync(user.Id, _malId.Value, rating);
 
         UserRating = rating;
-        CommunityScore = _noteService.GetCommunityScore(_malId.Value);
+        CommunityScore = await _noteService.GetCommunityScoreAsync(_malId.Value);
         OnPropertyChanged(nameof(CommunityScoreDisplay));
 
         // Refresh comments so rating badge updates
@@ -163,14 +163,15 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     private async Task LoadCommentsAsync()
     {
         var currentUser = SessionManager.Instance.CurrentUser;
+        var isAdmin = currentUser?.Role == EnumRole.admin;
         try
         {
             var commentaires = await _commentaireRepository.GetCommentairesByAnimeIdAsync((long)_anime!.MalId);
             Commentaires.Clear();
             foreach (var commentaire in commentaires)
             {
-                var rating = _noteService.GetNote(commentaire.UtilisateurId, (long)_anime.MalId);
-                Commentaires.Add(new CommentaireViewModel(commentaire, currentUser?.Id, rating));
+                var rating = await _noteService.GetNoteAsync(commentaire.UtilisateurId, (long)_anime.MalId);
+                Commentaires.Add(new CommentaireViewModel(commentaire, currentUser?.Id, rating, isAdmin));
             }
         }
         catch (Exception ex)
@@ -204,7 +205,9 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     private async Task DeleteCommentsAsync(CommentaireViewModel commentaire)
     {
         var currentUser = SessionManager.Instance.CurrentUser;
-        if (currentUser == null || commentaire.UtilisateurId != currentUser.Id) return;
+        if (currentUser == null) return; 
+        
+        if (commentaire.UtilisateurId != currentUser.Id && currentUser.Role != EnumRole.admin) return;
 
         try
         {
