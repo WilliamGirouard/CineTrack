@@ -35,14 +35,18 @@ namespace CineTrack.Data.Repositories
                .ToListAsync();
         }
 
-        public async Task RemoveCommentaireAsync(int id)
+        public async Task RemoveCommentaireAsync(int commentaireId)
         {
-            var commentaire = await _context.Commentaires.FindAsync(id);
+            var commentaire = await _context.Commentaires.FindAsync(commentaireId);
             if (commentaire != null)
             {
                 _context.Commentaires.Remove(commentaire);
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<Commentaire?> GetCommentaireAsync(int commentaireId)
+        {
+            return await _context.Commentaires.FindAsync(commentaireId);
         }
     }
 }

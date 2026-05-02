@@ -4,8 +4,8 @@ namespace CineTrack.Data.Repositories.Interfaces;
 
 public interface INoteRepository
 {
-    Note? GetByUserAndAnime(int utilisateurId, long malId);
-    List<Note> GetByAnime(long malId);
-    void Add(Note note);
-    void Update(Note note);
+    Task<Note?> GetNoteByUserAndAnime(int utilisateurId, long malId);
+    Task<List<Note>> GetNotesByAnimeAsync(long malId);
+    Task AddNoteAsync(Note note);
+    Task UpdateNoteAsync(Note note);
 }

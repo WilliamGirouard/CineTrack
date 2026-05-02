@@ -31,5 +31,8 @@ namespace CineTrack.Data.Models
         [MaxLength(100)]
         public string Email { get; set; }
         public DateTime DateCreation { get; set; } = DateTime.Now;
+
+        // Role par défaut = user, par la suite on peut privilégié un compte ou à la création mettre admin
+        public EnumRole Role { get; set; } = EnumRole.user;
     }
 }

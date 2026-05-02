@@ -5,6 +5,7 @@ namespace CineTrack.Data.Repositories.Interfaces
     {
         Task<List<Commentaire>> GetCommentairesByAnimeIdAsync(long malId);
         Task<Commentaire> AddCommentaireAsync(Commentaire commentaire);
-        Task RemoveCommentaireAsync(int id);
+        Task<Commentaire?> GetCommentaireAsync(int commentaireId);
+        Task RemoveCommentaireAsync(int commentaireId);
     }
 }
