@@ -1,5 +1,6 @@
 ﻿using CineTrack.ViewModels.Favoris;
 using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 using System.Windows.Controls;
 
 
@@ -13,8 +14,13 @@ namespace CineTrack.Views.Favoris
         public FavorisView()
         {
             InitializeComponent();
-            DataContext = App.ServiceProvider.GetRequiredService<FavorisViewModel>();
+            DataContextChanged += OnDataContextChanged;
         }
 
+        private async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (DataContext is FavorisViewModel vm)
+                await vm.LoadFavorisAsync();
+        }
     }
 }
