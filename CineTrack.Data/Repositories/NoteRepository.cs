@@ -6,35 +6,70 @@ using System.Text;
 using System.Threading.Tasks;
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CineTrack.Data.Repositories
 {
     public class NoteRepository : INoteRepository
     {
-        private readonly CineTrackDbContext _context;
+        private readonly IDbContextFactory<CineTrackDbContext> _context;
 
-        public NoteRepository(CineTrackDbContext context)
+        public NoteRepository(IDbContextFactory<CineTrackDbContext> context)
         {
             _context = context;
         }
 
-        public Note? GetByUserAndAnime(int utilisateurId, long malId)
-            => _context.Notes.FirstOrDefault(r =>
-                r.UtilisateurId == utilisateurId && r.MalId == malId);
-
-        public List<Note> GetByAnime(long malId)
-            => _context.Notes.Where(r => r.MalId == malId).ToList();
-
-        public void Add(Note note)
+        public async Task<Note?> GetNoteByUserIdAndAnimeIdAsync(int utilisateurId, long malId)
         {
-            _context.Notes.Add(note);
-            _context.SaveChanges();
+            using var context = _context.CreateDbContext();
+            return await context.Notes
+                .FirstOrDefaultAsync(r => r.UtilisateurId == utilisateurId && r.MalId == malId);
         }
 
-        public void Update(Note note)
+        public async Task<List<Note>> GetNotesByAnimeIdAsync(long malId)
         {
-            _context.Notes.Update(note);
-            _context.SaveChanges();
+            using var context = _context.CreateDbContext();
+            return await context.Notes
+                .Where(r => r.MalId == malId)
+                .ToListAsync();
+        }
+            
+
+        public async Task AddNoteAsync(Note note)
+        {
+            using var context = _context.CreateDbContext();
+            await context.Notes.AddAsync(note);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateNoteAsync(Note note)
+        {
+            using var context = _context.CreateDbContext();
+            context.Notes.Update(note);
+            await context.SaveChangesAsync();
+        }
+        public async Task<Note?> GetNoteByIdAsync(int noteId)
+        {
+            using var context = _context.CreateDbContext();
+            return await context.Notes.FindAsync(noteId);
+        }
+        public async Task DeleteNoteByIdAsync(int noteId)
+        {
+            using var context = _context.CreateDbContext();
+            var note = await context.Notes.FindAsync(noteId);
+            if (note != null)
+            {
+                context.Notes.Remove(note);
+                await context.SaveChangesAsync();
+            }
+        }
+        public async Task<List<Note>> GetNotesRecentesAsync()
+        {
+            using var context = _context.CreateDbContext();
+            return await context.Notes
+                .OrderByDescending(n => n.DateAdded)
+                .Take(10)
+                .ToListAsync();
         }
     }
 }

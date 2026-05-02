@@ -12,37 +12,53 @@ namespace CineTrack.Data.Repositories
 {
     public class CommentaireRepository : ICommentaireRepository
     {
-        private readonly CineTrackDbContext _context;
+        private readonly IDbContextFactory<CineTrackDbContext> _context;
 
-        public CommentaireRepository(CineTrackDbContext context)
+        public CommentaireRepository(IDbContextFactory<CineTrackDbContext> context)
         {
             _context = context;
         }
 
         public async Task<Commentaire> AddCommentaireAsync(Commentaire commentaire)
         {
-            _context.Commentaires.Add(commentaire);
-            await _context.SaveChangesAsync();
+            using var context = _context.CreateDbContext();
+            await context.Commentaires.AddAsync(commentaire);
+            await context.SaveChangesAsync();
             return commentaire;
         }
 
         public async Task<List<Commentaire>> GetCommentairesByAnimeIdAsync(long malId)
         {
-            return await _context.Commentaires
+            using var context = _context.CreateDbContext();
+            return await context.Commentaires
                .Where(c => c.MalId == malId)
                .Include(c => c.Utilisateur)
                .OrderByDescending(c => c.DateCreation)
                .ToListAsync();
         }
 
-        public async Task RemoveCommentaireAsync(int id)
+        public async Task RemoveCommentaireAsync(int commentaireId)
         {
-            var commentaire = await _context.Commentaires.FindAsync(id);
+            using var context = _context.CreateDbContext();
+            var commentaire = await context.Commentaires.FindAsync(commentaireId);
             if (commentaire != null)
             {
-                _context.Commentaires.Remove(commentaire);
-                await _context.SaveChangesAsync();
+                context.Commentaires.Remove(commentaire);
+                await context.SaveChangesAsync();
             }
+        }
+        public async Task<Commentaire?> GetCommentaireAsync(int commentaireId)
+        {
+            using var context = _context.CreateDbContext();
+            return await context.Commentaires.FindAsync(commentaireId);
+        }
+        public async Task<List<Commentaire>> GetCommentairesRecentAsync()
+        {
+            using var context = _context.CreateDbContext();
+            return await context.Commentaires
+                .OrderByDescending(c => c.DateCreation)
+                .Take(10)
+                .ToListAsync();
         }
     }
 }

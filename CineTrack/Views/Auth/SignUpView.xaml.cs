@@ -28,5 +28,13 @@ namespace CineTrack.Views.Auth
             if (DataContext is SignUpViewModel vm)
                 vm.ConfirmPassword = ConfirmPasswordBox.Password;
         }
+        private void ToggleButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is SignUpViewModel vm)
+            {
+                PasswordBox.Password = vm.Password;
+                ConfirmPasswordBox.Password = vm.ConfirmPassword;
+            }
+        }
     }
 }

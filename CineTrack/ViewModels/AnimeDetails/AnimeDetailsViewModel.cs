@@ -30,7 +30,9 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     // Source de navigation (main ou favoris)
     private string _source = "main";
 
-    [ObservableProperty] private bool _isLoading = true;
+    private const int LimiteEpisodeParPage = 50;
+
+    [ObservableProperty] private bool _isLoading = false;
 
     // Data from Jikan
     [ObservableProperty] private string? _title;
@@ -47,18 +49,21 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     [ObservableProperty] private ObservableCollection<CommentaireViewModel> _commentaires = new();
     [ObservableProperty] private string _newComment = string.Empty;
 
+    [ObservableProperty] private int _currentEpisodePage = 1;
     // Liste des épisodes pour la simulation de visionnage
     [ObservableProperty] private ObservableCollection<int> _episodeList = new();
 
+    public int TotalEpisodePages => _anime?.Episodes.HasValue == true ? (int )Math.Ceiling(_anime.Episodes.Value / (double)LimiteEpisodeParPage) : 1;
     partial void OnIsFavoriteChanged(bool value) => OnPropertyChanged(nameof(FavoriteButtonText));
     partial void OnUserRatingChanged(int? value) => OnPropertyChanged(nameof(CommunityScoreDisplay));
 
-    public string FavoriteButtonText => _isFavorite ? "Retirer des favoris ❤️" : "Ajouter aux favoris 🤍";
+    public string FavoriteButtonText => IsFavorite ? "Retirer des favoris ❤️" : "Ajouter aux favoris 🤍";
 
     public string CommunityScoreDisplay => CommunityScore.HasValue
         ? $"★ {CommunityScore.Value:F1} / 5"
         : "No ratings yet";
 
+    public bool HasEpisodes => _anime?.Episodes.HasValue == true && _anime.Episodes > 0;
     public AnimeDetailsViewModel(
         INavigationService navigationService,
         IJikanService jikanService,
@@ -88,9 +93,13 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         IsLoading = true;
         if (!_malId.HasValue) { IsLoading = false; return; }
 
-        // get the data
-        _anime = await _jikanService.GetAnimeByIdAsync((int)_malId.Value);
+        var currentUser = SessionManager.Instance.CurrentUser;
 
+        // Optimisation : Jikan lent donc lance tout parallelement
+        var animeTask =  _jikanService.GetAnimeByIdAsync((int)_malId.Value);
+        var CommunityScoreTask =  _noteService.GetCommunityScoreAsync(_malId.Value);
+
+        _anime = await animeTask;
         if (_anime == null) { IsLoading = false; return; }
 
         // set the properties
@@ -101,27 +110,25 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         AgeRating = _anime.Rating ?? "No rating";
         JikanScore = _anime.Score.HasValue ? $"★ {_anime.Score.Value / 2:F1} / 5" : "No score yet";
 
-        // Community score from our DB, not Jikan
-        CommunityScore = _noteService.GetCommunityScore(_malId.Value);
-        OnPropertyChanged(nameof(CommunityScoreDisplay));
+        //Affiche les images, titres etc pdt que l'info charge
+        IsLoading = false;
 
         // Génère la liste des épisodes
         if (_anime.Episodes.HasValue)
         {
-            EpisodeList.Clear();
-            for (int i = 1; i <= _anime.Episodes.Value; i++)
-                EpisodeList.Add(i);
+            LoadEpisodePage();
         }
 
         // Load this user's existing rating
-        var currentUser = SessionManager.Instance.CurrentUser;
+        CommunityScore = await CommunityScoreTask;
+        // Community score from our DB, not Jikan
+
+        OnPropertyChanged(nameof(CommunityScoreDisplay));
         if (currentUser != null)
-            UserRating = _noteService.GetNote(currentUser.Id, _malId.Value);
+            UserRating = await _noteService.GetNoteAsync(currentUser.Id, _malId.Value);
 
         await CheckFavoriteAsync();
         await LoadCommentsAsync();
-
-        IsLoading = false;
     }
 
     // Navigue vers la page de visionnage de l'épisode sélectionné
@@ -147,7 +154,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         await _noteService.RateAsync(user.Id, _malId.Value, rating);
 
         UserRating = rating;
-        CommunityScore = _noteService.GetCommunityScore(_malId.Value);
+        CommunityScore = await _noteService.GetCommunityScoreAsync(_malId.Value);
         OnPropertyChanged(nameof(CommunityScoreDisplay));
 
         await LoadCommentsAsync();
@@ -210,21 +217,23 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             _malId = idInt;
             _source = "main";
         }
-
+        IsLoading = true;
         _ = LoadAsync();
     }
 
     private async Task LoadCommentsAsync()
     {
         var currentUser = SessionManager.Instance.CurrentUser;
+        var isAdmin = currentUser?.Role == EnumRole.admin;
         try
         {
             var commentaires = await _commentaireRepository.GetCommentairesByAnimeIdAsync((long)_anime!.MalId);
+            Debug.WriteLine($"Commentaires : {commentaires.Count}");
             Commentaires.Clear();
             foreach (var commentaire in commentaires)
             {
-                var rating = _noteService.GetNote(commentaire.UtilisateurId, (long)_anime.MalId);
-                Commentaires.Add(new CommentaireViewModel(commentaire, currentUser?.Id, rating));
+                var rating = await _noteService.GetNoteAsync(commentaire.UtilisateurId, (long)_anime.MalId);
+                Commentaires.Add(new CommentaireViewModel(commentaire, currentUser?.Id, rating, isAdmin));
             }
         }
         catch (Exception ex)
@@ -238,7 +247,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     {
         var currentUser = SessionManager.Instance.CurrentUser;
         if (currentUser == null || string.IsNullOrEmpty(NewComment) || _anime is null) return;
-
+        Debug.WriteLine($"MalId utilisé: {(int)_anime.MalId}");
         try
         {
             await _commentaireRepository.AddCommentaireAsync(new Commentaire
@@ -251,14 +260,16 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             NewComment = string.Empty;
             await LoadCommentsAsync();
         }
-        catch (Exception ex) { Debug.WriteLine($"Erreur lors de l'ajout du commentaire : {ex.Message}"); }
+        catch (Exception ex) { Debug.WriteLine($"Erreur lors de l'ajout du commentaire : {ex.Message} \n InnerMessage : {ex.InnerException?.Message}\n{ex.InnerException?.InnerException?.Message}"); }
     }
 
     [RelayCommand]
     private async Task DeleteCommentsAsync(CommentaireViewModel commentaire)
     {
         var currentUser = SessionManager.Instance.CurrentUser;
-        if (currentUser == null || commentaire.UtilisateurId != currentUser.Id) return;
+        if (currentUser == null) return; 
+        
+        if (commentaire.UtilisateurId != currentUser.Id && currentUser.Role != EnumRole.admin) return;
 
         try
         {
@@ -267,4 +278,44 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         }
         catch (Exception ex) { Debug.WriteLine($"Erreur lors de la suppression du commentaire : {ex.Message}"); }
     }
+
+    private void LoadEpisodePage()
+    {
+        if (_anime?.Episodes == null || _anime.Episodes == 0) 
+        {
+            EpisodeList.Clear();
+            return;
+        }
+
+        EpisodeList.Clear();
+        int start = (CurrentEpisodePage - 1) * LimiteEpisodeParPage + 1;
+        int end = Math.Min(CurrentEpisodePage * LimiteEpisodeParPage, _anime.Episodes.Value);
+
+        for (int i = start; i <= end; i++)
+        {
+            EpisodeList.Add(i);
+        }
+        OnPropertyChanged(nameof(TotalEpisodePages));
+        OnPropertyChanged(nameof(HasEpisodes));
+    }
+    [RelayCommand]
+    private void NextEpisodePage()
+    {
+        if (CurrentEpisodePage < TotalEpisodePages)
+        {
+            CurrentEpisodePage++;
+            LoadEpisodePage();
+        }
+    }
+
+    [RelayCommand]
+    private void PreviousEpisodePage()
+    {
+        if (CurrentEpisodePage > 1)
+        {
+            CurrentEpisodePage--;
+            LoadEpisodePage();
+        }
+    }
+
 }

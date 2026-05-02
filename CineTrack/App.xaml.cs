@@ -19,15 +19,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
-<<<<<<< HEAD
 using CineTrack.ViewModels.Watch;
 using CineTrack.Views.Watch;
-=======
 using CineTrack.Data.Services.EmailServ;
 using CineTrack.Data.Services.NoteServ;
 using CineTrack.Data.Services.PasswordResetStoreServ;
 using CineTrack.Data.Services.UtilisateurServ;
->>>>>>> 6c0390b4e78650c8e6fd6c33d991c740d4692d07
+using CineTrack.Data.Services.AdminServ;
 
 namespace CineTrack
 {
@@ -51,9 +49,9 @@ namespace CineTrack
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             var provider = configuration["DatabaseProvider"];
             if (provider == "SQLite")
-                services.AddDbContext<CineTrackDbContext>(o => o.UseSqlite(connectionString));
+                services.AddDbContextFactory<CineTrackDbContext>(o => o.UseSqlite(connectionString));
             else if (provider == "SqlServer")
-                services.AddDbContext<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
+                services.AddDbContextFactory<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
             // Email Service
             services.AddSingleton<IEmailService>(new EmailService(
                 emailConfiguration["mail"]!,
@@ -72,7 +70,7 @@ namespace CineTrack
             // Services
             services.AddScoped<IUtilisateurService, UtilisateurService>();
             services.AddScoped<INoteService, NoteService>();
-
+            services.AddScoped<IAdminService, AdminService>();
             // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IJikanService, JikanService>();

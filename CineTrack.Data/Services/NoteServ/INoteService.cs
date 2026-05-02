@@ -9,7 +9,7 @@ namespace CineTrack.Data.Services.NoteServ
     public interface INoteService
     {
         Task RateAsync(int utilisateurId, long malId, int note);
-        double? GetCommunityScore(long malId);
-        int? GetNote(int utilisateurId, long malId);
+        Task<double?> GetCommunityScoreAsync(long malId);
+        Task<int?> GetNoteAsync(int utilisateurId, long malId);
     }
 }

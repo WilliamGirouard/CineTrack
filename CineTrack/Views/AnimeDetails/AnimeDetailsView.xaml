@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:CineTrack.ViewModels.AnimeDetails"
+             xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="900"
              d:DataContext="{d:DesignInstance Type=vm:AnimeDetailsViewModel}"
@@ -216,7 +217,6 @@
                     </Border>
 
                     <!-- Favorite -->
-                    <!-- Favorite -->
                     <Border CornerRadius="8"
                             Margin="0,10,0,0"
                             ClipToBounds="True">
@@ -317,13 +317,20 @@
                                FontWeight="Bold"
                                Margin="0,0,0,16"/>
 
-                    <ItemsControl ItemsSource="{Binding EpisodeList}">
-                        <ItemsControl.ItemsPanel>
+                    <ListBox ItemsSource="{Binding EpisodeList}"
+                             Visibility="{Binding HasEpisodes, Converter={StaticResource BoolToVisConverter}}"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             MaxHeight="300">
+                        <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel/>
+                                <vwp:VirtualizingWrapPanel/>
                             </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Button Content="{Binding StringFormat='Ép. {0}'}"
                                         Width="80" Height="34"
@@ -336,9 +343,44 @@
                                                   RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         CommandParameter="{Binding}"/>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock 
+                        Text="Nombre d'épisodes inconnu (série en cours)"
+                        Foreground="#888"
+                        FontSize="13"
+                        Visibility="{Binding HasEpisodes, Converter={StaticResource BoolToVisInverseConverter}}"/>
+                    <StackPanel 
+                        Orientation="Horizontal"
+                        Visibility="{Binding HasEpisodes, Converter={StaticResource BoolToVisConverter}}"
+                        HorizontalAlignment="Center" 
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        Margin="0,8,0,16">
+                        <Button 
+                            Content="◀"
+                            Command="{Binding PreviousEpisodePageCommand}"
+                            Width="36" Height="36"
+                            Background="#e94560"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding CurrentEpisodePage, StringFormat='Page {0}'}"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding TotalEpisodePages, StringFormat='/ {0}'}"
+                            Foreground="#888"
+                            VerticalAlignment="Center"/>
+                        <Button Content="▶"
+                            Command="{Binding NextEpisodePageCommand}"
+                            Width="36" Height="36"
+                            Background="#e94560"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Margin="8,0,0,0"/>
+                    </StackPanel>
                     <!-- COMMENTS SECTION -->
                     <Border Height="2"
                             Background="#e94560"
@@ -459,7 +501,7 @@
                                                            Visibility="{Binding RatingDisplay, Converter={StaticResource StringNotEmptyToVisibilityConverter}}"/>
                                             </StackPanel>
 
-                                            <!-- Delete button (only if author) -->
+                                            <!-- Delete button (only if author OR ADMIN UPDATE) -->
                                             <Button Content="🗑️"
                                                     HorizontalAlignment="Right"
                                                     Background="Transparent"
@@ -469,7 +511,7 @@
                                                     Command="{Binding DataContext.DeleteCommentsCommand, 
                                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"
-                                                    Visibility="{Binding IsCurrentUserAuthor, 
+                                                    Visibility="{Binding CanDelete, 
                                                                  Converter={StaticResource BoolToVisConverter}}"/>
                                         </Grid>
 

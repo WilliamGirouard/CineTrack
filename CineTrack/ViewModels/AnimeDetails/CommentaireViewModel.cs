@@ -11,7 +11,7 @@ namespace CineTrack.ViewModels.AnimeDetails
     {
         private readonly Commentaire _commentaire;
         private readonly int? _currentUserId;
-
+        private readonly bool _isAdmin;
         public int Id => _commentaire.Id;
         public string Texte => _commentaire.Texte;
         public DateTime DateCreation => _commentaire.DateCreation;
@@ -21,11 +21,13 @@ namespace CineTrack.ViewModels.AnimeDetails
         public string Username { get; }
         public int? Rating { get; }
         public string RatingDisplay => Rating.HasValue ? $"★ {Rating}/5" : "";
+        public bool CanDelete => _isAdmin || IsCurrentUserAuthor;
 
-        public CommentaireViewModel(Commentaire commentaire, int? currentUserId, int? rating)
+        public CommentaireViewModel(Commentaire commentaire, int? currentUserId, int? rating, bool isAdmin)
         {
             _commentaire = commentaire;
             _currentUserId = currentUserId;
+            _isAdmin = isAdmin;
             Username = commentaire.Utilisateur?.Username ?? "Utilisateur inconnu";
             Rating = rating;
         }
