@@ -1,9 +1,8 @@
-﻿using CineTrack.Data.Services.Interfaces;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 
 
-namespace CineTrack.Data.Services
+namespace CineTrack.Data.Services.EmailServ
 {
     public class EmailService : IEmailService
     {

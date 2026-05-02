@@ -1,8 +1,6 @@
 using CineTrack.Data.Context;
 using CineTrack.Data.Repositories;
 using CineTrack.Data.Repositories.Interfaces;
-using CineTrack.Data.Services;
-using CineTrack.Data.Services.Interfaces;
 using CineTrack.Services;
 using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
@@ -16,14 +14,20 @@ using CineTrack.Views.Auth;
 using CineTrack.Views.Auth.PasswordReset;
 using CineTrack.Views.Favoris;
 using CineTrack.Views.Search;
-using JikanDotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
+<<<<<<< HEAD
 using CineTrack.ViewModels.Watch;
 using CineTrack.Views.Watch;
+=======
+using CineTrack.Data.Services.EmailServ;
+using CineTrack.Data.Services.NoteServ;
+using CineTrack.Data.Services.PasswordResetStoreServ;
+using CineTrack.Data.Services.UtilisateurServ;
+>>>>>>> 6c0390b4e78650c8e6fd6c33d991c740d4692d07
 
 namespace CineTrack
 {
@@ -59,18 +63,15 @@ namespace CineTrack
                 ));
 
             // ── Repositories (Scoped) ──────────────────────────────────────────
+            // Repositories
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
-            services.AddScoped<IUtilisateurService, UtilisateurService>();
-
-            services.AddScoped<IUtilisateurAnimeRepository, UtilisateurAnimeRepository>();
-            services.AddScoped<IUtilisateurAnimeService, UtilisateurAnimeService>();
-
-            services.AddScoped<IAnimeService, AnimeService>();
-            services.AddScoped<IAnimeRepository, AnimeRepository>();
-
             services.AddScoped<IFavorisRepository, FavorisRepository>();
-
             services.AddScoped<ICommentaireRepository, CommentaireRepository>();
+            services.AddScoped<INoteRepository, NoteRepository>();
+
+            // Services
+            services.AddScoped<IUtilisateurService, UtilisateurService>();
+            services.AddScoped<INoteService, NoteService>();
 
             // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();

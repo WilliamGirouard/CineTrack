@@ -7,22 +7,22 @@ namespace CineTrack.Services.Jikan
     {
         private readonly IJikan _api;
 
-        private readonly Dictionary<int, AnimeFull> _animeCache = new();
+        private readonly Dictionary<long, AnimeFull> _animeCache = new();
 
         public JikanService()
         {
             _api = new JikanDotNet.Jikan();
         }
 
-        public async Task<AnimeFull> GetAnimeByIdAsync(int id)
+        public async Task<AnimeFull> GetAnimeByIdAsync(long malId)
         {
-            if (_animeCache.TryGetValue(id, out var cached))
+            if (_animeCache.TryGetValue((int) malId, out var cached))
                 return cached;
 
-            var response = await _api.GetAnimeFullDataAsync(id);
+            var response = await _api.GetAnimeFullDataAsync(malId);
 
             if (response?.Data != null)
-                _animeCache[id] = response.Data;
+                _animeCache[malId] = response.Data;
 
             return response.Data;
         }
@@ -44,10 +44,15 @@ namespace CineTrack.Services.Jikan
                 };
 
                 var response = await _api.SearchAnimeAsync(config);
-                result.AddRange(response.Data);
+
+                // Filter client-side since Jikan ignores the Genres filter
+                var filtered = response.Data
+                    .Where(a => a.Genres.Any(g => g.MalId == genreId))
+                    .ToList();
+
+                result.AddRange(filtered);
                 currentPage++;
 
-                // Stop if Jikan has no more pages
                 if (response.Pagination?.HasNextPage == false)
                     break;
             }

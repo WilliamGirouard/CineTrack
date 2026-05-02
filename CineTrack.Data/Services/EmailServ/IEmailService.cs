@@ -1,5 +1,4 @@
-﻿
-namespace CineTrack.Data.Services.Interfaces
+﻿namespace CineTrack.Data.Services.EmailServ
 {
     public interface IEmailService
     {

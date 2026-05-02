@@ -57,7 +57,7 @@ public partial class FavorisViewModel : ObservableObject
                 await semaphore.WaitAsync();
                 try
                 {
-                    var anime = await _jikanService.GetAnimeByIdAsync((int)f.AnimeId);
+                    var anime = await _jikanService.GetAnimeByIdAsync(f.MalId);
                     return anime;
                 }
                 finally
@@ -91,7 +91,7 @@ public partial class FavorisViewModel : ObservableObject
         if (user == null) return;
 
         var favorisList = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
-        var fav = favorisList.FirstOrDefault(f => f.AnimeId == card.MalId);
+        var fav = favorisList.FirstOrDefault(f => f.MalId == card.MalId);
 
         if (fav == null) return;
 

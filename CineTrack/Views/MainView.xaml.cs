@@ -12,6 +12,8 @@ namespace CineTrack.Views
     /// </summary>
     public partial class MainView : UserControl
     {
+        private static double _savedScrollOffset = 0;
+
         public MainView()
         {
             InitializeComponent();
@@ -21,7 +23,20 @@ namespace CineTrack.Views
         {
             if (DataContext is MainViewModel vm && vm.LoadCommand.CanExecute(null))
                 vm.LoadCommand.Execute(null);
+
+            // Restore scroll position after layout is ready
+            LandingPage.Dispatcher.BeginInvoke(() =>
+            {
+                LandingPage.ScrollToVerticalOffset(_savedScrollOffset);
+            }, System.Windows.Threading.DispatcherPriority.Loaded);
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            // Save scroll position before leaving
+            _savedScrollOffset = LandingPage.VerticalOffset;
+        }
+
         private void CardsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (sender is FrameworkElement el && el.DataContext is CarouselViewModel vm)

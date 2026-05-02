@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CineTrack.Data.Services.Interfaces
+namespace CineTrack.Data.Services.UtilisateurServ
 {
     public interface IUtilisateurService
     {
