@@ -12,11 +12,13 @@ namespace CineTrack.Data.Services.AdminServ
     {
         private readonly IUtilisateurRepository _utilisateurRepository;
         private readonly ICommentaireRepository _commentaireRepository;
+        private readonly INoteRepository _noteRepository;
 
-        public AdminService(IUtilisateurRepository utilisateurRepository, ICommentaireRepository commentaireRepository)
+        public AdminService(IUtilisateurRepository utilisateurRepository, ICommentaireRepository commentaireRepository, INoteRepository noteRepository)
         {
             _utilisateurRepository = utilisateurRepository;
             _commentaireRepository = commentaireRepository;
+            _noteRepository = noteRepository;
         }
         public async Task ElevateUserToAdminAsync(int userId)
         {
@@ -37,7 +39,7 @@ namespace CineTrack.Data.Services.AdminServ
             }
             await _utilisateurRepository.DeleteUserAsync(user);
         }
-        public async Task<Boolean> IsAdmin(int userId)
+        public async Task<Boolean> IsAdminAsync(int userId)
         {
             var user = await _utilisateurRepository.GetUtilisateurByIdAsync(userId) ?? throw new Exception("User not found");
             if (user.Role != Models.EnumRole.admin)
@@ -49,11 +51,20 @@ namespace CineTrack.Data.Services.AdminServ
         public async Task DeleteCommentaireAsync(int commentaireId)
         {
             var commentaire = await _commentaireRepository.GetCommentaireAsync(commentaireId) ?? throw new Exception($"Commentaire #{commentaireId} not found");
-            if (await IsAdmin(commentaire.UtilisateurId))
+            if (await IsAdminAsync(commentaire.UtilisateurId))
             {
                 throw new Exception($"Commentaire #{commentaireId} is an administrator's => commentaire cannot be deleted.");
             }
             await _commentaireRepository.RemoveCommentaireAsync(commentaireId);
+        }
+        public async Task DeleteNoteAsync(int noteId)
+        {
+            var note = await _noteRepository.GetNoteByIdAsync(noteId) ?? throw new Exception($"Note #{noteId} not found");
+            if (await IsAdminAsync(note.UtilisateurId))
+            {
+                throw new Exception($"Note #{noteId} is an administrator's => note cannot be deleted.");
+            }
+            await _noteRepository.DeleteNoteByIdAsync(noteId);
         }
     }
 }

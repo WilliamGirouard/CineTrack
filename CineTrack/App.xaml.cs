@@ -23,6 +23,7 @@ using CineTrack.Data.Services.EmailServ;
 using CineTrack.Data.Services.NoteServ;
 using CineTrack.Data.Services.PasswordResetStoreServ;
 using CineTrack.Data.Services.UtilisateurServ;
+using CineTrack.Data.Services.AdminServ;
 
 namespace CineTrack
 {
@@ -67,7 +68,7 @@ namespace CineTrack
             // Services
             services.AddScoped<IUtilisateurService, UtilisateurService>();
             services.AddScoped<INoteService, NoteService>();
-
+            services.AddScoped<IAdminService, AdminService>();
             // ── Navigation (Singleton) ─────────────────────────────────────────
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IJikanService, JikanService>();

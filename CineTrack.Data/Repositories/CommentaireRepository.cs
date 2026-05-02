@@ -48,5 +48,12 @@ namespace CineTrack.Data.Repositories
         {
             return await _context.Commentaires.FindAsync(commentaireId);
         }
+        public async Task<List<Commentaire>> GetCommentairesRecentAsync()
+        {
+            return await _context.Commentaires
+                .OrderByDescending(c => c.DateCreation)
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

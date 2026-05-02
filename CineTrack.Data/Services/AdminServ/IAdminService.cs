@@ -12,6 +12,7 @@ namespace CineTrack.Data.Services.AdminServ
         Task ElevateUserToAdminAsync(int userId);
         Task DeleteUserAsync(int userId);
         Task DeleteCommentaireAsync(int commentaireId);
-        Task<Boolean> IsAdmin(int userId);
+        Task<Boolean> IsAdminAsync(int userId);
+        Task DeleteNoteAsync(int noteId);
     }
 }
