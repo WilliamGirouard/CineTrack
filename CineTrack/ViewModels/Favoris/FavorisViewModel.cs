@@ -38,19 +38,15 @@ public partial class FavorisViewModel : ObservableObject
     public async Task LoadFavorisAsync()
     {
         IsLoading = true;
-
+        FavorisList.Clear();
         try
         {
             var user = SessionManager.Instance.CurrentUser;
-            if (user == null)
-            {
-                FavorisList.Clear();
-                return;
-            }
+            if (user == null) return;
 
             var favoris = await _favorisRepository.GetFavorisByUserIdAsync(user.Id);
 
-            var semaphore = new SemaphoreSlim(5);
+            var semaphore = new SemaphoreSlim(3);
 
             var tasks = favoris.Select(async f =>
             {
