@@ -111,6 +111,8 @@ public partial class MainViewModel : ObservableObject
             trending.Initialize(trendingAnimes, _navigationService, AnimeSortType.Trending);
         }
         catch { }
+        // Quand page trending est chargé la page s'affiche
+        IsLoading = false;
 
         foreach (var (name, id) in Genres)
         {
@@ -129,7 +131,5 @@ public partial class MainViewModel : ObservableObject
                 carousel.IsLoading = false;
             }
         }
-
-        IsLoading = false;
     }
 }
