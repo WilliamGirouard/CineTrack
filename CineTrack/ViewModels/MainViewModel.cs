@@ -3,7 +3,7 @@ using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Carousel;
-using CineTrack.ViewModels.Favoris;
+using CineTrack.ViewModels.Profile;
 using CineTrack.ViewModels.Search;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -49,9 +49,16 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Favoris()
+    private void OpenProfile()
     {
-        _navigationService.NavigateTo<FavorisViewModel>();
+        var currentUser = SessionManager.Instance.CurrentUser;
+        if (currentUser == null) return;
+
+        _navigationService.NavigateTo<ProfileViewModel>(new ProfileNavParam
+        {
+            UserId = currentUser.Id,
+            Source = "main"
+        });
     }
 
     [RelayCommand]

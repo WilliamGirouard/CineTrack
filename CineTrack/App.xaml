@@ -5,8 +5,6 @@
              xmlns:authVm="clr-namespace:CineTrack.ViewModels.Auth"
              xmlns:authV="clr-namespace:CineTrack.Views.Auth"
              xmlns:vm="clr-namespace:CineTrack.ViewModels"
-             xmlns:favorisV="clr-namespace:CineTrack.Views.Favoris"
-             xmlns:favorisVm="clr-namespace:CineTrack.ViewModels.Favoris"
              xmlns:detailVm="clr-namespace:CineTrack.ViewModels.AnimeDetails"
              xmlns:detailV="clr-namespace:CineTrack.Views.AnimeDetails"
              xmlns:v="clr-namespace:CineTrack.Views"
@@ -15,7 +13,9 @@
              xmlns:searchVm="clr-namespace:CineTrack.ViewModels.Search"
              xmlns:searchV="clr-namespace:CineTrack.Views.Search"
              xmlns:watchVm="clr-namespace:CineTrack.ViewModels.Watch"
-             xmlns:watchV="clr-namespace:CineTrack.Views.Watch">
+             xmlns:watchV="clr-namespace:CineTrack.Views.Watch"
+             xmlns:profileVm="clr-namespace:CineTrack.ViewModels.Profile"
+             xmlns:profileV="clr-namespace:CineTrack.Views.Profile">
 
     <Application.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
@@ -31,9 +31,6 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type authVm:SignUpViewModel}">
             <authV:SignUpView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type favorisVm:FavorisViewModel}">
-            <favorisV:FavorisView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:MainViewModel}">
             <v:MainView/>
@@ -56,7 +53,8 @@
         <DataTemplate DataType="{x:Type watchVm:WatchViewModel}">
             <watchV:WatchView/>
         </DataTemplate>
-
-
+        <DataTemplate DataType="{x:Type profileVm:ProfileViewModel}">
+            <profileV:ProfileView/>
+        </DataTemplate>
     </Application.Resources>
 </Application>
