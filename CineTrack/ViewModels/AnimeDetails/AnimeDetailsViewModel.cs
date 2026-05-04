@@ -5,7 +5,7 @@ using CineTrack.Services;
 using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
-using CineTrack.ViewModels.Favoris;
+using CineTrack.ViewModels.Profile;
 using CineTrack.ViewModels.Watch;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -27,7 +27,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     private JikanAnime? _anime;
     private long? _malId;
 
-    // Source de navigation (main ou favoris)
+    // Source de navigation (main ou profile)
     private string _source = "main";
 
     private const int LimiteEpisodeParPage = 50;
@@ -48,7 +48,6 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     [ObservableProperty] private int? _userRating;
     [ObservableProperty] private ObservableCollection<CommentaireViewModel> _commentaires = new();
     [ObservableProperty] private string _newComment = string.Empty;
-    [ObservableProperty] private bool _isCurrentUserAdmin = false;
 
     [ObservableProperty] private int _currentEpisodePage = 1;
     // Liste des épisodes pour la simulation de visionnage
@@ -65,6 +64,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         : "No ratings yet";
 
     public bool HasEpisodes => _anime?.Episodes.HasValue == true && _anime.Episodes > 0;
+
     public AnimeDetailsViewModel(
         INavigationService navigationService,
         IJikanService jikanService,
@@ -96,9 +96,6 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
         var currentUser = SessionManager.Instance.CurrentUser;
 
-        // Vérifie si l'utilisateur actuel est un admin
-        IsCurrentUserAdmin = currentUser?.Role == EnumRole.admin;
-
         // Optimisation : Jikan lent donc lance tout parallelement
         var animeTask =  _jikanService.GetAnimeByIdAsync((int)_malId.Value);
         var CommunityScoreTask =  _noteService.GetCommunityScoreAsync(_malId.Value);
@@ -128,6 +125,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         // Community score from our DB, not Jikan
 
         OnPropertyChanged(nameof(CommunityScoreDisplay));
+
         if (currentUser != null)
             UserRating = await _noteService.GetNoteAsync(currentUser.Id, _malId.Value);
 
@@ -137,7 +135,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
     // Navigue vers la page de visionnage de l'épisode sélectionné
     [RelayCommand]
-    private async Task WatchEpisodeDetails(int episodeNumber)
+    private void WatchEpisodeDetails(int episodeNumber)
     {
         _navigationService.NavigateTo<WatchViewModel>(new WatchNavParam
         {
@@ -195,12 +193,28 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
     // Retourne vers la page précédente selon la source de navigation
     [RelayCommand]
-    private async Task GoBack()
+    private void GoBack()
     {
-        if (_source == "favoris")
-            _navigationService.NavigateTo<FavorisViewModel>();
+        if (_source == "profile")
+        {
+            var currentUser = SessionManager.Instance.CurrentUser;
+            if (currentUser != null)
+            {
+                _navigationService.NavigateTo<ProfileViewModel>(new ProfileNavParam
+                {
+                    UserId = currentUser.Id,
+                    Source = "main"
+                });
+            }
+            else
+            {
+                _navigationService.NavigateTo<MainViewModel>();
+            }
+        }
         else
+        {
             _navigationService.NavigateTo<MainViewModel>();
+        }
     }
 
     // Reçoit les paramètres de navigation
@@ -237,7 +251,13 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             foreach (var commentaire in commentaires)
             {
                 var rating = await _noteService.GetNoteAsync(commentaire.UtilisateurId, (long)_anime.MalId);
-                Commentaires.Add(new CommentaireViewModel(commentaire, currentUser?.Id, rating, isAdmin));
+                Commentaires.Add(new CommentaireViewModel(
+                    commentaire,
+                    currentUser?.Id,
+                    rating,
+                    isAdmin,
+                    _navigationService,
+                    (long)_anime.MalId));
             }
         }
         catch (Exception ex)
@@ -264,17 +284,15 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             NewComment = string.Empty;
             await LoadCommentsAsync();
         }
-        catch (Exception ex) {
-            Debug.WriteLine($"Erreur lors de l'ajout du commentaire : {ex.Message} ");
-        } 
+        catch (Exception ex) { Debug.WriteLine($"Erreur lors de l'ajout du commentaire : {ex.Message} \n InnerMessage : {ex.InnerException?.Message}\n{ex.InnerException?.InnerException?.Message}"); }
     }
 
     [RelayCommand]
     private async Task DeleteCommentsAsync(CommentaireViewModel commentaire)
     {
         var currentUser = SessionManager.Instance.CurrentUser;
-        if (currentUser == null) return; 
-        
+        if (currentUser == null) return;
+
         if (commentaire.UtilisateurId != currentUser.Id && currentUser.Role != EnumRole.admin) return;
 
         try
@@ -285,32 +303,9 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         catch (Exception ex) { Debug.WriteLine($"Erreur lors de la suppression du commentaire : {ex.Message}"); }
     }
 
-    [RelayCommand]
-
-    private async Task DeleteAllCommentsAsync()
-    {
-        var currentUser = SessionManager.Instance.CurrentUser;
-        if (currentUser == null || currentUser.Role != EnumRole.admin) return;
-
-        try
-        {
-            var commentaires = Commentaires.ToList();
-            foreach (var commentaire in commentaires)
-            {
-                await _commentaireRepository.RemoveCommentaireAsync(commentaire.Id);
-                await LoadCommentsAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Erreur lors de la suppression des commentaires : {ex.Message}");
-        }
-    }
-
-
     private void LoadEpisodePage()
     {
-        if (_anime?.Episodes == null || _anime.Episodes == 0) 
+        if (_anime?.Episodes == null || _anime.Episodes == 0)
         {
             EpisodeList.Clear();
             return;
@@ -327,6 +322,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         OnPropertyChanged(nameof(TotalEpisodePages));
         OnPropertyChanged(nameof(HasEpisodes));
     }
+
     [RelayCommand]
     private void NextEpisodePage()
     {
@@ -346,7 +342,4 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             LoadEpisodePage();
         }
     }
-
-
-
 }

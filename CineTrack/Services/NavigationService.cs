@@ -26,10 +26,17 @@ namespace CineTrack.Services
             _serviceProvider = serviceProvider;
         }
 
-        ///Résout le ViewModel T via DI et l'affiche dans le ContentControl.
+        // Résout le ViewModel T via DI et l'affiche dans le ContentControl.
         public void NavigateTo<T>() where T : ObservableObject
         {
-            CurrentView = _serviceProvider.GetRequiredService<T>();
+            var viewModel = _serviceProvider.GetRequiredService<T>();
+
+            if (viewModel is ITransferParameter receiver)
+            {
+                receiver.TransferParameter(null!);
+            }
+
+            CurrentView = viewModel;
         }
 
         public void NavigateTo<T>(object param) where T : ObservableObject

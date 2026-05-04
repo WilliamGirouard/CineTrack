@@ -1,12 +1,7 @@
-﻿using CineTrack.Data.Context;
+using CineTrack.Data.Context;
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CineTrack.Data.Repositories
 {
@@ -37,6 +32,15 @@ namespace CineTrack.Data.Repositories
                .ToListAsync();
         }
 
+        public async Task<List<Commentaire>> GetCommentairesByUserIdAsync(int utilisateurId)
+        {
+            using var context = _context.CreateDbContext();
+            return await context.Commentaires
+                .Where(c => c.UtilisateurId == utilisateurId)
+                .OrderByDescending(c => c.DateCreation)
+                .ToListAsync();
+        }
+
         public async Task RemoveCommentaireAsync(int commentaireId)
         {
             using var context = _context.CreateDbContext();
@@ -47,11 +51,13 @@ namespace CineTrack.Data.Repositories
                 await context.SaveChangesAsync();
             }
         }
+
         public async Task<Commentaire?> GetCommentaireAsync(int commentaireId)
         {
             using var context = _context.CreateDbContext();
             return await context.Commentaires.FindAsync(commentaireId);
         }
+
         public async Task<List<Commentaire>> GetCommentairesRecentAsync()
         {
             using var context = _context.CreateDbContext();
