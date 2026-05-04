@@ -381,6 +381,7 @@
                             Cursor="Hand"
                             Margin="8,0,0,0"/>
                     </StackPanel>
+                    
                     <!-- COMMENTS SECTION -->
                     <Border Height="2"
                             Background="#e94560"
@@ -393,6 +394,19 @@
                                FontSize="11"
                                FontWeight="Bold"
                                Margin="0,0,0,16"/>
+
+                    <!-- DELETE all comments(Admin)-->
+                    <Button Content="🗑️ Supprimer tous les commentaires"
+                            Command="{Binding DeleteAllCommentsCommand}"
+                            Visibility="{Binding IsCurrentUserAdmin, Converter={StaticResource BoolToVisConverter}}"
+                            HorizontalAlignment="Right"
+                            Margin="0,0,0,12"
+                            Padding="14,8"
+                            Background="#e94560"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                    </Button>
 
                     <!-- Add comment box -->
                     <Border Background="#16213e"

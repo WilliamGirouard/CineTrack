@@ -48,6 +48,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
     [ObservableProperty] private int? _userRating;
     [ObservableProperty] private ObservableCollection<CommentaireViewModel> _commentaires = new();
     [ObservableProperty] private string _newComment = string.Empty;
+    [ObservableProperty] private bool _isCurrentUserAdmin = false;
 
     [ObservableProperty] private int _currentEpisodePage = 1;
     // Liste des épisodes pour la simulation de visionnage
@@ -94,6 +95,9 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         if (!_malId.HasValue) { IsLoading = false; return; }
 
         var currentUser = SessionManager.Instance.CurrentUser;
+
+        // Vérifie si l'utilisateur actuel est un admin
+        IsCurrentUserAdmin = currentUser?.Role == EnumRole.admin;
 
         // Optimisation : Jikan lent donc lance tout parallelement
         var animeTask =  _jikanService.GetAnimeByIdAsync((int)_malId.Value);
@@ -260,7 +264,9 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             NewComment = string.Empty;
             await LoadCommentsAsync();
         }
-        catch (Exception ex) { Debug.WriteLine($"Erreur lors de l'ajout du commentaire : {ex.Message} \n InnerMessage : {ex.InnerException?.Message}\n{ex.InnerException?.InnerException?.Message}"); }
+        catch (Exception ex) {
+            Debug.WriteLine($"Erreur lors de l'ajout du commentaire : {ex.Message} ");
+        } 
     }
 
     [RelayCommand]
@@ -278,6 +284,29 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         }
         catch (Exception ex) { Debug.WriteLine($"Erreur lors de la suppression du commentaire : {ex.Message}"); }
     }
+
+    [RelayCommand]
+
+    private async Task DeleteAllCommentsAsync()
+    {
+        var currentUser = SessionManager.Instance.CurrentUser;
+        if (currentUser == null || currentUser.Role != EnumRole.admin) return;
+
+        try
+        {
+            var commentaires = Commentaires.ToList();
+            foreach (var commentaire in commentaires)
+            {
+                await _commentaireRepository.RemoveCommentaireAsync(commentaire.Id);
+                await LoadCommentsAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Erreur lors de la suppression des commentaires : {ex.Message}");
+        }
+    }
+
 
     private void LoadEpisodePage()
     {
@@ -317,5 +346,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
             LoadEpisodePage();
         }
     }
+
+
 
 }

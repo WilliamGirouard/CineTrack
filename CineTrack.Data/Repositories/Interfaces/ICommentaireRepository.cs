@@ -8,5 +8,7 @@ namespace CineTrack.Data.Repositories.Interfaces
         Task<Commentaire?> GetCommentaireAsync(int commentaireId);
         Task RemoveCommentaireAsync(int commentaireId);
         Task<List<Commentaire>> GetCommentairesRecentAsync();
+
+        Task<List<Commentaire>> GetAllCommentairesAsync();
     }
 }

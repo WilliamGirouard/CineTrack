@@ -60,5 +60,12 @@ namespace CineTrack.Data.Repositories
                 .Take(10)
                 .ToListAsync();
         }
+
+        public async Task<List<Commentaire>> GetAllCommentairesAsync()
+        {
+            using var context = _context.CreateDbContext();
+            return await context.Commentaires
+                .ToListAsync();
+        }
     }
 }
