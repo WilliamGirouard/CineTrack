@@ -1,6 +1,11 @@
 using CineTrack.Data.Context;
 using CineTrack.Data.Repositories;
 using CineTrack.Data.Repositories.Interfaces;
+using CineTrack.Data.Services.AdminServ;
+using CineTrack.Data.Services.EmailServ;
+using CineTrack.Data.Services.NoteServ;
+using CineTrack.Data.Services.PasswordResetStoreServ;
+using CineTrack.Data.Services.UtilisateurServ;
 using CineTrack.Services;
 using CineTrack.Services.Interfaces;
 using CineTrack.Services.Jikan;
@@ -10,23 +15,21 @@ using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Auth.PasswordReset;
 using CineTrack.ViewModels.Profile;
 using CineTrack.ViewModels.Search;
+using CineTrack.ViewModels.Settings;
+using CineTrack.ViewModels.Watch;
 using CineTrack.Views.Auth;
 using CineTrack.Views.Auth.PasswordReset;
 using CineTrack.Views.Profile;
 using CineTrack.Views.Search;
+using CineTrack.Views.Settings;
+using CineTrack.Views.Watch;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
-using CineTrack.ViewModels.Watch;
-using CineTrack.Views.Watch;
-using CineTrack.Data.Services.EmailServ;
-using CineTrack.Data.Services.NoteServ;
-using CineTrack.Data.Services.PasswordResetStoreServ;
-using CineTrack.Data.Services.UtilisateurServ;
-using CineTrack.Data.Services.AdminServ;
 using CineTrack.ViewModels.Favoris;
+
 
 namespace CineTrack
 {
@@ -92,6 +95,8 @@ namespace CineTrack
             services.AddTransient<SearchViewModel>();
             services.AddTransient<ProfileViewModel>();
             services.AddTransient<FavorisViewModel>();
+            services.AddTransient<SettingsViewModel>();
+            services.AddTransient<WatchView>();
 
             // Views (Transient)
             services.AddTransient<MainWindow>();
@@ -103,6 +108,7 @@ namespace CineTrack
             services.AddTransient<SearchView>();
             services.AddTransient<WatchView>();
             services.AddTransient<ProfileView>();
+            services.AddTransient<SettingsView>();
 
             ServiceProvider = services.BuildServiceProvider();
 

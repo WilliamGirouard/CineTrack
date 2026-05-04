@@ -5,6 +5,7 @@ using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Carousel;
 using CineTrack.ViewModels.Profile;
 using CineTrack.ViewModels.Search;
+using CineTrack.ViewModels.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -59,6 +60,12 @@ public partial class MainViewModel : ObservableObject
             UserId = currentUser.Id,
             Source = "main"
         });
+    }
+
+    [RelayCommand]
+    private void Settings()
+    {
+        _navigationService.NavigateTo<SettingsViewModel>();
     }
 
     [RelayCommand]

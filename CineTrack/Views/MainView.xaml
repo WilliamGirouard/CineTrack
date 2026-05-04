@@ -17,8 +17,7 @@
         </Grid.RowDefinitions>
 
         <!-- HEADER -->
-        <Border Grid.Row="0"
-                Background="#16213e">
+        <Border Grid.Row="0" Background="#16213e">
             <Grid Margin="20,0">
 
                 <TextBlock Text="CineTrack"
@@ -28,8 +27,7 @@
                            VerticalAlignment="Center"/>
 
                 <!-- SEARCH BAR -->
-                <Grid Width="300"
-                      Height="32"
+                <Grid Width="200" Height="32"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center">
 
@@ -40,41 +38,45 @@
                              Padding="10,0"
                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <Button Content="⚙"
-                            Width="32"
-                            Height="32"
+                    <Button Content="🔍"
+                            Width="32" Height="32"
                             HorizontalAlignment="Right"
-                            Background="#e94560"
-                            Foreground="White"
-                            BorderThickness="0"
-                            Cursor="Hand"
+                            Background="#e94560" Foreground="White"
+                            BorderThickness="0" Cursor="Hand"
                             Command="{Binding OpenSearchCommand}"/>
                 </Grid>
 
-                <!-- Mon profil button -->
-                <Button Content="Mon profil"
-                        Width="100"
-                        Height="34"
-                        HorizontalAlignment="Right"
-                        Margin="0,0,125,0"
-                        Background="#e94560"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand"
-                        Command="{Binding OpenProfileCommand}"/>
+                <!-- RIGHT BUTTONS -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
 
-                <Button Content="Se deconnecter"
-                        Width="110"
-                        Height="34"
-                        HorizontalAlignment="Right"
-                        Background="#e94560"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand"
-                        Command="{Binding DisconnectCommand}"/>
+                    <Button Content="⚙"
+                            Width="34" Height="34"
+                            Margin="0,0,8,0"
+                            Background="#e94560" Foreground="White"
+                            BorderThickness="0" Cursor="Hand"
+                            Command="{Binding SettingsCommand}"/>
+
+                    <Button Content="Mon profil"
+                            Width="100" Height="34"
+                            Margin="0,0,8,0"
+                            Background="#e94560" Foreground="White"
+                            BorderThickness="0" Cursor="Hand"
+                            Command="{Binding OpenProfileCommand}"/>
+
+                    <Button Content="Se déconnecter"
+                            Width="110" Height="34"
+                            Background="#e94560" Foreground="White"
+                            BorderThickness="0" Cursor="Hand"
+                            Command="{Binding DisconnectCommand}"/>
+
+                </StackPanel>
 
             </Grid>
         </Border>
+
+
 
         <!-- SEARCH OVERLAY -->
         <Border Grid.Row="1"
