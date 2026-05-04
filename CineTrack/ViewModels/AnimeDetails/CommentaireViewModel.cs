@@ -1,17 +1,23 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CineTrack.Data.Models;
+using CineTrack.Services.Interfaces;
+using CineTrack.ViewModels.Profile;
+using CommunityToolkit.Mvvm.Input;
 
 namespace CineTrack.ViewModels.AnimeDetails
 {
-    public class CommentaireViewModel
+    public partial class CommentaireViewModel
     {
         private readonly Commentaire _commentaire;
         private readonly int? _currentUserId;
         private readonly bool _isAdmin;
+        private readonly INavigationService _navigationService;
+        private readonly long _sourceMalId;
+
         public int Id => _commentaire.Id;
         public string Texte => _commentaire.Texte;
         public DateTime DateCreation => _commentaire.DateCreation;
@@ -23,13 +29,32 @@ namespace CineTrack.ViewModels.AnimeDetails
         public string RatingDisplay => Rating.HasValue ? $"★ {Rating}/5" : "";
         public bool CanDelete => _isAdmin || IsCurrentUserAuthor;
 
-        public CommentaireViewModel(Commentaire commentaire, int? currentUserId, int? rating, bool isAdmin)
+        public CommentaireViewModel(
+            Commentaire commentaire,
+            int? currentUserId,
+            int? rating,
+            bool isAdmin,
+            INavigationService navigationService,
+            long sourceMalId)
         {
             _commentaire = commentaire;
             _currentUserId = currentUserId;
             _isAdmin = isAdmin;
+            _navigationService = navigationService;
+            _sourceMalId = sourceMalId;
             Username = commentaire.Utilisateur?.Username ?? "Utilisateur inconnu";
             Rating = rating;
+        }
+
+        [RelayCommand]
+        private void OpenProfile()
+        {
+            _navigationService.NavigateTo<ProfileViewModel>(new ProfileNavParam
+            {
+                UserId = _commentaire.UtilisateurId,
+                Source = "animeDetails",
+                SourceMalId = _sourceMalId
+            });
         }
     }
 }

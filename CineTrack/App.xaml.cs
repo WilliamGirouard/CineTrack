@@ -8,11 +8,11 @@ using CineTrack.ViewModels;
 using CineTrack.ViewModels.AnimeDetails;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Auth.PasswordReset;
-using CineTrack.ViewModels.Favoris;
+using CineTrack.ViewModels.Profile;
 using CineTrack.ViewModels.Search;
 using CineTrack.Views.Auth;
 using CineTrack.Views.Auth.PasswordReset;
-using CineTrack.Views.Favoris;
+using CineTrack.Views.Profile;
 using CineTrack.Views.Search;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +26,7 @@ using CineTrack.Data.Services.NoteServ;
 using CineTrack.Data.Services.PasswordResetStoreServ;
 using CineTrack.Data.Services.UtilisateurServ;
 using CineTrack.Data.Services.AdminServ;
+using CineTrack.ViewModels.Favoris;
 
 namespace CineTrack
 {
@@ -52,6 +53,7 @@ namespace CineTrack
                 services.AddDbContextFactory<CineTrackDbContext>(o => o.UseSqlite(connectionString));
             else if (provider == "SqlServer")
                 services.AddDbContextFactory<CineTrackDbContext>(o => o.UseSqlServer(connectionString));
+
             // Email Service
             services.AddSingleton<IEmailService>(new EmailService(
                 emailConfiguration["mail"]!,
@@ -60,7 +62,6 @@ namespace CineTrack
                 int.Parse(emailConfiguration["SmtpPort"]!)
                 ));
 
-            // ── Repositories (Scoped) ──────────────────────────────────────────
             // Repositories
             services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
             services.AddScoped<IFavorisRepository, FavorisRepository>();
@@ -71,34 +72,37 @@ namespace CineTrack
             services.AddScoped<IUtilisateurService, UtilisateurService>();
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<IAdminService, AdminService>();
-            // ── Navigation (Singleton) ─────────────────────────────────────────
+
+            // Navigation
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IJikanService, JikanService>();
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<WatchViewModel>();
 
-            //PasswordResetCodeStorage
+            // PasswordResetCodeStorage
             services.AddSingleton<PasswordResetStore>();
-            // ── ViewModels (Transient) ─────────────────────────────────────────
+
+            // ViewModels
             services.AddTransient<SignInViewModel>();
             services.AddTransient<SignUpViewModel>();
-            services.AddTransient<FavorisViewModel>();
             services.AddTransient<AnimeDetailsViewModel>();
             services.AddTransient<ForgottenPasswordViewModel>();
             services.AddTransient<ResetCodeVerificationViewModel>();
             services.AddTransient<ResetPasswordViewModel>();
-            services.AddTransient<WatchView>();
+            services.AddTransient<SearchViewModel>();
+            services.AddTransient<ProfileViewModel>();
+            services.AddTransient<FavorisViewModel>();
 
-            // ── Views (Transient) ──────────────────────────────────────────────
+            // Views (Transient)
             services.AddTransient<MainWindow>();
             services.AddTransient<SignUpView>();
             services.AddTransient<SignInView>();
-            services.AddTransient<FavorisView>();
             services.AddTransient<ForgottenPasswordView>();
             services.AddTransient<ResetCodeVerificationView>();
             services.AddTransient<ResetPasswordView>();
-            services.AddTransient<SearchViewModel>();
             services.AddTransient<SearchView>();
+            services.AddTransient<WatchView>();
+            services.AddTransient<ProfileView>();
 
             ServiceProvider = services.BuildServiceProvider();
 
@@ -114,7 +118,6 @@ namespace CineTrack
 
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
-            
         }
 
         protected override void OnExit(ExitEventArgs e)

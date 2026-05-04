@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="CineTrack.Views.MainView"
+<UserControl x:Class="CineTrack.Views.MainView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,7 +17,8 @@
         </Grid.RowDefinitions>
 
         <!-- HEADER -->
-        <Border Grid.Row="0" Background="#16213e">
+        <Border Grid.Row="0"
+                Background="#16213e">
             <Grid Margin="20,0">
 
                 <TextBlock Text="CineTrack"
@@ -50,8 +51,9 @@
                             Command="{Binding OpenSearchCommand}"/>
                 </Grid>
 
-                <Button Content="Mes favoris"
-                        Width="110"
+                <!-- Mon profil button -->
+                <Button Content="Mon profil"
+                        Width="100"
                         Height="34"
                         HorizontalAlignment="Right"
                         Margin="0,0,125,0"
@@ -59,7 +61,7 @@
                         Foreground="White"
                         BorderThickness="0"
                         Cursor="Hand"
-                        Command="{Binding FavorisCommand}"/>
+                        Command="{Binding OpenProfileCommand}"/>
 
                 <Button Content="Se deconnecter"
                         Width="110"
@@ -86,53 +88,45 @@
                 Visibility="{Binding SearchResults.Count, Converter={StaticResource IntToVisibilityConverter}}">
 
             <ScrollViewer VerticalScrollBarVisibility="Hidden"
-              HorizontalScrollBarVisibility="Disabled">
-
+                          HorizontalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding SearchResults}"
-              HorizontalContentAlignment="Stretch">
+                              HorizontalContentAlignment="Stretch">
                     <ItemsControl.ItemTemplate>
-
                         <DataTemplate>
                             <Button Command="{Binding OpenCommand}"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Padding="0"
-                                Cursor="Hand"
-                                HorizontalAlignment="Stretch">
-
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="0"
+                                    Cursor="Hand"
+                                    HorizontalAlignment="Stretch">
                                 <Border Margin="5"
-                                    Padding="10"
-                                    Background="#0f3460"
-                                    CornerRadius="6"
-                                    HorizontalAlignment="Stretch"
-                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
-
+                                        Padding="10"
+                                        Background="#0f3460"
+                                        CornerRadius="6"
+                                        HorizontalAlignment="Stretch"
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
                                     <Grid Height="90">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="70"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-
                                         <Image Width="50"
-                                           Height="70"
-                                           Source="{Binding ImageUrl}"
-                                           Stretch="UniformToFill"/>
-
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-
+                                               Height="70"
+                                               Source="{Binding ImageUrl}"
+                                               Stretch="UniformToFill"/>
+                                        <StackPanel Grid.Column="1"
+                                                    Margin="10,0,0,0">
                                             <TextBlock Text="{Binding Title}"
-                                                   Foreground="White"
-                                                   FontSize="14"
-                                                   FontWeight="SemiBold"/>
-
+                                                       Foreground="White"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold"/>
                                             <TextBlock Text="{Binding Synopsis}"
-                                                   Foreground="#aaa"
-                                                   FontSize="11"
-                                                   TextWrapping="Wrap"
-                                                   MaxHeight="45"/>
+                                                       Foreground="#aaa"
+                                                       FontSize="11"
+                                                       TextWrapping="Wrap"
+                                                       MaxHeight="45"/>
                                         </StackPanel>
                                     </Grid>
-
                                 </Border>
                             </Button>
                         </DataTemplate>
@@ -171,23 +165,28 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,40"/>
 
-                <ItemsControl ItemsSource="{Binding Carousels}" Margin="20,0">
+                <ItemsControl ItemsSource="{Binding Carousels}"
+                              Margin="20,0">
                     <ItemsControl.ItemTemplate>
 
                         <DataTemplate>
                             <StackPanel Margin="0,0,0,30">
 
                                 <!-- Carousel title -->
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,0,0,12">
                                     <TextBlock Text="{Binding GenreName}"
                                                FontSize="20"
                                                FontWeight="Bold">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="Foreground"
+                                                        Value="White"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding GenreName}" Value="Trending">
-                                                        <Setter Property="Foreground" Value="#e94560"/>
+                                                    <DataTrigger Binding="{Binding GenreName}"
+                                                                 Value="Trending">
+                                                        <Setter Property="Foreground"
+                                                                Value="#e94560"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -212,7 +211,8 @@
                                     <Button Grid.Column="0"
                                             Content="❮"
                                             Command="{Binding PreviousCommand}"
-                                            Width="32" Height="32"
+                                            Width="32"
+                                            Height="32"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             Background="#0f3460"
@@ -262,9 +262,12 @@
                                                                         CornerRadius="0,0,8,8">
 
                                                                     <Border.Background>
-                                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                            <GradientStop Color="Transparent" Offset="0"/>
-                                                                            <GradientStop Color="#EE000000" Offset="1"/>
+                                                                        <LinearGradientBrush StartPoint="0,0"
+                                                                                             EndPoint="0,1">
+                                                                            <GradientStop Color="Transparent"
+                                                                                          Offset="0"/>
+                                                                            <GradientStop Color="#EE000000"
+                                                                                          Offset="1"/>
                                                                         </LinearGradientBrush>
                                                                     </Border.Background>
 
@@ -283,7 +286,6 @@
                                                                                    Margin="0,2,0,4"/>
 
                                                                     </StackPanel>
-
                                                                 </Border>
 
                                                                 <!-- Rank — visible seulement si Trending -->
@@ -295,35 +297,37 @@
                                                                            HorizontalAlignment="Left"
                                                                            Margin="5,0,0,-8">
                                                                     <TextBlock.Effect>
-                                                                        <DropShadowEffect BlurRadius="4" ShadowDepth="2" Color="Black"/>
+                                                                        <DropShadowEffect BlurRadius="4"
+                                                                                          ShadowDepth="2"
+                                                                                          Color="Black"/>
                                                                     </TextBlock.Effect>
                                                                     <TextBlock.Style>
                                                                         <Style TargetType="TextBlock">
-                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            <Setter Property="Visibility"
+                                                                                    Value="Collapsed"/>
                                                                             <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding ShowRank}" Value="True">
-                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                <DataTrigger Binding="{Binding ShowRank}"
+                                                                                             Value="True">
+                                                                                    <Setter Property="Visibility"
+                                                                                            Value="Visible"/>
                                                                                 </DataTrigger>
                                                                             </Style.Triggers>
                                                                         </Style>
                                                                     </TextBlock.Style>
                                                                 </TextBlock>
-
                                                             </Grid>
-
                                                         </Border>
                                                     </Button>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
-
                                         </ItemsControl>
-
                                     </ScrollViewer>
 
                                     <Button Grid.Column="2"
                                             Content="❯"
                                             Command="{Binding NextCommand}"
-                                            Width="32" Height="32"
+                                            Width="32"
+                                            Height="32"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             Background="#0f3460"
@@ -331,12 +335,9 @@
                                             BorderThickness="0"
                                             FontSize="14"
                                             Cursor="Hand"/>
-
                                 </Grid>
-
                             </StackPanel>
                         </DataTemplate>
-
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
