@@ -84,6 +84,14 @@ namespace CineTrack.Data.Services.UtilisateurServ
             return user.Email;
         }
 
+        public async Task SendVerificationCodeAsync(string email)
+        {
+            var user = await _utilisateurRepository.GetByEmailAsync(email) ?? throw new Exception("User not found");
+            string code = new Random().Next(100000, 999999).ToString();
+            _passwordResetCodes[email] = (code, DateTime.Now.AddMinutes(5));
+            await _emailService.SendVerificationCodeAsync(email, code);
+        }
+
         public Task<bool> IsResetCodeValidAsync(string email, string code)
         {
             if (_passwordResetCodes.TryGetValue(email, out var result))

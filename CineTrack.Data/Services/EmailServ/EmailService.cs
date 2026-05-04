@@ -38,5 +38,24 @@ namespace CineTrack.Data.Services.EmailServ
 
             await smtp.SendMailAsync(mail);
         }
+        public async Task SendVerificationCodeAsync(string userEmail, string code)
+        {
+            var mail = new MailMessage
+            {
+                From = new MailAddress(_mail, "CineTrack"),
+                Subject = "Vérification du compte",
+                Body = $"Voici le code de vérification : {code}\n Le code expire dans 5 minutes",
+                IsBodyHtml = false
+            };
+            mail.To.Add(userEmail);
+
+            using var smtp = new SmtpClient(_smtpHost, _smtpPort)
+            {
+                Credentials = new NetworkCredential(_mail, _password),
+                EnableSsl = true
+            };
+
+            await smtp.SendMailAsync(mail);
+        }
     }
 }

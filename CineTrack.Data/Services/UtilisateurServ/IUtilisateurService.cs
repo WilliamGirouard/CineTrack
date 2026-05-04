@@ -18,5 +18,7 @@ namespace CineTrack.Data.Services.UtilisateurServ
         Task<bool> IsResetCodeValidAsync(string email, string code);
 
         Task ResetPasswordAsync(string email, string newPassword);
+
+        Task SendVerificationCodeAsync(string email);
     }
 }
