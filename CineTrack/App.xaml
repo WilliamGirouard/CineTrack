@@ -15,7 +15,9 @@
              xmlns:watchVm="clr-namespace:CineTrack.ViewModels.Watch"
              xmlns:watchV="clr-namespace:CineTrack.Views.Watch"
              xmlns:profileVm="clr-namespace:CineTrack.ViewModels.Profile"
-             xmlns:profileV="clr-namespace:CineTrack.Views.Profile">
+             xmlns:profileV="clr-namespace:CineTrack.Views.Profile"
+             xmlns:settingsV="clr-namespace:CineTrack.Views.Settings"
+             xmlns:settingsVm="clr-namespace:CineTrack.ViewModels.Settings">
 
     <Application.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
@@ -56,5 +58,10 @@
         <DataTemplate DataType="{x:Type profileVm:ProfileViewModel}">
             <profileV:ProfileView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type settingsVm:SettingsViewModel}">
+            <settingsV:SettingsView/>
+        </DataTemplate>
+
+
     </Application.Resources>
 </Application>
