@@ -92,9 +92,36 @@
                                                Foreground="#888"
                                                FontSize="13"
                                                Margin="0,3,0,0"/>
+
+                                    <TextBlock Text="{Binding VerificationMessage}"
+                                               FontSize="13"
+                                               Margin="0,6,0,0"
+                                               Visibility="{Binding IsOwnProfile, Converter={StaticResource BoolToVisConverter}}">      
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsVerified}" Value="True">
+                                                        <Setter Property="Foreground" Value="LightGreen"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsVerified}" Value="False">
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <Button Content="Vérifier mon compte"
+                                                Command="{Binding VerifyAccountCommand}"
+                                                Visibility="{Binding IsVerified, Converter={StaticResource BoolToVisInverseConverter}}"
+                                                HorizontalAlignment="Left"
+                                                Margin="0,8,0,0"
+                                                Padding="12,6"
+                                                Background="#e94560"
+                                                Foreground="White"
+                                                Cursor="Hand"/>
                                 </StackPanel>
                             </StackPanel>
-
                         </StackPanel>
                     </Grid>
                 </Border>
