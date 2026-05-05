@@ -64,6 +64,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         : "No ratings yet";
 
     public bool HasEpisodes => _anime?.Episodes.HasValue == true && _anime.Episodes > 0;
+    public bool CanComment => SessionManager.Instance.CurrentUser?.UserVerified == true; 
 
     public AnimeDetailsViewModel(
         INavigationService navigationService,
@@ -131,6 +132,7 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
 
         await CheckFavoriteAsync();
         await LoadCommentsAsync();
+        OnPropertyChanged(nameof(CanComment));
     }
 
     // Navigue vers la page de visionnage de l'épisode sélectionné
@@ -274,6 +276,11 @@ public partial class AnimeDetailsViewModel : ObservableObject, ITransferParamete
         Debug.WriteLine($"MalId utilisé: {(int)_anime.MalId}");
         try
         {
+            if (!currentUser.UserVerified)
+            {
+                Debug.WriteLine("Utilisateur non vérifié, impossible d'ajouter un commentaire.");
+                return;
+            }
             await _commentaireRepository.AddCommentaireAsync(new Commentaire
             {
                 MalId = (int)_anime.MalId,

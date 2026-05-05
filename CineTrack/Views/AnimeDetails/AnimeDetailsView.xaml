@@ -433,7 +433,8 @@
                     <Border Background="#16213e"
                             CornerRadius="8"
                             Padding="12"
-                            Margin="0,0,0,16">
+                            Margin="0,0,0,16"
+                            Visibility="{Binding CanComment, Converter={StaticResource BoolToVisConverter}}">
                         <StackPanel>
                             <TextBox Text="{Binding NewComment, UpdateSourceTrigger=PropertyChanged}"
                                      Background="#0f3460"
@@ -491,6 +492,13 @@
                             </Button>
                         </StackPanel>
                     </Border>
+                    
+                    <TextBlock Text="Verifier votre compte pour ajouter un commentaire."
+                               Foreground="#f0c040"
+                               FontSize="13"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,16"
+                               Visibility="{Binding CanComment, Converter={StaticResource BoolToVisInverseConverter}}"/>
 
                     <!-- Comments list -->
                     <ItemsControl ItemsSource="{Binding Commentaires}">

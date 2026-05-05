@@ -66,5 +66,22 @@ namespace CineTrack.Data.Services.AdminServ
             }
             await _noteRepository.DeleteNoteByIdAsync(noteId);
         }
+
+        public async Task DeleteAllCommentairesAsync()
+        {
+            var commentaires = await _commentaireRepository.GetAllCommentairesAsync() ?? throw new Exception($"No comments yet");
+
+            foreach (var commentaire in commentaires)
+            {
+                try
+                {
+                    await DeleteCommentaireAsync(commentaire.Id);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"This comment is from an admnistrator {commentaire.Id} : {e.Message}");
+                }
+            }
+        }
     }
 }

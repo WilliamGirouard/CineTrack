@@ -5,6 +5,7 @@ using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.AnimeCard;
 using CineTrack.ViewModels.AnimeDetails;
+using CineTrack.ViewModels.Auth.Verification;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -29,6 +30,8 @@ public partial class ProfileViewModel : ObservableObject, ITransferParameter
     [ObservableProperty] private string _memberSince = string.Empty;
     [ObservableProperty] private int _reviewCount;
     [ObservableProperty] private bool _isOwnProfile;
+    [ObservableProperty] private bool _isVerified;
+    [ObservableProperty] private string _verificationMessage = string.Empty;
 
     public string UsernameInitial => Username.Length > 0 ? Username[0].ToString() : "?";
 
@@ -84,6 +87,7 @@ public partial class ProfileViewModel : ObservableObject, ITransferParameter
         FavorisList.Clear();
         RatingsList.Clear();
 
+
         try
         {
             var currentUser = SessionManager.Instance.CurrentUser;
@@ -98,7 +102,15 @@ public partial class ProfileViewModel : ObservableObject, ITransferParameter
             }
 
             Username = user.Username;
+            IsVerified = user.UserVerified;
+
+            if (IsOwnProfile)
+            {
+                VerificationMessage = IsVerified ? "Verified Account" : "Unverified Account";
+            }
+            
             MemberSince = user.DateCreation.ToString("MMMM yyyy");
+
 
             // Ratings section (shown for all profiles)
             var notes = await _noteRepository.GetNotesByUserIdAsync(userId);
@@ -164,7 +176,7 @@ public partial class ProfileViewModel : ObservableObject, ITransferParameter
     }
 
     [RelayCommand]
-    private void GoBack()
+    private void GoBackAsync()
     {
         if (_source == "animeDetails" && _sourceMalId.HasValue)
         {
@@ -178,5 +190,17 @@ public partial class ProfileViewModel : ObservableObject, ITransferParameter
         {
             _navigationService.NavigateTo<MainViewModel>();
         }
+    }
+
+    [RelayCommand]
+    
+    private void VerifyAccountAsync()
+    {
+        var currentUser = SessionManager.Instance.CurrentUser;
+        if(currentUser == null) return;
+        _navigationService.NavigateTo<EmailVerificationViewModel>(new EmailVerificationParam
+        {
+            Email = currentUser.Email
+        });
     }
 }

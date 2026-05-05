@@ -13,12 +13,14 @@ using CineTrack.ViewModels;
 using CineTrack.ViewModels.AnimeDetails;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Auth.PasswordReset;
+using CineTrack.ViewModels.Auth.Verification;
 using CineTrack.ViewModels.Profile;
 using CineTrack.ViewModels.Search;
 using CineTrack.ViewModels.Settings;
 using CineTrack.ViewModels.Watch;
 using CineTrack.Views.Auth;
 using CineTrack.Views.Auth.PasswordReset;
+using CineTrack.Views.Auth.Verification;
 using CineTrack.Views.Profile;
 using CineTrack.Views.Search;
 using CineTrack.Views.Settings;
@@ -29,7 +31,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
 using CineTrack.ViewModels.Favoris;
-
 
 namespace CineTrack
 {
@@ -97,6 +98,7 @@ namespace CineTrack
             services.AddTransient<FavorisViewModel>();
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<WatchView>();
+            services.AddTransient<EmailVerificationViewModel>();
 
             // Views (Transient)
             services.AddTransient<MainWindow>();
@@ -109,6 +111,7 @@ namespace CineTrack
             services.AddTransient<WatchView>();
             services.AddTransient<ProfileView>();
             services.AddTransient<SettingsView>();
+            services.AddTransient<EmailVerificationView>();
 
             ServiceProvider = services.BuildServiceProvider();
 

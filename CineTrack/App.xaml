@@ -17,7 +17,10 @@
              xmlns:profileVm="clr-namespace:CineTrack.ViewModels.Profile"
              xmlns:profileV="clr-namespace:CineTrack.Views.Profile"
              xmlns:settingsV="clr-namespace:CineTrack.Views.Settings"
-             xmlns:settingsVm="clr-namespace:CineTrack.ViewModels.Settings">
+             xmlns:settingsVm="clr-namespace:CineTrack.ViewModels.Settings"
+             xmlns:verificationV="clr-namespace:CineTrack.Views.Auth.Verification"
+             xmlns:verificationVm="clr-namespace:CineTrack.ViewModels.Auth.Verification">
+
 
     <Application.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
@@ -61,7 +64,9 @@
         <DataTemplate DataType="{x:Type settingsVm:SettingsViewModel}">
             <settingsV:SettingsView/>
         </DataTemplate>
-
+        <DataTemplate DataType="{x:Type verificationVm:EmailVerificationViewModel}">
+            <verificationV:EmailVerificationView/>
+        </DataTemplate>
 
     </Application.Resources>
 </Application>

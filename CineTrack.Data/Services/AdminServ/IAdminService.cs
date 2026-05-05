@@ -14,5 +14,6 @@ namespace CineTrack.Data.Services.AdminServ
         Task DeleteCommentaireAsync(int commentaireId);
         Task<Boolean> IsAdminAsync(int userId);
         Task DeleteNoteAsync(int noteId);
+        Task DeleteAllCommentairesAsync();
     }
 }

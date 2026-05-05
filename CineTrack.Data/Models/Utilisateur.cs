@@ -34,5 +34,7 @@ namespace CineTrack.Data.Models
 
         // Role par défaut = user, par la suite on peut privilégié un compte ou à la création mettre admin
         public EnumRole Role { get; set; } = EnumRole.user;
+
+        public bool UserVerified { get; set; } = false;
     }
 }
