@@ -176,7 +176,7 @@ public partial class ProfileViewModel : ObservableObject, ITransferParameter
     }
 
     [RelayCommand]
-    private async Task GoBackAsync()
+    private void GoBackAsync()
     {
         if (_source == "animeDetails" && _sourceMalId.HasValue)
         {
@@ -194,7 +194,7 @@ public partial class ProfileViewModel : ObservableObject, ITransferParameter
 
     [RelayCommand]
     
-    private async Task VerifyAccountAsync()
+    private void VerifyAccountAsync()
     {
         var currentUser = SessionManager.Instance.CurrentUser;
         if(currentUser == null) return;
