@@ -46,7 +46,14 @@ namespace CineTrack.Data.Repositories
         public async Task UpdateUserAsync(Utilisateur user)
         {
             using var context = _context.CreateDbContext();
-            context.Utilisateurs.Update(user);
+            var exists = await context.Utilisateurs.FindAsync(user.Id);
+            if (exists == null) return;
+
+            exists.FullName = user.FullName;
+            exists.Username = user.Username;
+            exists.Password = user.Password;
+            exists.Email = user.Email;
+
             await context.SaveChangesAsync();
             Console.WriteLine(@"User Updated: " + user.Username);
         }
