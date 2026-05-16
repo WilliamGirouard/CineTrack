@@ -1,9 +1,4 @@
-﻿using CineTrack.Data.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CineTrack.Data.Context;
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +28,15 @@ namespace CineTrack.Data.Repositories
                 .Where(r => r.MalId == malId)
                 .ToListAsync();
         }
-            
+
+        public async Task<List<Note>> GetNotesByUserIdAsync(int utilisateurId)
+        {
+            using var context = _context.CreateDbContext();
+            return await context.Notes
+                .Where(n => n.UtilisateurId == utilisateurId)
+                .OrderByDescending(n => n.DateAdded)
+                .ToListAsync();
+        }
 
         public async Task AddNoteAsync(Note note)
         {
@@ -53,11 +56,13 @@ namespace CineTrack.Data.Repositories
             exists.UtilisateurId = note.UtilisateurId;
             await context.SaveChangesAsync();
         }
+
         public async Task<Note?> GetNoteByIdAsync(int noteId)
         {
             using var context = _context.CreateDbContext();
             return await context.Notes.FindAsync(noteId);
         }
+
         public async Task DeleteNoteByIdAsync(int noteId)
         {
             using var context = _context.CreateDbContext();
@@ -68,6 +73,7 @@ namespace CineTrack.Data.Repositories
                 await context.SaveChangesAsync();
             }
         }
+
         public async Task<List<Note>> GetNotesRecentesAsync()
         {
             using var context = _context.CreateDbContext();

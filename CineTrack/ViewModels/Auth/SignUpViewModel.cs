@@ -133,6 +133,7 @@ namespace CineTrack.ViewModels.Auth
             try
             {
                 await _utilisateurService.SignUpAsync(Username.Trim(), FullName.Trim(), Email.Trim(), Password);
+                await _utilisateurService.SendVerificationCodeAsync(Email);
                 _navigationService.NavigateTo<SignInViewModel>();
             }
             catch (Exception ex)
