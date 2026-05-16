@@ -1,6 +1,6 @@
 ﻿using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services.UtilisateurServ;
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Session;
 using CineTrack.ViewModels.Auth;
 using CineTrack.ViewModels.Auth.PasswordReset;

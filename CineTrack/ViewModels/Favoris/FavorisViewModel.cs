@@ -1,13 +1,11 @@
 using CineTrack.Data.Repositories.Interfaces;
-using CineTrack.Services;
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.AnimeCard;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace CineTrack.ViewModels.Favoris;
 

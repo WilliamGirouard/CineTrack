@@ -1,4 +1,4 @@
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 using CineTrack.ViewModels.AnimeDetails;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

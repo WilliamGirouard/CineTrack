@@ -1,9 +1,7 @@
+using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Services.Interfaces;
-using CineTrack.Services.Jikan;
-using CineTrack.ViewModels.Auth;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection.Metadata;
 
 namespace CineTrack.Services
 {

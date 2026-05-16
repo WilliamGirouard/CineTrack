@@ -1,7 +1,6 @@
-using CineTrack.Services.Jikan;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace CineTrack.Services.Interfaces
+namespace CineTrack.Data.Services.NavigationServ
 {
 
     /// Contrat du service de navigation entre ViewModels.

@@ -48,7 +48,12 @@ namespace CineTrack.Data.Repositories
         public async Task UpdateNoteAsync(Note note)
         {
             using var context = _context.CreateDbContext();
-            context.Notes.Update(note);
+            var exists = await context.Notes.FindAsync(note.Id);
+            if (exists == null) return;
+            exists.NoteUtilisateur = note.NoteUtilisateur;
+            exists.Utilisateur = note.Utilisateur;
+            exists.MalId = note.MalId;
+            exists.UtilisateurId = note.UtilisateurId;
             await context.SaveChangesAsync();
         }
 

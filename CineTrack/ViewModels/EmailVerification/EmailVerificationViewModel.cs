@@ -4,6 +4,7 @@ using CineTrack.Session;
 using CineTrack.ViewModels.Profile;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CineTrack.Data.Services.NavigationServ;
 
 namespace CineTrack.ViewModels.Auth.Verification
 {

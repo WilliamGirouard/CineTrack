@@ -1,8 +1,4 @@
-using CineTrack.Services.Interfaces;
-using CineTrack.ViewModels.Auth;
-using CineTrack.Views.Auth;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+using CineTrack.Data.Services.NavigationServ;
 using System.Windows;
 
 namespace CineTrack

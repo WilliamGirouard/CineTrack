@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="../CineTrack.Data/CineTrack.Data.csproj" />
+  <Project Path="../CineTrack.Tests/CineTrack.Tests.csproj" Id="e871249b-2eff-40af-b2e0-88795bfe48e8" />
   <Project Path="CineTrack.csproj" />
 </Solution>

@@ -1,4 +1,4 @@
-﻿using CineTrack.Services.Interfaces;
+﻿using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Services.Jikan;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
