@@ -1,10 +1,9 @@
-﻿using CineTrack.Services;
-using CineTrack.Services.Interfaces;
+﻿using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Services.Jikan;
 using CineTrack.ViewModels.AnimeDetails;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Diagnostics;
+
 using ITransferParameter = CineTrack.Services.Interfaces.ITransferParameter;
 
 namespace CineTrack.ViewModels.Watch

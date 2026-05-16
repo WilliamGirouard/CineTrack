@@ -1,10 +1,8 @@
-﻿using CineTrack.Services;
-using CineTrack.Services.Interfaces;
-using CineTrack.ViewModels.AnimeDetails;
+﻿using CineTrack.ViewModels.AnimeDetails;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JikanDotNet;
-using System.DirectoryServices;
+using CineTrack.Data.Services.NavigationServ;
 
 namespace CineTrack.ViewModels.Search;
 

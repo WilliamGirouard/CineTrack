@@ -1,8 +1,7 @@
 using CineTrack.Data.Models;
 using CineTrack.Data.Repositories.Interfaces;
 using CineTrack.Data.Services.NoteServ;
-using CineTrack.Services;
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Services.Jikan;
 using CineTrack.Session;
 using CineTrack.ViewModels.Profile;

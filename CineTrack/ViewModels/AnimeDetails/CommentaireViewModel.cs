@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CineTrack.Data.Models;
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 using CineTrack.ViewModels.Profile;
 using CommunityToolkit.Mvvm.Input;
 

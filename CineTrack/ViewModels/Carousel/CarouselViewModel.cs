@@ -1,12 +1,8 @@
-﻿using CineTrack.Data.Models;
-using CineTrack.ViewModels.AnimeCard;
-using CineTrack.Services;
+﻿using CineTrack.ViewModels.AnimeCard;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JikanDotNet;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 namespace CineTrack.ViewModels.Carousel
 {
     public enum AnimeSortType

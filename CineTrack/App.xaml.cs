@@ -7,7 +7,7 @@ using CineTrack.Data.Services.NoteServ;
 using CineTrack.Data.Services.PasswordResetStoreServ;
 using CineTrack.Data.Services.UtilisateurServ;
 using CineTrack.Services;
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Services.Jikan;
 using CineTrack.ViewModels;
 using CineTrack.ViewModels.AnimeDetails;

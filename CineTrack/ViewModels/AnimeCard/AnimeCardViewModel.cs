@@ -1,14 +1,8 @@
-﻿using CineTrack.Services;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using JikanDotNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CineTrack.ViewModels.AnimeDetails;
 using CommunityToolkit.Mvvm.Input;
-using CineTrack.Services.Interfaces;
+using CineTrack.Data.Services.NavigationServ;
 
 namespace CineTrack.ViewModels.AnimeCard
 {
