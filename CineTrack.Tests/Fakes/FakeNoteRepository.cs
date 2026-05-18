@@ -16,12 +16,13 @@ namespace CineTrack.Tests.Fakes
 
         public Task DeleteNoteByIdAsync(int noteId)
         {
-            throw new NotImplementedException();
+            Notes.RemoveAll(n => n.Id == noteId);
+			return Task.CompletedTask;
         }
 
         public Task<Note?> GetNoteByIdAsync(int noteId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Notes.FirstOrDefault(n => n.Id == noteId));
         }
 
         public Task<Note?> GetNoteByUserIdAndAnimeIdAsync(int userId, long animeId)
@@ -32,12 +33,12 @@ namespace CineTrack.Tests.Fakes
 
         public Task<List<Note>> GetNotesByUserIdAsync(int utilisateurId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Notes.Where(n => n.UtilisateurId == utilisateurId).ToList());
         }
 
         public Task<List<Note>> GetNotesRecentesAsync()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Notes.OrderByDescending(n => n.Id).Take(10).ToList());
         }
 
         public Task UpdateNoteAsync(Note note)
