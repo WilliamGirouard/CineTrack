@@ -22,7 +22,7 @@ namespace CineTrack.Data.Services.UtilisateurServ
         {
             _utilisateurRepository = utilisateurRepository;
             _emailService = emailService;
-            _passwordResetCodes = passwordResetStore.Codes;
+            _passwordResetCodes = passwaordResetStore.Codes;
         }
 
         public async Task<bool> IsEmailUsedAsync(string email)
