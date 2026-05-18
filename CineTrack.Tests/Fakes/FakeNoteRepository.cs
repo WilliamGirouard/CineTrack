@@ -14,13 +14,33 @@ namespace CineTrack.Tests.Fakes
 			return Task.CompletedTask;
 		}
 
-		public Task<Note?> GetNoteByUserIdAndAnimeIdAsync(int userId, long animeId)
+        public Task DeleteNoteByIdAsync(int noteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Note?> GetNoteByIdAsync(int noteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Note?> GetNoteByUserIdAndAnimeIdAsync(int userId, long animeId)
 			=> Task.FromResult(Notes.FirstOrDefault(n => n.UtilisateurId == userId && n.MalId == animeId));
 
 		public Task<List<Note>> GetNotesByAnimeIdAsync(long animeId)
 			=> Task.FromResult(Notes.Where(n => n.MalId == animeId).ToList());
 
-		public Task UpdateNoteAsync(Note note)
+        public Task<List<Note>> GetNotesByUserIdAsync(int utilisateurId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Note>> GetNotesRecentesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateNoteAsync(Note note)
 		{
 			var existing = Notes.FirstOrDefault(n => n.Id == note.Id);
 			if (existing != null)
