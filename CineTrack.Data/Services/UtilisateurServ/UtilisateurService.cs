@@ -22,7 +22,7 @@ namespace CineTrack.Data.Services.UtilisateurServ
         {
             _utilisateurRepository = utilisateurRepository;
             _emailService = emailService;
-            _passwordResetCodes = passwaordResetStore.Codes;
+            _passwordResetCodes = passwordResetStore.Codes;
         }
 
         public async Task<bool> IsEmailUsedAsync(string email)
@@ -38,7 +38,7 @@ namespace CineTrack.Data.Services.UtilisateurServ
         public async Task<Utilisateur> SignInAsync(string username, string password)
         {
             Utilisateur userVerif = await _utilisateurRepository.GetByUsernameAsync(username) ?? throw new Exception("Invalid credentials");
-            if (!HashService.CompareHashToPassword(password, userVerif.Password)) 
+            if (!HashService.CompareHashToPassword(password, userVerif.Password))
             {
                 throw new Exception("Invalid credentials");
             }
@@ -112,14 +112,15 @@ namespace CineTrack.Data.Services.UtilisateurServ
                 {
                     return await Task.FromResult(true);
                 }
-            } return await Task.FromResult(false);
+            }
+            return await Task.FromResult(false);
         }
 
         public async Task VerifyUserAsync(string email)
         {
-           var user = await _utilisateurRepository.GetByEmailAsync(email) ?? throw new Exception("User not found");
-           user.UserVerified = true;
-           await _utilisateurRepository.UpdateUserAsync(user);
+            var user = await _utilisateurRepository.GetByEmailAsync(email) ?? throw new Exception("User not found");
+            user.UserVerified = true;
+            await _utilisateurRepository.UpdateUserAsync(user);
         }
     }
 }

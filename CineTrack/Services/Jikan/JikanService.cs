@@ -16,7 +16,7 @@ namespace CineTrack.Services.Jikan
 
         public async Task<AnimeFull> GetAnimeByIdAsync(long malId)
         {
-            if (_animeCache.TryGetValue((int) malId, out var cached))
+            if (_animeCache.TryGetValue((int)malId, out var cached))
                 return cached;
 
             var response = await _api.GetAnimeFullDataAsync(malId);

@@ -1,5 +1,6 @@
 using CineTrack.Data.Services.NavigationServ;
 using CineTrack.Data.Services.UtilisateurServ;
+using CineTrack.ViewModels;
 using CineTrack.ViewModels.Auth;
 using Moq;
 
