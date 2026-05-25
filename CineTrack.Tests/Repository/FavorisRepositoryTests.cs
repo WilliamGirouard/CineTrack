@@ -1,4 +1,4 @@
-﻿using CineTrack.Data.Models;
+﻿﻿using CineTrack.Data.Models;
 using CineTrack.Tests.Fakes;
 
 namespace CineTrack.Tests.Repository
