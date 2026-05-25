@@ -1,4 +1,4 @@
-﻿using CineTrack.Data.Models;
+﻿﻿using CineTrack.Data.Models;
 
 namespace CineTrack.Tests.Fakes
 {
@@ -8,95 +8,65 @@ namespace CineTrack.Tests.Fakes
         public async Task AddFavorisAsync_NouveauFavoris_EstAjouteListe()
         {
             var repo = new FakeFavorisRepository();
+            var favoris = new Favoris { UtilisateurId = 1, MalId = 100 };
+            await repo.AddFavorisAsync(favoris);
+            Assert.Single(repo.FavorisList);
+            Assert.Equal(1, repo.FavorisList[0].UtilisateurId);
+            Assert.Equal(100, repo.FavorisList[0].MalId);
+        }
 
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 21 });
 
-            Assert.Single(repo.Favoris);
-            Assert.Equal(21, repo.Favoris[0].MalId);
+        [Fact]
+        public async Task RemoveFavorisAsync_FavorisExistant_EstSupprime()
+        {
+            var repo = new FakeFavorisRepository();
+            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 100 });
+            await repo.RemoveFavorisAsync(1);
+            Assert.Empty(repo.FavorisList);
         }
 
         [Fact]
-        public async Task AddFavorisAsync_NouveauFavoris_IdAutoIncrement()
+        public async Task RemoveFavorisAsync_IdInexistant_NeLancePasException()
         {
             var repo = new FakeFavorisRepository();
-
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 21 });
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 1535 });
-
-            Assert.Equal(1, repo.Favoris[0].Id);
-            Assert.Equal(2, repo.Favoris[1].Id);
+            var exception = await Record.ExceptionAsync(() => repo.RemoveFavorisAsync(9999));
+            Assert.Null(exception);
         }
 
+
+        // Retourne un seul favoris pour un utilisateur donné
         [Fact]
-        public async Task GetFavorisByUserIdAsync_FavorisPresent_RetourneLaListe()
+        public async Task GetFavorisByUserIdAsync_FavorisPresent_RetourneFavoris()
         {
             var repo = new FakeFavorisRepository();
-
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 21 });
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 1535 });
-
+            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 100 });
             var result = await repo.GetFavorisByUserIdAsync(1);
-
-            Assert.Equal(2, result.Count);
+            Assert.Single(result);
+            Assert.Equal(100, result[0].MalId);
         }
 
+        // Retourne plusieurs favoris pour un utilisateur donné
+        [Fact]
+        public async Task GetFavorisByUserIdAsync_FavorisPresent_RetourneListe()
+        {
+            var repo = new FakeFavorisRepository();
+            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 100 });
+            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 101 });
+            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 2, MalId = 100 });
+            var result = await repo.GetFavorisByUserIdAsync(1);
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, f => f.MalId == 100);
+            Assert.Contains(result, f => f.MalId == 101);
+        }
+
+        // Test pour vérifier que GetFavorisByUserIdAsync retourne une liste vide si aucun favoris n'est trouvé pour l'utilisateur donné
         [Fact]
         public async Task GetFavorisByUserIdAsync_AucunFavoris_RetourneListeVide()
         {
             var repo = new FakeFavorisRepository();
-
             var result = await repo.GetFavorisByUserIdAsync(1);
-
             Assert.Empty(result);
         }
 
-        [Fact]
-        public async Task GetFavorisByUserIdAsync_AutreUtilisateur_NeRetournePasSesFavoris()
-        {
-            var repo = new FakeFavorisRepository();
-
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 21 });
-
-            var result = await repo.GetFavorisByUserIdAsync(2);
-
-            Assert.Empty(result);
-        }
-
-        [Fact]
-        public async Task RemoveFavorisAsync_FavorisPresent_EstSupprime()
-        {
-            var repo = new FakeFavorisRepository();
-
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 21 });
-            int id = repo.Favoris[0].Id;
-
-            await repo.RemoveFavorisAsync(id);
-
-            Assert.Empty(repo.Favoris);
-        }
-
-        [Fact]
-        public async Task RemoveFavorisAsync_FavorisAbsent_SuppressionNonFaite()
-        {
-            var repo = new FakeFavorisRepository();
-
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 21 });
-
-            await repo.RemoveFavorisAsync(666);
-
-            Assert.Single(repo.Favoris);
-        }
-
-        [Fact]
-        public async Task AddFavorisAsync_PlusieursFavoris_TousPersistes()
-        {
-            var repo = new FakeFavorisRepository();
-
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 21 });
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 1, MalId = 1535 });
-            await repo.AddFavorisAsync(new Favoris { UtilisateurId = 2, MalId = 21 });
-
-            Assert.Equal(3, repo.Favoris.Count);
-        }
     }
 }

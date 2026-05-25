@@ -1,29 +1,39 @@
-﻿using CineTrack.Data.Models;
-using CineTrack.Data.Repositories.Interfaces;
+﻿using CineTrack.Data.Repositories.Interfaces;
+using CineTrack.Data.Models;
 
 namespace CineTrack.Tests.Fakes
 {
     public class FakeFavorisRepository : IFavorisRepository
     {
-        public List<Favoris> Favoris { get; } = new List<Favoris>();
-        private int _nextId = 1;
+        private readonly List<Favoris> _favoris = new();
+        private int _currentId = 1;
+        public List<Favoris> FavorisList => _favoris;
 
         public Task AddFavorisAsync(Favoris favoris)
         {
-            favoris.Id = _nextId++;
-            Favoris.Add(favoris);
+            favoris.Id = _currentId++;
+            _favoris.Add(favoris);
+            Console.WriteLine($"Favoris ajouté: {favoris.Id}");
             return Task.CompletedTask;
         }
 
-        public Task RemoveFavorisAsync(int id)
+        public Task RemoveFavorisAsync(int Id)
         {
-            var favoris = Favoris.FirstOrDefault(f => f.Id == id);
-            if (favoris != null)
-                Favoris.Remove(favoris);
+            var favoris = _favoris.FirstOrDefault(f => f.Id == Id);
+            if (favoris == null)
+            {
+                Console.WriteLine($"Favoris non trouvé: {Id}");
+                return Task.CompletedTask;
+            }
+            _favoris.Remove(favoris);
+            Console.WriteLine($"Favoris supprimé: {Id}");
             return Task.CompletedTask;
         }
 
         public Task<List<Favoris>> GetFavorisByUserIdAsync(int userId)
-            => Task.FromResult(Favoris.Where(f => f.UtilisateurId == userId).ToList());
+        {
+            var result = _favoris.Where(f => f.UtilisateurId == userId).ToList();
+            return Task.FromResult(result);
+        }
     }
 }
