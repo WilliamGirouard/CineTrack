@@ -27,37 +27,41 @@ namespace CineTrack.Services.Jikan
             return response.Data;
         }
 
+        /*
+         * Sources that helped/inspired
+         * 1. https://github.com/Ervie/jikan.net
+         * 2. https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/generate-consume-asynchronous-stream#examine-the-implementation:~:text=retrieved%20from%20GitHub.-,Examine%20the%20implementation,-The%20implementation%20reveals
+         */
         public async Task<ICollection<Anime>> GetAnimesByGenreAsync(int genreId, int page = 1)
         {
             var result = new List<Anime>();
             int currentPage = page;
+            bool hasMorePages = true;
 
-            while (result.Count < 20)
+            while (result.Count < 20 && hasMorePages) // Keeps searching through pages until it finds 20 animes or until it cant search anymore (2)
             {
-                var config = new AnimeSearchConfig
-                {
-                    PageSize = 25,
-                    Page = currentPage,
-                    Genres = new List<AnimeGenreSearch> { (AnimeGenreSearch)genreId },
-                    OrderBy = AnimeSearchOrderBy.Score,
-                    SortDirection = SortDirection.Descending
-                };
+                var response = await _api.SearchAnimeAsync( // gets animes based on config (1)
+                    new AnimeSearchConfig // https://github.com/Ervie/jikan.net/blob/master/JikanDotNet/Model/Search/AnimeSearchConfig.cs
+                    {
+                        PageSize = 25,
+                        Page = currentPage,
+                        OrderBy = AnimeSearchOrderBy.Score,
+                        SortDirection = SortDirection.Descending,
+                        Sfw = true
+                    }
+                );
 
-                var response = await _api.SearchAnimeAsync(config);
-
-                // Filter client-side since Jikan ignores the Genres filter
+                // Filter client-side since Jikan genres filter doesnt work
                 var filtered = response.Data
-                    .Where(a => a.Genres.Any(g => g.MalId == genreId))
+                    .Where(anime => anime.Genres.Any(genre => genre.MalId == genreId)) // We use .Any() because an anime can have multiple genres
                     .ToList();
 
-                result.AddRange(filtered);
+                result.AddRange(filtered); // adds filtered results into the final result
                 currentPage++;
-
-                if (response.Pagination?.HasNextPage == false)
-                    break;
+                hasMorePages = response.Pagination?.HasNextPage ?? false; // This is a safe guard in case Jikan doesnt have anymore pages (2)
             }
 
-            return result.Take(20).ToList();
+            return result.Take(20).ToList(); // Makes sure we actually get 20 animes at most
         }
 
         public async Task<ICollection<Anime>> SearchAnimeAsync(string query, int page = 1)
